@@ -1,0 +1,338 @@
+﻿<style>
+    .my-custom-scrollbar {
+        position: relative;
+        height: 38vh;
+        overflow: auto;
+    }
+
+    .table-wrapper-scroll-y {
+        display: block;
+    }
+
+    .modalsetting {
+        width: 360px;
+    }
+
+    .mdwarehouse {
+        width: 80%;
+    }
+
+    body {
+        /*background-image: url('/img/download.jpg');
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-size: cover;*/
+    }
+
+    #loading-div-background {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        background: black;
+        width: 100%;
+        height: 100%;
+    }
+
+    #loading-div {
+        width: 300px;
+        height: 200px;
+        background-color: #0c0b0b;
+        text-align: center;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        margin-left: -150px;
+        margin-top: -100px;
+    }
+</style>
+
+@model Installments.Models.SaleInfo
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section>
+    <div class="box box-solid">
+        <div class="box-header with-border">
+            <h2 class="box-title"><i class="fa fa-shopping-cart fa-th-large"></i> Sale Information</h2>
+            <button class="pull-right btn btn-flat bg-red-gradient" style="margin-left:2px" ;data-toggle="modal" data-target="#HelpModal"><i class="fa fa-h-square"></i></button>
+            <button class="pull-right btn btn-flat bg-blue-gradient" style="margin-left:2px" onclick="window.location.href='/SaleInfo/ShowAllGeneralRecords?StartDate=@DateTime.Now&EndDate=@DateTime.Now'"><i class="fa fa-archive"></i></button>
+        </div>
+
+        <div class="box-body" style="padding-top:0px;">
+            <div style="margin-left:15px; margin:15px;">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-horizontal">
+                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                            <div class="row">
+                                <div class="col-sm-2">
+                                    @Html.HiddenFor(model => model.SaleID, new { htmlAttributes = new { @class = "form-control " } })
+                                    @Html.LabelFor(model => model.SaleNo, htmlAttributes: new { @class = "control-label", @readonly = "readonly", disabled = "disabled" })
+                                    @Html.EditorFor(model => model.SaleNo, new { htmlAttributes = new { @class = "form-control " } })
+                                </div>
+                                <div class="col-sm-3" style="padding-left:5px; padding-right:5px;">
+                                    @Html.LabelFor(model => model.SaleDate, htmlAttributes: new { @class = "control-label" })
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                        @Html.EditorFor(model => model.SaleDate, new { htmlAttributes = new { @class = "form-control", id = "dtpSalesDetail" } })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-2" style="padding-left:5px; padding-right:5px;">
+                        <label>Customer CNIC</label>
+                        @Html.EditorFor(model => model.CustomerCNIC, new { htmlAttributes = new { @class = "form-control" } })
+                    </div>
+                    <div class="col-sm-2" style="padding-left:5px; padding-right:5px;">
+                        <label>Customer Name</label>
+                        @Html.EditorFor(model => model.CustomerName, new { htmlAttributes = new { @class = "form-control" } })
+                    </div>
+                    <div class="col-md-2" style="padding-left:5px; padding-right:5px;">
+                        <label>Mobile No</label>
+                        @Html.EditorFor(model => model.CustomerMobileNO, new { htmlAttributes = new { @class = "form-control" } })
+                    </div>
+                    <div class="col-md-2" style="padding-left:5px; padding-right:5px;">
+                        <label>Mobile No 2</label>
+                        @Html.EditorFor(model => model.CustomerMobileNo2, new { htmlAttributes = new { @class = "form-control" } })
+                    </div>
+                    <div class="col-md-4" style="padding-left:5px; padding-right:5px;">
+                        <label>Address</label>
+                        @Html.EditorFor(model => model.BillingAddress, new { htmlAttributes = new { @class = "form-control" } })
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2">
+                        <label>Customer City</label>
+                        @Html.EditorFor(model => model.CustomerCity, new { htmlAttributes = new { @class = "form-control" } })
+                    </div>
+                </div>
+                <hr style="border-top: 1px solid #d2d6de;">
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-2" style="padding-right:5px;padding-left:5px">
+                                <label>Product Code</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-barcode"></i></span>
+                                    <input type="text" class="form-control" id="txtcode" name="txtcode" />
+                                </div>
+                            </div>
+                            <div class="col-md-3" style="padding-right:5px;padding-left:5px">
+                                <label>Product</label>
+                                @Html.DropDownList("ddlproduct", (SelectList)ViewBag.lstProduct, "Select Product", htmlAttributes: new { @class = "Selectize" })
+                                <p class="text-danger" id="Stock"></p>
+                            </div>
+                            <div class="col-md-7" style="padding-left:2px;padding-right:2px;">
+                                <div class="col-md-1" style="padding-left:2px;padding-right:2px;">
+                                    <label>Qty</label>
+                                    <input type="number" class="form-control" id="txtqty" onfocus="this.select();" name="qty" />
+                                </div>
+                                <div class="col-md-2" style="padding-left:2px;padding-right:2px;">
+                                    <label>Price</label>
+                                    <input type="number" class="form-control" id="txtPrice" name="price" />
+                                </div>
+                                <div class="col-md-2" style="padding-left:2px; padding-right:2px;">
+                                    <label>Gross Price</label>
+                                    <input type="number" class="form-control" id="totalprice" name="price" disabled>
+                                </div>
+                                <div class="col-md-2" style="padding-left: 2px; padding-right: 2px;">
+                                    <label>Disc. %</label>
+                                    <input type="number" class="form-control" id="DiscountPer" name="DiscountPer">
+                                </div>
+                                <div class="col-md-2" style="padding-left: 2px; padding-right: 2px;">
+                                    <label>Disc</label>
+                                    <input type="number" class="form-control" id="txtdiscount1" name="discount">
+                                </div>
+                                <div class="col-md-2" style="padding-left:2px;padding-right:2px;">
+                                    <label>Amount</label>
+                                    <input type="text" class="form-control" id="txtamount" name="amount" disabled>
+                                </div>
+                                <div class="col-md-1" style="padding-left:2px;padding-right:2px;">
+                                    <button type="button" id="btnadd" style="margin-top:24px" class="btn btn-primary btn-flat " onclick="AddProduct(this)">
+                                        Add
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                        <table style="width:100%" class="table table-bordered table-hover" id="tblproduct">
+                            <thead>
+                                <tr>
+                                    <th style="display:none;">ProductID</th>
+                                    <th class="col-md-4">Product Title</th>
+                                    <th class="col-md-1">Qty</th>
+                                    <th class="col-md-1">Price</th>
+                                    <th class="col-md-1">Amount</th>
+                                    <th class="col-md-1">Remove</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    var a = 1;
+                                    if (a == 1)
+
+                                    {
+                                        <tr>
+                                            <td style="display:none">1</td>
+                                            <td class="col-md-4">2</td>
+                                            <td class="col-md-1">3</td>
+                                            <td class="col-md-1">4</td>
+                                            <td class="col-md-1">5</td>
+                                            <td class="col-md-1"><button type='button' class='btn btn-flat bg-olive  btn-sm' onclick='Editproduct(this)' id="ProductID"><i class='fa fa-edit'></i></button><button type='button' class="btn btn-flat bg-red  btn-sm" onclick='removeproduct(this)' id="ProductID "><i class='fa fa-remove'></i></button></td>
+                                        </tr>
+                                    }
+                                    else
+                                    {
+                                        foreach (Installments.Models.SaleDetail objsaledetail in Model.lstSaleDetail)
+                                        {
+                                            <tr>
+                                                <td style="display:none">@objsaledetail.ProductID</td>
+                                                <td class="col-md-4">@objsaledetail.ProductTitle</td>
+                                                <td class="col-md-1">@objsaledetail.Quantity</td>
+                                                <td class="col-md-1">@objsaledetail.Price</td>
+                                                <td class="col-md-1">@(decimal.Parse((objsaledetail.Price).ToString()) * decimal.Parse((objsaledetail.Quantity).ToString()))</td>
+                                                <td class="col-md-1"><button type='button' class='btn btn-flat bg-olive  btn-sm' onclick='Editproduct(this)' id="@objsaledetail.ProductID"><i class='fa fa-edit'></i></button><button type='button' class="btn btn-flat bg-red  btn-sm" onclick='removeproduct(this)' id="@objsaledetail.ProductID "><i class='fa fa-remove'></i></button></td>
+                                            </tr>
+                                        }
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <hr style="border-top: 1px solid #d2d6de;padding-top:2px;padding-bottom:2px;margin-top:0px;margin-bottom:0px">
+            <div class="row">
+                <div class="col-md-4">
+                    <label>Total Cost</label>
+                    @Html.EditorFor(model => model.TotalCost, new { htmlAttributes = new { @class = "form-control" } })
+                </div>
+                <div class="col-md-8">
+                    <label>Billing Address</label>
+                    @Html.EditorFor(model => model.BillingAddress, new { htmlAttributes = new { @class = "form-control" } })
+                </div>
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <button class="pull-right btn btn-flat bg-primary" onclick="SaveRecord()">Save</button>
+            </div>
+        </div>
+
+        @*<div class="form-group">
+            <div class="col-md-10">
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.SaleDate, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.SaleDate, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.SaleDate, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.CustomerName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.CustomerName, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.CustomerName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.CustomerCNIC, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.CustomerCNIC, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.CustomerCNIC, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.CustomerAddress, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.CustomerAddress, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.CustomerAddress, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.CustomerCity, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.CustomerCity, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.CustomerCity, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.CustomerMobileNO, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.CustomerMobileNO, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.CustomerMobileNO, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.CustomerMobileNo2, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.CustomerMobileNo2, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.CustomerMobileNo2, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.SaleNo, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.SaleNo, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.SaleNo, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.TotalCost, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.TotalCost, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.TotalCost, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.BillingAddress, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.BillingAddress, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.BillingAddress, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Status, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Status, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Status, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </div>
+
+    </div>
+
+</section>*@
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>

@@ -1,0 +1,117 @@
+﻿@model IEnumerable<Installments.Models.VariantInfo>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="box">
+    <div class="box-header">
+        <h3 class="box-title">Variant Information</h3>
+    </div>
+    <div class="box-body">
+        <button type="button" class="btn btn-primary" onclick="location.href = '/VariantInfo/Create'">New</button>
+
+        <br>
+        <br>
+
+
+        <table class="table table-striped" id="designationinfo">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Title)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.ShortTitle)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Measurement)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.remarks)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tfoot>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Title)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.ShortTitle)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Measurement)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.remarks)
+                    </th>
+                    <th></th>
+                </tr>
+            </tfoot>
+            <tbody>
+            @foreach (var item in Model)
+            {
+                <tr id="@item.VariantID">
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Title)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ShortTitle)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Measurement)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.remarks)
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-primary" onclick="location.href='/VariantInfo/Edit/@item.VariantID'">Edit</button>
+                        <button type="button" class="btn btn-primary" id="@item.VariantID" onclick="DeleteButtonclicked(this)">Delete</button>
+                    </td>
+                </tr>
+            }
+                </tbody>
+        </table>
+</div>
+    </div>
+
+        <script>
+
+            $(document).ready(function () {
+                // $.noConflict();
+                $("#designationinfo").DataTable();
+
+            });
+
+            function DeleteButtonclicked(object) {
+
+
+                bootbox.confirm({
+                    size: "small",
+                    message: "Are you sure to delete the selected record?",
+                    callback: function (result) {
+
+                        if (result == true) {
+                            jQuery.ajax({
+                                url: '/VariantInfo/Delete',
+                                type: 'POST',
+                                dataType: 'json',
+                                data: { id: object.id },
+                                success: function () {
+
+                                    $("#" + object.id).remove();
+                                },
+                                error: function () {
+                                    alert('error');
+                                }
+                            })
+                        }
+                        else {
+                        }
+                    }
+                })
+            }
+        </script>

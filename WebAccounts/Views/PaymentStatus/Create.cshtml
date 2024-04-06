@@ -1,0 +1,267 @@
+﻿
+@model Installments.Models.PaymentStatus
+
+@{
+    ViewBag.Title = "Payment Status";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    #output {
+        border-radius: 5px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+        #output:hover {
+            opacity: 0.7;
+        }
+
+    /* The Modal (background) */
+    .modal {
+        display: none; /* Hidden by default */
+        position: fixed; /* Stay in place */
+        z-index: 1; /* Sit on top */
+        padding-top: 100px; /* Location of the box */
+        left: 170px;
+        top: 0;
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgb(255,255,255); /* Fallback color */
+        background-color: #f1f1f1; /* Black w/ opacity */
+    }
+
+    /* Modal Content (image) */
+    .modal-content {
+        margin: auto;
+        display: block;
+        width: 100%;
+        max-width: 1000px;
+    }
+
+    /* Caption of Modal Image */
+    #caption {
+        margin: auto;
+        display: block;
+        width: 80%;
+        max-width: 700px;
+        text-align: center;
+        color: #ccc;
+        padding: 10px 0;
+        height: 150px;
+    }
+
+    /* Add Animation */
+    .modal-content, #caption {
+        -webkit-animation-name: zoom;
+        -webkit-animation-duration: 0.6s;
+        animation-name: zoom;
+        animation-duration: 0.6s;
+    }
+
+    .close {
+        position: absolute;
+        top: 80px;
+        right: 35px;
+        color: black;
+        font-size: 40px;
+        font-weight: bold;
+        transition: 0.3s;
+    }
+
+        .close:hover,
+        .close:focus {
+            color: #bbb;
+            text-decoration: none;
+            cursor: pointer;
+        }
+</style>
+
+<div class="box">
+    <div class="box-header" style="text-align: center;">
+        <h3 class="box-title" style="font-weight: bold;">Payment Status</h3>
+    </div>
+</div>
+@Html.AntiForgeryToken()
+<div class="row">
+    <div class="col-md-6">
+        <div class="box box-success">
+            <div class="box-header">
+                <h3 class="box-title">
+                    Add Payment
+                    @if (Model.PaymentStatusID == 0)
+                    {
+                        <small>(New)</small>
+                    }
+                    else
+                    {
+                        <small>(Edit)</small>
+                    }
+
+                </h3>
+            </div>
+            <div class="box-body">
+                <div class="form-horizontal">
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    @Html.HiddenFor(model => model.PaymentStatusID)
+                    <table style="width:100%">
+                        <tr>
+                            <td>
+                                @Html.Label("Customer", htmlAttributes: new { @class = "control-label " })
+                                @Html.DropDownListFor(model => model.CustomerID, (SelectList)ViewBag.Customer, "Select Customer", htmlAttributes: new { @class = "Select2" })
+                                @Html.ValidationMessageFor(model => model.CustomerID, "", new { @class = "text-danger" })
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                @Html.Label("Payment Receive IN", htmlAttributes: new { @class = "control-label " })
+                                @Html.DropDownListFor(model => model.PaymentType, (SelectList)ViewBag.PaymentType, "Select Type", htmlAttributes: new { @class = "Select2" })
+                                @Html.ValidationMessageFor(model => model.PaymentType, "", new { @class = "text-danger" })
+                            </td>
+                        </tr>
+                        <tr id="EDate">
+                            <td>
+                                @Html.Label("Date Received", htmlAttributes: new { @class = "control-label" })
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                    @Html.EditorFor(model => model.DateReceived, new { htmlAttributes = new { @class = "form-control", id = "dtpEntryDate" } })
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                @Html.Label("Amount Received", htmlAttributes: new { @class = "control-label " })
+                                @Html.EditorFor(model => model.AmountReceived, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.AmountReceived, "", new { @class = "text-danger" })
+                            </td>
+                        </tr>
+                        @*<tr>
+                            <td>
+                                @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label " })
+                                @Html.TextAreaFor(model => model.Description, new { @class = "textarea", @cols = 8, @rows = 8, id = "Description", name = "Description" })
+                                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                            </td>
+                        </tr>*@
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="box box-primary">
+                    <div class="box-header">
+                    </div>
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <table>
+                                    <tr>
+                                        <td>
+                                            @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label " })
+                                            @Html.TextAreaFor(model => model.Description, new { @class = "textarea", @cols = 12, @rows = 12, id = "Description", name = "Description" })
+                                            @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        <br />
+                        <div class="col-md-12">
+                            <br />
+                            <input type="button" value="Back" onclick="BackToList()" class="btn btn-success" />
+                            <input type="button" value="Save" onclick="SaveRecord(); return false;" class="btn btn-primary pull-right" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+<style>
+    .col-md-2 {
+        max-width: 100%;
+    }
+</style>
+
+
+<link href="~/bower_components/summernote/summernote-bs4.css" rel="stylesheet" />
+<script src="~/bower_components/summernote/summernote-bs4.js"></script>
+
+
+<script>
+    
+    $("#dtpEntryDate").val('@Model.DateReceived.ToString("MM/dd/yyyy")');
+    if (@Model.CustomerID!=0) {
+        $("#CustomerID").val('@Model.CustomerID');
+    }
+    if (@Model.PaymentType!=0) {
+        $("#PaymentType").val('@Model.PaymentType');
+    }
+    $('#Description').summernote();
+    $('#dtpEntryDate').datepicker({
+        format: 'MM/dd/yyyy',
+        autoclose: true,
+        forceParse: false,
+    });
+
+    function BackToList() {
+        window.location.href = '/PaymentStatus/Index';
+    }
+
+    function SaveRecord() {
+        var objProblem = {};
+        objProblem.PaymentStatusID = $("#PaymentStatusID").val();
+        objProblem.CustomerID = $("#CustomerID").val();
+        objProblem.Description = $("#Description").val();
+        objProblem.PaymentType = $("#PaymentType").val();
+        objProblem.DateReceived = $("#dtpEntryDate").val();
+        objProblem.AmountReceived = $("#AmountReceived").val();
+        if (objProblem.CustomerID == "" || objProblem.CustomerID == 0) {
+            alert("Please Select Customer");
+            $("#CustomerID").val();
+            return;
+        }
+        if (objProblem.AmountReceived == "" || objProblem.AmountReceived == 0 || objProblem.AmountReceived == null) {
+            alert("Please Enter Proper Amount Received");
+            $("#AmountReceived").val();
+            return;
+        }
+        if (objProblem.PaymentType == "" || objProblem.PaymentType == 0 || objProblem.PaymentType == null) {
+            alert("Please Select Where you Received Amount");
+            $("#PaymentType").val();
+            return;
+        }
+
+        $.ajax({
+            type: "POST",
+            url: "/PaymentStatus/Create",
+            data: JSON.stringify({ objProblem}),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            async: false,
+            success: function (r) {
+                var data = r.split(",");
+                if (data[0] == 'true') {
+                    objProblem.PaymentStatusID = data[1];
+                    window.location.href = "/PaymentStatus/Index";
+                }
+            },
+            error: function (x, e) {
+                bootbox.alert("Error");
+                return;
+            },
+        });
+    }
+</script>
+

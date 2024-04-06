@@ -1,0 +1,542 @@
+﻿@model Installments.Models.CustomerInfo
+
+@{
+    ViewBag.Title = "Customer Information";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .circle {
+        color: green;
+        font-size: 16px;
+    }
+
+    #printable {
+        font-size: 17px;
+    }
+
+    hr {
+        margin-top: 0px;
+        margin-bottom: 0px;
+    }
+
+    .square {
+        color: pink;
+        font-size: 16px;
+    }
+
+    .userlogin {
+        color: blue;
+        font-size: 16px;
+    }
+
+    .userlogout {
+        color: black;
+        font-size: 18px;
+    }
+
+    .alt {
+        color: red;
+        font-size: 16px;
+    }
+
+    p {
+        font-family: 'Source Sans Pro','Helvetica Neue',Helvetica,Arial,sans-serif;
+        font-weight: 400;
+    }
+</style>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-primary">
+            <div class="box-header">
+
+                <h3 class="box-title text-center text-green">
+                    Customer Information
+                </h3>
+                <button class="btn btn-success  pull-right" style="margin-left:10px;" onclick="myFunction('printable')">Print <i class="fa fa-print"></i></button>
+                <button class="btn btn-danger pull-right" onclick="DeleteButtonclicked()" style="margin-left:10px;">Delete <i class="fa fa-trash"></i></button>
+                <a href="/CustomerInfo/Edit/@Model.CustomerID" class="btn btn-success pull-right" style="margin-left:10px;">Edit <i class="fa fa-edit"></i></a>
+                <a href="/CustomerInfo/Create" class="btn btn-primary pull-right" style="margin-left:10px;">New <i class="fa fa-plus"></i></a>
+                <a href="/CustomerInfo/Index" class="btn btn-warning pull-right" style="margin-left:10px;"><i class="fa fa-arrow-left"></i> Back</a>
+            </div>
+            <div class="box-body">
+                <h2 class="text-danger"><i class="fa fa-tag"></i> @Model.CustomerID - @Model.CustomerCompanytitle</h2>
+
+
+                @if (Model.InActive == true)
+                {
+                    <div class="alert alert-danger text-center" role="alert">
+                        This Customer is Inactive, it will not be shown in any entry form.
+                    </div>
+                }
+                <table class="table  ">
+
+
+                    <tr>
+
+                        <th class="col-md-2">Owner Name:</th>
+                        <td class="col-md-2">@Model.OwnerName</td>
+                        <th class="col-md-2">Owner No:</th>
+                        <td class="col-md-2">@Model.OwnerContactNo</td>
+                        <th class="col-md-2">Customer System ID:</th>
+                        <td class="col-md-2">@Model.SystemCustomerID</td>
+
+                    </tr>
+                    <tr>
+
+                        <th class="col-md-2">Person To Contact:</th>
+                        <td class="col-md-2">@Model.Persontocontact</td>
+                        <th class="col-md-2">Contact No:</th>
+                        <td class="col-md-2">@Model.contactno</td>
+                        <th class="col-md-2">Email:</th>
+                        <td class="col-md-2">@Model.Email</td>
+                        
+
+                    </tr>
+
+                    <tr>
+                        <th class="col-md-2">City Name:</th>
+                        <td class="col-md-2">@Model.CityName</td>
+                        <th class="col-md-2">Address:</th>
+                        <td class="col-md-2" colspan="3">@Model.Address</td>
+                       
+
+                    </tr>
+                    <tr>
+                        <th class="col-md-2">BusinessNature:</th>
+                        <td class="col-md-2">@Model.BusinessNature</td>
+                        <th class="col-md-2">Password:</th>
+                        <td class="col-md-2">@Model.Password</td>
+                    </tr>               
+                    <tr>
+                        <th class="col-md-2">Date of Joining:</th>
+                        <td class="col-md-2"><strong class=" text-orange">@(DateTime.Parse(Model.CreatedDate.ToString()).ToString("MM-dd-yyyy"))</strong></td>
+                        <th class="col-md-2">Expiry Date:</th>
+                        <td class="col-md-2"><strong class=" text-orange">@(DateTime.Parse(Model.ExpiryDate.ToString()).ToString("MM-dd-yyyy"))</strong></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="col-md-12">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="box box-primary">
+                <div class="box-header">
+                    <h3 class="box-title">Operator Info</h3>
+                </div>
+                <div class="box-body">
+                    <table class="table table-bordered" id="tblEmpName">
+                        <thead>
+                            <tr>
+                                <th class="col-md-3">Name</th>
+
+                                <th class="col-md-3">Phone No</th>
+                                <th class="col-md-3">Designation</th>
+                                <th class="col-md-3">Is Contact Person</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (Installments.Models.OperatorDetail variant in Model.lstOperatorName)
+                            {
+                               <tr>
+                                    <td>@variant.OperatorName</td>
+                                    <td>@variant.OperatorPhone</td>
+                                    <td>@variant.Designation</td>
+                                  <td>@(variant.IsContactPerson==true?"Yes":"No")</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="box box-success">
+                <div class="box-header">
+                    <h3 class="box-title">
+                        System Detail
+                    </h3>
+                </div>
+                <div class="box-body">
+                    <table class="table table-bordered" id="tblFormName">
+                        <thead>
+                            <tr>
+                                <th class="col-md-3">Ip Address</th>
+                                <th class="col-md-3">Mac Address</th>
+                                <th class="col-md-2">Type</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (Installments.Models.SystemDetail variant in Model.lstSystemDetail)
+                            {
+                                <tr>
+                                    <td>@variant.IPAddress</td>
+                                    <td>@variant.MacAddress</td>
+                                    @if (variant.Type == 1)
+                                    {
+                                        <td>Server</td>
+                                    }
+                                    else
+                                    {
+                                        <td>Client</td>
+                                    }
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="text-center">
+                        <h3 class="text-center text-success" id="itemcount"><strong>Total Systems:</strong> 0 </h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="box box-primary">
+                        <div class="box-header">
+                            <h3 class="box-title">DataBase Name</h3>
+                        </div>
+                        <div class="box-body">
+                            <table class="table table-bordered" id="tblDbName">
+                                <thead>
+                                    <tr>
+                                        <th class="col-md-3">DB Name</th>
+                                        <th class="col-md-3">Payment Type</th>
+                                        <th class="col-md-3">Payment</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (Installments.Models.DBName variant in Model.lstDBName)
+                                    {
+                                        <tr>
+                                            <td>@variant.DbName</td>
+                                            <td>@variant.PaymentType</td>
+                                            <td>@variant.Payment</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-success">
+                <div class="box-header">
+
+                </div>
+                <div class="box-body">
+                    <div class="col-md-12">
+                        <table style="width:100%">
+                            <tr>
+                            <tr>
+                                <th class="col-md-2">Legal User:</th>
+                                @if (Model.LegalUser == true)
+                                {
+                                    <td class="col-md-2"><strong class="text-success">Yes</strong></td>
+                                }
+                                else
+                                {
+                                    <td class="col-md-2"><strong class=" text-danger">No</strong></td>
+                                }
+                                <th class="col-md-2">Active:</th>
+                                @if (Model.InActive == true)
+                                {
+                                    <td class="col-md-2"><strong class="text-success">Yes</strong></td>
+                                }
+                                else
+                                {
+                                    <td class="col-md-2"><strong class=" text-danger">No</strong></td>
+                                }
+                                <th class="col-md-2">Updated:</th>
+                                @if (Model.Updated == true)
+                                {
+                                    <td class="col-md-2"><strong class="text-success">Yes</strong></td>
+                                }
+                                else
+                                {
+                                    <td class="col-md-2"><strong class=" text-danger">No</strong></td>
+                                }
+                                <th class="col-md-2">Payment Status:</th>
+                                @if (Model.PaymentStatus == true)
+                                {
+                                    <td class="col-md-2"><strong class="text-success">Yes</strong></td>
+                                }
+                                else
+                                {
+                                    <td class="col-md-2"><strong class=" text-danger">No</strong></td>
+                                }
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="printable" class="box box-danger" style="display:none;">
+        <div class="box-header">
+            <h3 class="box-title text-center text-green">
+                Customer Information
+            </h3>
+        </div>
+        <div class="box-body">
+            <h2 class="text-danger"><i class="fa fa-tag"></i> @Model.CustomerID - @Model.CustomerCompanytitle</h2>
+
+
+            @if (Model.InActive == true)
+            {
+                <div class="alert alert-danger text-center" role="alert">
+                    This Customer is Inactive, it will not be shown in any entry form.
+                </div>
+            }
+        <table class="table  ">
+
+
+            <tr>
+
+                <th class="col-md-2">Owner Name:</th>
+                <td class="col-md-2">@Model.OwnerName</td>
+                <th class="col-md-2">Owner No:</th>
+                <td class="col-md-2" colspan="3">@Model.OwnerContactNo</td>
+
+            </tr>
+            <tr>
+
+                <th class="col-md-2">Person To Contact:</th>
+                <td class="col-md-2">@Model.Persontocontact</td>
+                <th class="col-md-2">Contact No:</th>
+                <td class="col-md-2">@Model.contactno</td>
+                <th class="col-md-2">Email:</th>
+                <td class="col-md-2">@Model.Email</td>
+
+            </tr>
+
+            <tr>
+                <th class="col-md-2">City Name:</th>
+                <td class="col-md-2">@Model.CityName</td>
+                <th class="col-md-2">Address:</th>
+                <td class="col-md-2" colspan="3">@Model.Address</td>
+
+            </tr>
+            <tr>
+                <th class="col-md-2">BusinessNature:</th>
+                <td class="col-md-2">@Model.BusinessNature</td>
+                <th class="col-md-2">Password:</th>
+                <td class="col-md-2">@Model.Password</td>
+            </tr>          
+            <tr>
+                <th class="col-md-2">Date of Joining:</th>
+                <td class="col-md-2"><strong class=" text-orange">@(DateTime.Parse(Model.CreatedDate.ToString()).ToString("MM-dd-yyyy"))</strong></td>
+                <th class="col-md-2">Expiry Date:</th>
+                <td class="col-md-2"><strong class=" text-orange">@(DateTime.Parse(Model.ExpiryDate.ToString()).ToString("MM-dd-yyyy"))</strong></td>
+            </tr>
+        </table>
+        </div>
+        <div class="row">
+            <div class="col-md-8">
+                <div class="box box-success">
+                    <div class="box-header">
+                        <h3 class="box-title">
+                            System Detail
+                        </h3>
+                    </div>
+                    <div class="box-body">
+                        <table class="table table-bordered" id="tblFormNameP">
+                            <thead>
+                                <tr>
+                                    <th class="col-md-3">Ip Address</th>
+                                    <th class="col-md-3">Mac Address</th>
+                                    <th class="col-md-2">Type</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (Installments.Models.SystemDetail variant in Model.lstSystemDetail)
+                                {
+                                    <tr>
+                                        <td>@variant.IPAddress</td>
+                                        <td>@variant.MacAddress</td>
+                                        @if (variant.Type == 1)
+                                        {
+                                            <td>Server</td>
+                                        }
+                                        else
+                                        {
+                                            <td>Client</td>
+                                        }
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="text-center">
+                            <h3 class="text-center text-success" id="itemcountP"><strong>Total Systems:</strong> 0 </h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="box box-primary">
+                            <div class="box-header">
+                                <h3 class="box-title">DataBase Name</h3>
+                            </div>
+                            <div class="box-body">
+                                <table class="table table-bordered" id="tblDbName">
+                                    <thead>
+                                        <tr>
+                                            <th class="col-md-3">DB Name</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (Installments.Models.DBName variant in Model.lstDBName)
+                                        {
+                                            <tr>
+                                                <td>@variant.DbName</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box box-success">
+                    <div class="box-header">
+
+                    </div>
+                    <div class="box-body">
+                        <div class="col-md-12">
+                            <table style="width:100%">
+                                <tr>
+                                    <th class="col-md-2">Legal User:</th>
+                                    @if (Model.LegalUser == true)
+                                    {
+                                        <td class="col-md-2"><strong class="text-success">Yes</strong></td>
+                                    }
+                                    else
+                                    {
+                                        <td class="col-md-2"><strong class=" text-danger">No</strong></td>
+                                    }
+                                    <th class="col-md-2">Active:</th>
+                                    @if (Model.InActive == true)
+                                    {
+                                        <td class="col-md-2"><strong class="text-success">Yes</strong></td>
+                                    }
+                                    else
+                                    {
+                                        <td class="col-md-2"><strong class=" text-danger">No</strong></td>
+                                    }
+                                    <th class="col-md-2">Updated:</th>
+                                    @if (Model.Updated == true)
+                                    {
+                                        <td class="col-md-2"><strong class="text-success">Yes</strong></td>
+                                    }
+                                    else
+                                    {
+                                        <td class="col-md-2"><strong class=" text-danger">No</strong></td>
+                                    }
+                                    <th class="col-md-2">Payment Status:</th>
+                                    @if (Model.PaymentStatus == true)
+                                    {
+                                        <td class="col-md-2"><strong class="text-success">Yes</strong></td>
+                                    }
+                                    else
+                                    {
+                                        <td class="col-md-2"><strong class=" text-danger">No</strong></td>
+                                    }
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    $(document).ready(function () {
+        $("#txttbl").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#tbllog tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+        GetTotal();
+        GetTotalP();
+    });
+    function GetTotal() {
+        var ItemCount = 0;
+        $("#tblFormName TBODY TR").each(function () {
+            ItemCount++;
+        });
+        $('#itemcount').html("<strong>Total Systems: </strong>" + ItemCount);
+    }
+    function GetTotalP() {
+        var ItemCount = 0;
+        $("#tblFormNameP TBODY TR").each(function () {
+            ItemCount++;
+        });
+        $('#itemcountP').html("<strong>Total Systems: </strong>" + ItemCount);
+    }
+    function DeleteButtonclicked(object) {
+
+
+        bootbox.confirm({
+            size: "small",
+            message: "Are you sure to delete the selected record?",
+            callback: function (result) {
+
+                if (result == true) {
+                    jQuery.ajax({
+                        url: '/CustomerInfo/Delete',
+                        type: 'POST',
+                        dataType: 'json',
+                        data: { id: @Model.CustomerID },
+                        success: function () {
+
+                            location.href = "/CustomerInfo/";
+                        },
+                        error: function () {
+                            alert('error');
+                        }
+                    })
+                }
+                else {
+                }
+            }
+        })
+    }
+    function myFunction(el) {
+        var getelement = document.getElementById(el).innerHTML;
+        document.body.innerHTML = getelement;
+        window.print();
+        window.location.reload();
+    }
+    </script>

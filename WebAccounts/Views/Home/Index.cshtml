@@ -1,0 +1,146 @@
+﻿@{
+    /**/
+
+    ViewBag.Title = "Home Page";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="row">
+    <div class="col-md-12">
+        <h2 class="text-center text-uppercase text-primary">@ViewBag.CompanyName</h2>
+    </div>
+</div>
+
+
+
+
+<!--<div class="row">
+    <div class="col-lg-3 col-xs-6">-->
+        <!-- small box -->
+        <!--<div class="small-box bg-red">
+            <div class="inner">
+                <h3>
+                    ViewBag.GetOrder
+                </h3>
+                <p>Total Un-Confirmed Order</p>
+            </div>
+            <div class="icon">
+                <i class="ion ion-bag"></i>
+            </div>
+            <a href="/SaleInfo/GetOrder" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+        </div>
+    </div>-->
+    <!-- ./col -->
+    <!--<div class="col-lg-3 col-xs-6">-->
+        <!-- small box -->
+        <!--<div class="small-box bg-yellow">
+            <div class="inner">
+                <h3>
+                    ViewBag.GetConfirmed
+                </h3>
+                <p>Total Confirmed Order</p>
+            </div>
+            <a href="/SaleInfo/GetConfirmed" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+        </div>
+    </div>-->
+    <!-- ./col -->
+    <!--<div class="col-lg-3 col-xs-6">-->
+        <!-- small box -->
+        <!--<div class="small-box bg-green">
+            <div class="inner">
+                <h3>
+                    ViewBag.GetDispatch
+                </h3>
+                <p>Total Dispatch Order.</p>
+            </div>
+            <div class="icon">
+                <i class="fa fa-money"></i>
+            </div>
+            <a href="/SaleInfo/GetDispatch" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+        </div>
+    </div>-->
+    <!-- ./col -->
+    <!--<div class="col-lg-3 col-xs-6">-->
+        <!-- small box -->
+        <!--<div class="small-box bg-aqua">
+            <div class="inner">
+                <h3>ViewBag.GetDelivered</h3>
+                <p>Total Ordered Delivered</p>
+            </div>
+            <div class="icon">
+                <i class="fa fa-id-card"></i>
+            </div>
+            <a href="/SaleInfo/GetDelivered" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+        </div>
+    </div>-->
+    <!-- ./col -->
+<!--</div>
+
+<div class="row">
+    <div class="col-md-12">-->
+        <!-- LINE CHART -->
+        <!--<div class="box box-info">
+            <div class="box-header with-border">
+                <h3 class="box-title">Last 10 Days Sale</h3>
+                <div class="box-tools pull-right">
+                    <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                        <i class="fa fa-minus"></i>
+                    </button>
+                    <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                </div>
+            </div>
+            <div class="box-body chart-responsive">
+                <div class="chart" id="line-chart" style="height: 300px;"></div>
+            </div>-->
+            <!-- /.box-body -->
+        <!--</div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="box box-danger">
+            <div class="box-header">
+
+            </div>
+            <div class="box-body">
+                
+                    <h4 class="box-title">Top 5 Selling Products</h4>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Product Code</th>
+                                <th>Product Name</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            foreach (System.Data.DataRow dr in ((System.Data.DataTable)ViewBag.DtDetail).Rows)
+                            {
+                                <tr>
+                                    <td>dr["ProductCode"]</td>
+                                    <td>dr["ProductName"]</td>
+                                </tr>
+                            }
+                        <tbody>
+                    </table>
+                </div>
+            
+        </div>
+    </div>
+</div>
+<script>
+window.onload = function () {
+    //Morris.Bar
+    var line = new  Morris.Line({
+        element: 'line-chart',
+        resize: true,
+        data: Html.Raw(ViewBag.DataPoints),
+        xkey: 'x',
+        ykeys: ['y'],
+        labels: ['Sale Amount'],
+        lineColors: ['#3c8dbc'],
+        //barColors:['#3c8dbc'],
+        hideHover: 'auto',
+        parseTime: false
+    });
+}
+</script>-->

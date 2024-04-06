@@ -1,0 +1,226 @@
+﻿
+
+@model Installments.Models.ChangeExpiryDetail
+
+@{
+    ViewBag.Title = "Set Expiry";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    #output {
+        border-radius: 5px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+        #output:hover {
+            opacity: 0.7;
+        }
+
+    /* The Modal (background) */
+    .modal {
+        display: none; /* Hidden by default */
+        position: fixed; /* Stay in place */
+        z-index: 1; /* Sit on top */
+        padding-top: 100px; /* Location of the box */
+        left: 170px;
+        top: 0;
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgb(255,255,255); /* Fallback color */
+        background-color: #f1f1f1; /* Black w/ opacity */
+    }
+
+    /* Modal Content (image) */
+    .modal-content {
+        margin: auto;
+        display: block;
+        width: 100%;
+        max-width: 1000px;
+    }
+
+    /* Caption of Modal Image */
+    #caption {
+        margin: auto;
+        display: block;
+        width: 80%;
+        max-width: 700px;
+        text-align: center;
+        color: #ccc;
+        padding: 10px 0;
+        height: 150px;
+    }
+
+    /* Add Animation */
+    .modal-content, #caption {
+        -webkit-animation-name: zoom;
+        -webkit-animation-duration: 0.6s;
+        animation-name: zoom;
+        animation-duration: 0.6s;
+    }
+
+    .close {
+        position: absolute;
+        top: 80px;
+        right: 35px;
+        color: black;
+        font-size: 40px;
+        font-weight: bold;
+        transition: 0.3s;
+    }
+
+        .close:hover,
+        .close:focus {
+            color: #bbb;
+            text-decoration: none;
+            cursor: pointer;
+        }
+</style>
+@Html.AntiForgeryToken()
+<div class="row">
+    <div class="col-md-6">
+        <div class="box box-success">
+            <div class="box-header">
+                <h3 class="box-title" style="font-weight: bold;">
+                    Add Expiry
+                </h3>
+            </div>
+            <div class="box-body">
+                <div class="form-horizontal">
+                    <table style="width:100%">
+                        <tr>
+                            <td>
+                                @Html.Label("Customer", htmlAttributes: new { @class = "control-label " })
+                                @Html.DropDownListFor(model => model.CustomerID, (SelectList)ViewBag.Customer, "Select Customer", htmlAttributes: new { @class = "Select2" })
+                                @Html.ValidationMessageFor(model => model.CustomerID, "", new { @class = "text-danger" })
+                            </td>
+                        </tr>
+                        <tr id="EDate">
+                            <td>
+                                @Html.Label("Expiry Date", htmlAttributes: new { @class = "control-label" })
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                    @Html.EditorFor(model => model.ExpiryDate, new { htmlAttributes = new { @class = "form-control", id = "dtpExpiryDate" } })
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-3">
+                                <div class="form-group">
+                                    @*@Html.LabelFor(model => model.InActive, htmlAttributes: new { @class = "control-label col-md-2" })*@
+                                    <div class="col-md-12">
+                                        <div class="checkbox">
+                                            @Html.CheckBoxFor(model => model.Inactive) InActive
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-3">
+                                <input type="button" value="Save" onclick="SaveRecord(); return false;" class="btn btn-primary pull-right" />
+                                <button class="btn btn-warning pull-left" onclick="location.href='/Home/Index'"> <i class="fa fa-arrow-left"></i> Back</button>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+<style>
+    .col-md-2 {
+        max-width: 100%;
+    }
+</style>
+
+<script>
+    $("#CustomerID").change(function () {
+        GetCustomerInformation();
+    });
+    function GetCustomerInformation() {
+        var CustomerID = $("#CustomerID").val();
+        if (CustomerID == 0 || CustomerID == "") {
+            bootbox.alert("Please Select Customer");
+            return;
+        }
+        $.ajax({
+            type: "POST",
+            url: "/CustomerInfo/GetCustomerExpiryInfo",
+            data: JSON.stringify({ CustomerID }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (r) {
+                var data = r.split(",");
+                $("#dtpExpiryDate").val(data[0]);
+                var Inactive = data[1];
+                if (Inactive == 1) {
+                    $('#Inactive').attr('checked', true);
+                }
+                else {
+                    $('#Inactive').attr('checked', false);
+                }
+            },
+            error: function (x, e) {
+                bootbox.alert("Error getting Data");
+                return;
+            }
+        });
+    }
+    $("#dtpExpiryDate").val('@ViewBag.ExpiryDate.ToString("MM/dd/yyyy")');
+    $('#dtpExpiryDate').datepicker({
+        autoclose: true,
+        forceParse: false,
+        dateFormat: 'MM/dd/yyyy'
+    });
+    function BackToList() {
+        window.location.href = '/Home/Index';
+    }
+
+    function SaveRecord() {
+        var objProblem = {};
+        objProblem.CustomerID = $("#CustomerID").val();
+        objProblem.ExpiryDate = $("#dtpExpiryDate").val();
+        if ($('#Inactive').is(":checked")) {
+            objProblem.Inactive = true;  // it is checked
+        }
+        else {
+            objProblem.Inactive = false;  // it is checked
+        }
+        if (objProblem.CustomerID == "" || objProblem.CustomerID == 0) {
+            alert("Please Select Customer");
+            $("#CustomerID").val();
+            return;
+        }
+        $.ajax({
+            type: "POST",
+            url: "/CustomerInfo/SaveSingleCustomerExpiry",
+            data: JSON.stringify({ objProblem}),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            async: false,
+            success: function (r) {
+                var data = r.split(",");
+                if (data[0] == 'true') {
+                    objProblem.PaymentStatusID = data[1];
+                    window.location.href = "/CustomerInfo/AddSingleCustomerExpiry";
+                }
+            },
+            error: function (x, e) {
+                bootbox.alert("Error");
+                return;
+            },
+        });
+    }
+</script>
+

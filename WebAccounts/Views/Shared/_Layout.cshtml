@@ -1,0 +1,405 @@
+
+@if (Request.Cookies["UserID"] == null)
+{
+    Response.Redirect("~/Home/Login");
+}
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Customer Solutions - @ViewBag.Title</title>
+  @* <link rel="icon" type="image/gif/png" href="~/img/logosmall.jpg">*@
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!-- Tell the browser to be responsive to screen width -->
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  <!-- Bootstrap 3.3.7 -->
+  <link rel="stylesheet" href="~/bower_components/bootstrap/dist/css/bootstrap.min.css">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="/bower_components/font-awesome/css/font-awesome.min.css">
+
+  <!-- Ionicons -->
+  @*   <link rel="stylesheet" href="~/bower_components/Ionicons/css/ionicons.min.css">*@
+  <link rel="stylesheet" href="~/Content/Selectize.css">
+
+  <link rel="stylesheet" href="~/bower_components/select2/dist/css/select2.min.css">
+
+  <!-- Theme style -->
+
+  <link rel="stylesheet" href="~/dist/css/AdminLTE.min.css">
+  <!-- AdminLTE Skins. Choose a skin from the css/skins
+       folder instead of downloading all of them to reduce the load. -->
+  <link rel="stylesheet" href="~/dist/css/skins/skin-blue.min.css">
+  <!-- Morris chart -->
+  <link rel="stylesheet" href="~/bower_components/morris.js/morris.css">
+  @*jvectormap*@
+  @*<link rel="stylesheet" href="~/bower_components/jvectormap/jquery-jvectormap.css">*@
+  <!-- Date Picker -->
+  <link rel="stylesheet" href="~/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css">
+  <!--Datetime Picker-->
+  <link rel="stylesheet" href="~/bower_components/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css">
+  <link rel="stylesheet" href="~/bower_components/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js">
+  <link rel="stylesheet" href="~/bower_components/bootstrap-datetimepicker/build/build_standalone.less">
+
+  <!-- Daterange picker -->
+  <link rel="stylesheet" href="~/bower_components/bootstrap-daterangepicker/daterangepicker.css">
+  <!-- bootstrap wysihtml5 - text editor -->
+  @* <link rel="stylesheet" href="~/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">*@
+
+  <!-- Bootstrap Color Picker -->
+  <link rel="stylesheet" href="~/bower_components/bootstrap-colorpicker/dist/css/bootstrap-colorpicker.min.css" />
+  <link rel="stylesheet" href="~/bower_components/bootstrap-colorpicker/dist/js/bootstrap-colorpicker.min.js" />
+  @*<link rel="stylesheet" href="https://adminlte.io/themes/v3/dist/css/adminlte.min.css?v=3.2.0">*@
+  @Styles.Render("~/Content/css")
+
+
+
+  <!-- daterange picker -->
+  <!-- bootstrap datepicker -->
+  <!-- iCheck for checkboxes and radio inputs -->
+  <link rel="stylesheet" href="~/plugins/iCheck/all.css">
+
+  <!-- Bootstrap time Picker -->
+  <link rel="stylesheet" href="~/plugins/timepicker/bootstrap-timepicker.min.css">
+  <!-- Select2 -->
+  <!-- Google Font -->
+  <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+
+  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+  <!--[if lt IE 9]>-->
+  @* <script src="~/Scripts/Respond.js"></script>*@
+  <!--[endif]-->
+  <!-- Google Font -->
+  <style>
+    .required:after {
+      content: " *";
+      color: red;
+    }
+  </style>
+</head>
+<body class="hold-transition skin-blue " @*sidebar-collapse sidebar-mini*@>
+  <div class="wrapper">
+    <header class="main-header">
+      <!-- Logo -->
+      <a href="/Home/Index" class="logo">
+        <!-- mini logo for sidebar mini 50x50 pixels -->
+        <span class="logo-mini"><b>SI</b></span>
+        <!-- logo for regular state and mobile devices -->
+        @* <span class="logo-lg">@Request.Cookies["CompanyName"].Value</span>*@
+
+      <span class="logo-lg">@General.CompanyName</span>
+      </a>
+      <!-- Header Navbar: style can be found in header.less -->
+      <nav class="navbar navbar-static-top">
+        <!-- Sidebar toggle button-->
+        <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
+          <span class="sr-only">Toggle navigation</span>
+        </a>
+
+        <div class="navbar-custom-menu">
+          <ul class="nav navbar-nav">
+            <!-- Messages: style can be found in dropdown.less-->
+            <!-- Notifications: style can be found in dropdown.less -->
+            <!-- Tasks: style can be found in dropdown.less -->
+            <!-- User Account: style can be found in dropdown.less -->
+
+
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle glyphicon glyphicon-user" data-toggle="dropdown">
+                @if (Request.Cookies["UserName"] != null)
+                {
+                  <span class="hidden-xs">
+                    @Request.Cookies["UserName"].Value
+                  </span>
+                }
+
+              </a>
+              <ul class="dropdown-menu" role="menu">
+                <li> <a href="/Home/Logout">Sign out</a></li>
+              </ul>
+            </li>
+
+          </ul>
+        </div>
+      </nav>
+    </header>
+    <!-- Left side column. contains the logo and sidebar -->
+    <aside class="main-sidebar skin-blue">
+      <!-- sidebar: style can be found in sidebar.less -->
+      <section class="sidebar">
+        <!-- Sidebar user panel -->
+        <div class="user-panel">
+        </div>
+        <!-- search form -->
+        <!-- /.search form -->
+        <!-- sidebar menu: : style can be found in sidebar.less -->
+        <ul class="sidebar-menu" data-widget="tree">
+          <li class="header">MAIN NAVIGATION</li>
+          <li>
+            <a href="/Home/Index">
+              <i class="fa  fa-clipboard"></i>
+              <span>Dashboard</span>
+              <span class="pull-right-container">
+              </span>
+            </a>
+          </li>
+          <li>
+            <a href="/UploadUpdates/Index">
+              <i class="fa  fa-clipboard"></i>
+              <span>Upload Updates</span>
+              <span class="pull-right-container">
+              </span>
+            </a>
+          </li>
+
+         
+
+          <li class="treeview">
+            <a href="#">
+              <i class="fa fa-user-circle-o" aria-hidden="true"></i>
+              <span>Manage Define</span>
+              <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+              </span>
+            </a>
+            <ul class="treeview-menu">
+              <li>
+                <a href="/ProblemSolutions/"><i class="fas fa-sticky-note"></i>Solutions</a>
+              </li>
+              <li>
+                <a href="/NewProblemStatement/"><i class="fa fa-check-square-o"></i>New Problem Statement</a>
+              </li>
+              <li>
+                <a href="/NewProblemStatement/UpdateSolved"><i class="fas fa-tasks"></i>Mark Problem Solved</a>
+              </li>
+              <li>
+                <a href="/CustomerInfo/"><i class="fa fa-child"></i>Customer</a>
+              </li>
+              <li>
+                <a href="/Forms/"><i class="fa fa-wpforms"></i>Forms</a>
+              </li>
+              <li>
+                <a href="/PaymentStatus/"><i class="fa fa-wpforms"></i>Add Payment</a>
+              </li>
+              <li>
+                <a href="/CustomerInfo/CustomerExpiryDate"><i class="fa fa-wpforms"></i>Set Expiry Date</a>
+              </li>
+              <li>
+                <a href="/CustomerInfo/AddSingleCustomerExpiry"><i class="fa fa-wpforms"></i>Single Customer Expiry Date</a>
+              </li>
+              <li>
+                <a href="/Tasks/"><i class="fa fa-wpforms"></i>Tasks</a>
+              </li>
+              <li>
+                <a href="/TasksType/"><i class="fa fa-wpforms"></i>Work Priority</a>
+              </li>
+              <li>
+                <a href="/WorkStatus/"><i class="fa fa-wpforms"></i>Work Status</a>
+              </li>
+              <li>
+                <a href="/WorkCategory/"><i class="fa fa-wpforms"></i>Work Category</a>
+              </li>
+              <li>
+                <a href="/OperatorDesignation/"><i class="fa fa-wpforms"></i>Designation</a>
+              </li>
+              <li>
+                <a href="/PaymentType/"><i class="fa fa-wpforms"></i>Payment Type</a>
+              </li>
+            </ul>
+          </li>
+          <li class="treeview">
+            <a href="#">
+              <i class="fa fa-dashboard"></i> <span>Utilities</span>
+              <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+              </span>
+
+            </a>
+            <ul class="treeview-menu">
+              @{ if (bool.Parse(Request.Cookies["IsSuperAdmin"].Value) == true)
+                {
+                  <li>
+                    <a href="/UserInfo/"><i class="fa fa-user"></i>User Info</a>
+                  </li>
+                  <li>
+                    <a href="/RightsRole/"><i class="fa  fa fa-tasks"></i>Roles</a>
+                  </li>
+                  <li>
+                    <a href="/CompanyInformation/Create"><i class="fa fa-building" aria-hidden="true"></i>Company</a>
+                  </li>
+                }
+              }
+
+            </ul>
+          </li>
+          <li class="treeview">
+            <a href="#">
+              <i class="fa fa-dashboard"></i> <span>Reports</span>
+              <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+              </span>
+            </a>
+            <ul class="treeview-menu">
+              @if (General.ReportsAllowed("Logs", General.ReportNature.ReportAllowed) == true)
+              {
+                <li>
+                  <a href="/Reports/Logs"><i class="fa fa-user"></i>User Activity</a>
+                </li>
+              }
+            </ul>
+          </li>
+        </ul>
+</section>
+      <!-- /.sidebar -->
+    </aside>
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+      <!-- Content Header (Page header) -->
+      <section class="content-header">
+        @*<h1>
+            @ViewBag.Title
+        </h1>*@
+
+      </section>
+      <!-- Main content -->
+      <section class="content" style="padding-top:0px;">
+
+        @Scripts.Render("~/bundles/modernizr")
+        @Scripts.Render("~/bundles/jquerylib")
+        @RenderBody()
+
+      </section>            <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
+
+    <footer class="main-footer">
+      <div class="pull-right hidden-xs">
+        <b>Version</b> 1.0.00
+      </div>
+      <strong>Copyright &copy; @DateTime.Now.Year Sajjad Safdar (0316-6589544)</strong> All rights
+      reserved.
+    </footer>
+  </div>
+        @RenderSection("scripts", required: false)
+      
+</body>
+</html>
+<style>
+    body {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+    .select2 {
+        width: 100% !important;
+        /*border-radius: 0;
+        box-shadow: none;
+        border-color: #000000;*/
+    }
+    #select2 {
+        width: 100% !important;
+        /*border-radius: 0;
+        box-shadow: none;
+        border-color: #000000;*/
+    }
+    /*.form-control {
+        border-radius: 0;
+        box-shadow: none;
+        border-color: rgba(0,0,0,.6);
+    }*/
+
+</style>
+
+<script>
+
+  $(document).ready(function () {
+    //$("#Select2").select2();
+    $('#Select2').select2({
+      matcher: function (term, text) {
+        // If search is empty we return everything
+        if ($.trim(term.term) === '') return text;
+
+        // Compose the regex
+        var regex_text = '.*';
+        regex_text += (term.term).split('').join('.*');
+        regex_text += '.*'
+
+        // Case insensitive
+        var regex = new RegExp(regex_text, "i");
+
+        // If no match is found we return nothing
+        if (!regex.test(text.text)) {
+          return null;
+        }
+
+        // Else we return everything that is matching
+        return text;
+      }
+    });
+    $('.Select2').select2({
+      matcher: function (term, text) {
+        // If search is empty we return everything
+        if ($.trim(term.term) === '') return text;
+
+        // Compose the regex
+        var regex_text = '.*';
+        regex_text += (term.term).split('').join('.*');
+        regex_text += '.*'
+
+        // Case insensitive
+        var regex = new RegExp(regex_text, "i");
+
+        // If no match is found we return nothing
+        if (!regex.test(text.text)) {
+          return null;
+        }
+
+        // Else we return everything that is matching
+        return text;
+      }
+    });
+    //$("#Selectize").selectize({
+    //});
+    //$(".Selectize").selectize({
+    //});
+    $('#Selectize').selectize({
+      sortField: 'text',
+      allowEmptyOption: true,
+      sortField: 'text',
+      searchField: 'text',
+      valueField: 'value'
+    });
+    $('.Selectize').selectize({
+      sortField: 'text',
+      allowEmptyOption: true,
+      sortField: 'text',
+      searchField: 'text',
+      valueField: 'value'
+    });
+    //$("#slimscroll").slimscroll({
+    //  height: "250px"
+    //});
+
+    //$(".slimscroll").slimscroll({
+    //  height: "250px"
+    //});
+    });
+
+
+    var getUrlParameter = function getUrlParameter(sParam) {
+        var sPageURL = window.location.search.substring(1),
+            sURLVariables = sPageURL.split('&'),
+            sParameterName,
+            i;
+
+        for (i = 0; i < sURLVariables.length; i++) {
+            sParameterName = sURLVariables[i].split('=');
+
+            if (sParameterName[0] === sParam) {
+                return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+            }
+        }
+    };
+    
+    </script>

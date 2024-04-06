@@ -1,0 +1,233 @@
+﻿
+<style>
+    .circle {
+        color: green;
+        font-size: 16px;
+    }
+
+    #printable {
+        font-size: 17px;
+    }
+
+    hr {
+        margin-top: 0px;
+        margin-bottom: 0px;
+    }
+
+    .square {
+        color: pink;
+        font-size: 16px;
+    }
+
+    .userlogin {
+        color: blue;
+        font-size: 16px;
+    }
+
+    .userlogout {
+        color: black;
+        font-size: 18px;
+    }
+
+    .alt {
+        color: red;
+        font-size: 16px;
+    }
+
+    p {
+        font-family: 'Source Sans Pro','Helvetica Neue',Helvetica,Arial,sans-serif;
+        font-weight: 400;
+    }
+</style>
+
+
+
+@model System.Data.DataTable
+@{
+    ViewBag.Title = "Problem Statement";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="box box-default collapsed-box">
+    <div class="box-header">
+        <div class="box-tools pull-right">
+            <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                <i class="fa fa-plus"></i>
+            </button>
+        </div>
+        <h5 class="box-title">Filter</h5>
+    </div>
+    <div class="box-body">
+
+        <div class="row">
+
+            <div class="col-sm-2">
+                <div class="form-group">
+                    <label>Date From:</label>
+                    <div class="input-group date">
+                        <div class="input-group-addon">
+                            <i class="fa fa-calendar"></i>
+                        </div>
+                        <input type="text" class="form-control pull-right" id="datefrom" value="@ViewBag.DateFrom">
+                    </div>
+                    <!-- /.input group -->
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <div class="form-group">
+                    <label>Date To:</label>
+                    <div class="input-group date">
+                        <div class="input-group-addon">
+                            <i class="fa fa-calendar"></i>
+                        </div>
+                        <input type="text" class="form-control pull-right" id="dateto" value="@ViewBag.DateTo">
+                    </div>
+                    <!-- /.input group -->
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <label for="StartDate">User</label>
+                @Html.DropDownList("User", (SelectList)ViewBag.GetUser, "Select User", htmlAttributes: new { @class = "form-control Select2" })
+            </div>
+            <!--<div class="col-sm-2">
+                <div class="form-group">
+                    <label>Number of Logs:</label>
+                    <div class="input-group">
+
+                        <input type="number" class="form-control pull-right" id="TotalValue" value="@ViewBag.TotalValue">
+                    </div>-->
+            <!-- /.input group -->
+            <!--</div>
+            </div>-->
+            <div class="col-md-12">
+                <input type="button" class="btn btn-primary" id="ShowAllRecord" onclick="ShowAllRecord();" style="margin-top:25px;" value="Get Data">
+            </div>
+        </div>
+        <br>
+    </div>
+</div>
+<div class="box">
+    <div class="box-header" style="padding-bottom:0px">
+        <button class="btn btn-flat btn-primary pull-right" onclick="printthis()"><i><span class="fa fa-print"></span></i></button>
+    </div>
+    <div class="box-body" style="padding-top:5px">
+
+        <div id="printable">
+            <div class="col-md-12">
+                <div class="row">
+                    <h3><b>@General.CompanyName</b></h3>
+                    <h4><b>Problem Statment Report</b></h4>
+                </div>
+                <div class="row">
+
+                </div>
+                <div class="row">
+                    <div class="col-md-12 scrollit">
+                        <table class="table table-condensed table-bordered" width="100%">
+                            @{
+                                string Username = "";
+                                foreach (System.Data.DataRow dr in Model.Rows)
+                                {
+                                    if (((System.Data.DataTable)ViewBag.GetUser).Select(" UserID=" + dr["AssignTo"]).Count() > 0)
+                                    {
+                                        Username = ((System.Data.DataTable)ViewBag.GetUser).Select(" UserID=" + dr["AssignTo"])[0]["Username"].ToString();
+                                    }
+                                    else
+                                    {
+                                        Username = "";
+                                    }
+                                                        <tr>
+                                                            <td>@dr["ProblemTitle"]</td>
+                                                            <td>@dr["Description"]</td>
+                                                            <td>@dr["PromiseDate"]</td>
+                                                            <td>@Username</td>
+                                                            <td>@dr["WorkPriority"]</td>
+                                                            <td>@dr["WorkCategory"]</td>
+                                                        </tr>
+                                }
+                            }
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+
+    $(function () {
+        $('#datefrom').datepicker({
+            autoclose: true
+        });
+        $('#dateto').datepicker({
+            autoclose: true
+        });
+    });
+
+    function printthis() {
+        var getelement = document.getElementById("printable").innerHTML;
+        document.body.innerHTML = getelement;
+        window.print();
+        window.location.reload();
+    }
+
+    var ddlSource = "";
+    function ShowAllRecord() {
+
+        var trialbalancelink = '';
+        var firstordefault = 0;
+        if ($("#datefrom").val() != '') {
+            trialbalancelink = '?';
+            trialbalancelink = trialbalancelink + 'DateFrom=' + $("#datefrom").val();
+            firstordefault = 1;
+        }
+
+        if ($("#dateto").val() != '') {
+
+            if (firstordefault == 0) {
+
+                trialbalancelink = trialbalancelink + '?';
+            }
+            else {
+                trialbalancelink = trialbalancelink + '&';
+            }
+            trialbalancelink = trialbalancelink + 'DateTo=' + $("#dateto").val();
+            firstordefault = 1;
+        }
+
+       
+        if ($("#User").val() != '') {
+            if (firstordefault == 0) {
+                trialbalancelink = trialbalancelink + '?';
+            }
+            else {
+                trialbalancelink = trialbalancelink + '&';
+            }
+            trialbalancelink = trialbalancelink + 'UserID=' + $("#User").val();
+            firstordefault = 1;
+
+        }
+
+      
+
+        //if ($("#TotalValue").val() != '') {
+        //    if (firstordefault == 0) {
+        //        trialbalancelink = trialbalancelink + '?';
+        //    }
+        //    else {
+        //        trialbalancelink = trialbalancelink + '&';
+        //    }
+        //    trialbalancelink = trialbalancelink + 'TopValue=' + $("#TotalValue").val();
+        //    firstordefault = 1;
+
+        //}
+        document.location.href = ('/Report/Index' + trialbalancelink);
+    }
+
+</script>
+
+

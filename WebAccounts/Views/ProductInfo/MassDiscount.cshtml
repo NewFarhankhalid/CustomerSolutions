@@ -1,0 +1,164 @@
+﻿@model System.Data.DataTable
+@{
+    ViewBag.Title = "MassDiscount";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="box box-primary">
+
+    <div class="box-header">
+        <h2 class="box-title">Mass Discount</h2>
+    </div>
+    <div class="box-body">
+        <div class="row">
+            <div class="col-md-1 ">
+                <input type="button" class="btn btn-warning" value="Back" onclick="back()" />
+            </div>
+            <div class="col-md-1 pull-right">
+                <input type="button" class="btn btn-primary" value="Save" onclick="Save()">
+            </div>
+        </div>
+        <br>
+        <br>
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table table-bordered table-condensed" id="ProductDiscountPrice">
+                    <thead>
+                        <tr>
+                            <th style="display:none">ProductID</th>
+                            <th class="col-md-4 text-center">Product Code & Title</th>
+                            <th class="col-md-2 text-center">Price</th>
+                            <th class="col-md-2 text-center">Discount Price</th>
+                            <th class="col-md-2 text-center">Discount in %</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (System.Data.DataRow dr in Model.Rows)
+                        {
+                        <tr id="@dr["ProductID"]">
+                            <td style="display:none" id="ProductID">@dr["ProductID"]</td>
+                            <td class="col-md-4">@(dr["ProductCode"] + "-" + dr["ProductName"])</td>
+                            @if (dr["Price"].ToString() == null)
+                            {
+                                <td class="col-md-2"><input type="number" class="form-control text-center" oninput="PriceChange(this)" id="Price" value="0" /></td>
+                            }
+                            else
+                            {
+                                <td class="col-md-2"><input type="number" class="form-control text-center" oninput="PriceChange(this)" id="Price" value="@(dr["Price"])" /></td>
+                            }
+
+                            <td class="col-md-2"><input type="number" class="form-control text-center" oninput="check(this)" id="Discount" value="@(dr["Discount"])" /></td>
+                            @if (decimal.Parse(dr["Price"].ToString()) == 0)
+                            {
+                                <td class="col-md-2"><input type="number" class="form-control text-center" oninput="changevalue(this)" id="DiscountPer" value="@(decimal.Parse(100.ToString())).ToString("####.00"))" /></td>
+                            }
+                            else
+                            {
+                                <td class="col-md-2"><input type="number" class="form-control text-center" oninput="changevalue(this)" id="DiscountPer" value="@(((decimal.Parse(dr["Discount"].ToString()))/decimal.Parse(dr["Price"].ToString())*100).ToString("####.00"))" /></td>
+                                }
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function(){
+        $('.Dtp').datepicker({
+            autoclose: true
+        });
+    });
+
+    function PriceChange(obj) {
+        var row = $(obj).closest("TR");
+        var price = parseFloat($("TD", row).eq(2).find("input").val());
+        var Discamount = parseFloat("0" + $("TD", row).eq(3).find("input").val());
+        var TDiscamount = (Discamount / price) * 100;
+
+        if (TDiscamount == 0 || TDiscamount == null || TDiscamount == "") { 
+            $("TD", row).eq(4).find("input").val(TDiscamount + "");
+        }
+        else {
+            var DiscountedPer = 100 - TDiscamount;
+            $("TD", row).eq(4).find("input").val(Math.round(DiscountedPer, 2) + "");
+        }
+
+    }
+
+
+
+    function check(obj) {
+        var row = $(obj).closest("TR");
+        
+        var Price = parseFloat($("TD", row).eq(2).find("input").val());
+        var Discamount = parseFloat("0" + $("TD", row).eq(3).find("input").val());
+        if (parseInt(Discamount) > parseInt(Price)) {
+            bootbox.alert("Discount Price is not more than Sale Price");
+            return;
+        }
+        var DiscPer = (Discamount / Price) * 100;
+        
+        if (DiscPer == "" || DiscPer == null || DiscPer == 0) {
+            var DiscountedPer = DiscPer;
+            $("TD", row).eq(4).find("input").val(DiscountedPer + "");
+        }
+        else {
+            var DiscountedPer = 100 - DiscPer;
+            $("TD", row).eq(4).find("input").val(Math.round(DiscountedPer,2) + "");
+        }
+    }
+    function changevalue(obj) {
+
+        var row = $(obj).closest("TR");
+        // var bodyid = "#tb" + $("TD", row).eq(0).html().trim();
+        var Price = parseFloat($("TD", row).eq(2).find("input").val());
+        var DiscPer = parseFloat("0" + $("TD", row).eq(4).find("input").val());
+        var Discamount = (DiscPer / 100) * Price;
+        var DiscountedPrice = Discamount;
+        $("TD", row).eq(3).find("input").val(Math.round(DiscountedPrice, 2) + "");
+         
+    }
+
+     function back() {
+        window.location.href = "@Url.Action("Index", "ProductInfo")";
+    }
+    function Save() {
+
+        
+
+        var StockAdjustmentID = 0;
+        var lstStockAdjustment = new Array();
+        $("#ProductDiscountPrice TBODY TR").each(function () {
+            var ProductOpeningStock = {};
+            ProductOpeningStock.StockAdjustmentID = 0;
+            ProductOpeningStock.ProductID = $(this).children("TD").eq(0).html();
+            ProductOpeningStock.Price = $(this).children("TD").eq(2).find("input").val();
+            ProductOpeningStock.DiscountPrice = $(this).children("TD").eq(3).find("input").val();
+            //ProductOpeningStock.DiscountPer = $(this).children("TD").eq(4).find("input").val();
+            ProductOpeningStock.Remarks = "";
+                lstStockAdjustment.push(ProductOpeningStock);
+        });
+
+            $.ajax({
+            type: "POST",
+                url: "/ProductInfo/SaveDiscountPrice",
+                data: JSON.stringify({ lstStockAdjustment }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (r) {
+                bootbox.alert("Opening Stock Posted / Updated");
+                window.location.href = "@Url.Action("Index", "ProductInfo")";
+            },
+            error: function (e) {
+                alert("Error in Updating Discount Price" + e);
+
+            }
+            });
+    }
+</script>
+
+
+

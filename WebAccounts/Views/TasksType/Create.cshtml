@@ -1,0 +1,209 @@
+﻿@model Installments.Models.TasksType
+
+@{
+    ViewBag.Title = "Tasks Type";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    #output {
+        border-radius: 5px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+        #output:hover {
+            opacity: 0.7;
+        }
+
+    /* The Modal (background) */
+    .modal {
+        display: none; /* Hidden by default */
+        position: fixed; /* Stay in place */
+        z-index: 1; /* Sit on top */
+        padding-top: 100px; /* Location of the box */
+        left: 170px;
+        top: 0;
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgb(255,255,255); /* Fallback color */
+        background-color: #f1f1f1; /* Black w/ opacity */
+    }
+
+    /* Modal Content (image) */
+    .modal-content {
+        margin: auto;
+        display: block;
+        width: 100%;
+        max-width: 1000px;
+    }
+
+    /* Caption of Modal Image */
+    #caption {
+        margin: auto;
+        display: block;
+        width: 80%;
+        max-width: 700px;
+        text-align: center;
+        color: #ccc;
+        padding: 10px 0;
+        height: 150px;
+    }
+
+    /* Add Animation */
+    .modal-content, #caption {
+        -webkit-animation-name: zoom;
+        -webkit-animation-duration: 0.6s;
+        animation-name: zoom;
+        animation-duration: 0.6s;
+    }
+
+    .close {
+        position: absolute;
+        top: 80px;
+        right: 35px;
+        color: black;
+        font-size: 40px;
+        font-weight: bold;
+        transition: 0.3s;
+    }
+
+        .close:hover,
+        .close:focus {
+            color: #bbb;
+            text-decoration: none;
+            cursor: pointer;
+        }
+</style>
+
+<div class="box">
+    <div class="box-header" style="text-align: center;">
+        <h3 class="box-title" style="font-weight: bold;">Work Priority</h3>
+    </div>
+</div>
+
+@Html.AntiForgeryToken()
+<div class="row">
+    <div class="col-md-6">
+        <div class="box box-success">
+            <div class="box-header">
+                <h3 class="box-title">
+                </h3>
+            </div>
+
+            <div class="box-body">
+                <div class="form-horizontal">
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    @Html.HiddenFor(model => model.Id)
+                    <table style="width:100%">
+                        <tr>
+                            <td>
+                                @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label " })
+                                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                            </td>
+                        </tr>
+
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+    <div id="myModal" class="modal">
+        <span class="close">&times;</span>
+        <img class="modal-content" id="img01">
+        <div id="caption"></div>
+    </div>
+    <script>
+        var loadFile = function (event) {
+            var output = document.getElementById('output');
+            output.src = URL.createObjectURL(event.target.files[0]);
+            output.onload = function () {
+                URL.revokeObjectURL(output.src) // free memory
+            }
+        };
+    </script>
+</div>
+<div class="col-md-6">
+
+    <input type="button" value="Back" onclick="BackToList()" class="btn btn-success" />
+    <input type="button" value="Save" id="Save" onclick="Save(); return false;" class="btn btn-primary pull-right" />
+</div>
+
+@*<div>
+        @Html.ActionLink("Back to List", "Index")
+    </div>*@
+
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+<style>
+    .col-md-2 {
+        max-width: 100%;
+    }
+</style>
+
+
+<link href="~/bower_components/summernote/summernote-bs4.css" rel="stylesheet" />
+<script src="~/bower_components/summernote/summernote-bs4.js"></script>
+
+
+<script>
+   
+
+    function BackToList() {
+        window.location.href = '/TasksType/Index';
+    }
+
+
+
+           function Save() {
+       
+               $("#Save").prop("disabled", true);
+               var objProblem = {};
+               objProblem.Id = $("#Id").val();
+               objProblem.Name = $("#Name").val();
+
+               if (objProblem.Name == "" || objProblem.Name == null || objProblem.Name == 0) {
+                bootbox.alert("Please Select Name");
+                return;
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/TasksType/Create",
+                data: JSON.stringify({ objProblem }),
+                contentType: "application/json; charset=utf-8",
+                // Remove dataType attribute or change it to "text"
+                success: function (r) {
+                    // Check if the response is valid JSON
+                    var data = r.split(",");
+                    window.location.href = "/TasksType/Index";
+                    //window.location.href = "/TasksType/Create" ;
+                    //window.location.href = "/SaleInvoicePOS/PrintInvoice?ID=" + data[1];
+
+                },
+                error: function (x, e) {
+                    //waitingDialog.hide();
+                    bootbox.alert("Error");
+                },
+                async: false
+            });
+
+    }
+</script>
+
+

@@ -1,0 +1,109 @@
+﻿@model System.Data.DataTable
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="box box-primary">
+    <div class="box-header">
+        <div class="box-header" style="text-align: center;">
+            <h3 class="box-title" style="font-weight: bold;">Roles Information</h3>
+        </div>
+
+        <div class="box-body">
+
+            <input type="button" class="btn btn-success" value="New Role" onclick="location.href='/RightsRole/Create'">
+            <br>
+            <br>
+            <table class="table" id="RightRole">
+                <thead>
+                    <tr>
+                        <th>
+                            Role Title
+                        </th>
+                        <th>
+                            Description
+                        </th>
+                        <th>InActive</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (System.Data.DataRow item in Model.Rows)
+                    {
+                        <tr id="@item["RoleID"]">
+
+                            <td>
+                                @item["RoleTitle"]
+                            </td>
+                            <td>
+                                @item["RoleDescription"]
+                            </td>
+
+                            @if (bool.Parse(item["Inactive"].ToString()) == true)
+                            {
+                                <td>
+                                    <input disabled="disabled" type="checkbox" checked="checked">
+                                </td>
+                            }
+                            else
+                            {
+                                <td>
+                                    <input disabled="disabled" type="checkbox">
+                                </td>
+                            }
+
+                            <td>
+                                <input type="button" class="btn btn-primary" value="Edit" onclick="location.href='/RightsRole/Edit/@item["RoleID"]'">
+                                <input type="button" class="btn btn-danger" value="Delete" onclick="location.href='/RightsRole/Delete/@item["RoleID"]'">
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+<script>
+    $(document).ready(function () {
+        // $.noConflict();
+        $('#RightRole').DataTable({
+        });
+    });
+    function DeleteButtonclicked(object) {
+
+
+        bootbox.confirm({
+            size: "small",
+            message: "Are you sure to delete the selected record?",
+            callback: function (result) {
+
+                if (result == true) {
+                    jQuery.ajax({
+                        url: '/RightsRole/Delete',
+                        type: 'POST',
+                        dataType: 'json',
+                        data: { id: object.id },
+                        success: function (r) {
+                            if (r == "true") {
+                                $("#" + object.id).remove();
+                            }
+                            else {
+                                bootbox.alert(r);
+                            }
+                        },
+                        error: function () {
+                            alert('error');
+                        }
+                    })
+                }
+                else {
+                }
+            }
+        });
+    }
+</script>

@@ -1,0 +1,1030 @@
+﻿@model Installments.Models.CustomerInfo
+
+@{
+    ViewBag.Title = "Customer Information";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    #visibledevice {
+        display: none;
+    }
+
+    #visibledesktop {
+    }
+
+    @@media screen and (max-width : 850px) {
+        #visibledesktop {
+            display: none;
+        }
+
+        #visibledevice {
+            display: grid;
+        }
+    }
+</style>
+<div class="box">
+    <div class="box-header" style="text-align: center;">
+        <h3 class="box-title" style="font-weight: bold;">Customer Information</h3>
+    </div>
+</div>
+@Html.AntiForgeryToken()
+
+<div class="box">
+    <div class="box-header">
+        <h3 class="header-title">
+            Customer Info
+            @if (Model.CustomerID == 0)
+            {
+                <small>(New)</small>
+
+            }
+            else
+            {
+                <small>(Edit)</small>
+            }
+        </h3>
+    </div>
+    <div class="box-body">
+        <div class="form-horizontal">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            @Html.HiddenFor(model => model.CustomerID)
+            <div class="row">
+                <div class="col-md-12">
+                    <table style="width:100%">
+                        <tr style="padding:0px">
+                            <td>
+                                <div class="col-md-12">
+                                    @Html.LabelFor(model => model.OwnerName, htmlAttributes: new { @class = "control-label " })
+                                    @Html.EditorFor(model => model.OwnerName, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.OwnerName, "", new { @class = "text-danger" })
+                                </div>
+                           
+
+                            </td>
+                            <td class="col-md-5">
+                                @Html.Label("Company Name", htmlAttributes: new { @class = "control-label required" })
+                                @Html.EditorFor(model => model.CustomerCompanytitle, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.CustomerCompanytitle, "", new { @class = "text-danger" })
+                                <span id="lblCustomerError" style="color:red">This Customer Already Exists</span>
+                            </td>
+                            <td class="col-md-2">
+                                @Html.Label("Branch", htmlAttributes: new { @class = "control-label required" })
+                                @Html.EditorFor(model => model.Branch, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Branch, "", new { @class = "text-danger" })
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-5">
+                                @Html.Label("City", htmlAttributes: new { @class = "control-label required" })
+                                @Html.DropDownListFor(model => model.CityID, (SelectList)ViewBag.City, "Select City", htmlAttributes: new { @class = "form-control Select2" })
+                                @Html.ValidationMessageFor(model => model.CityID, "", new { @class = "text-danger" })
+                            </td>
+                            <td class="col-md-5">
+                                @Html.LabelFor(model => model.Address, htmlAttributes: new { @class = "control-label " })
+                                @Html.EditorFor(model => model.Address, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Address, "", new { @class = "text-danger" })
+                            </td>
+
+                        </tr>
+
+
+                        <tr>
+                            <td>
+                                <div class="col-md-6">
+                                    @Html.LabelFor(model => model.SoftwareVersion, htmlAttributes: new { @class = "control-label required" })
+                                    @Html.EditorFor(model => model.SoftwareVersion, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.SoftwareVersion, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="col-md-6">
+                                    @Html.Label("Business Nature", htmlAttributes: new { @class = "control-label " })
+                                    @Html.EditorFor(model => model.BusinessNature, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.BusinessNature, "", new { @class = "text-danger" })
+                                </div>
+                            </td>
+                            <td>
+                                <div class="col-md-6">
+                                    @Html.Label("E-Mail", htmlAttributes: new { @class = "control-label " })
+                                    @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control", @id = "Email", @type = "email" } })
+                                    @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                                    <span id="lblError" style="color:red"></span>
+                                </div>
+                                <div class="col-md-6">
+                                    @Html.Label("Password", htmlAttributes: new { @class = "control-label " })
+                                    @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+                                </div>
+                            </td>
+                        </tr>
+
+                        @*<tr>
+            <td class="col-md-5">
+                @Html.LabelFor(model => model.PaymentType, htmlAttributes: new { @class = "control-label required" })
+                @Html.DropDownListFor(model => model.PaymentType, (SelectList)ViewBag.PaymentType, "Select Payment", htmlAttributes: new { @class = "form-control Select2", id = "PaymentType" })
+                @Html.ValidationMessageFor(model => model.PaymentType, "", new { @class = "text-danger" })
+            </td>
+            <td class="col-md-5">
+                @Html.LabelFor(model => model.Payment, htmlAttributes: new { @class = "control-label required" })
+                @Html.EditorFor(model => model.Payment, new { htmlAttributes = new { @class = "form-control", id = "Payment" } })
+                @Html.ValidationMessageFor(model => model.Payment, "", new { @class = "text-danger" })
+            </td>
+        </tr>*@
+                        <tr>
+                            <td>
+                                <div class="col-md-12">
+                                    @Html.Label("Joining Date", htmlAttributes: new { @class = "control-label " })
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                        @Html.EditorFor(model => model.CreatedDate, new { htmlAttributes = new { @class = "form-control ", id = "dtpCreatedDate" } })
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="col-md-12">
+                                    @Html.LabelFor(model => model.ExpiryDate, htmlAttributes: new { @class = "control-label " })
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                        @Html.EditorFor(model => model.ExpiryDate, new { htmlAttributes = new { @class = "form-control ", id = "dtpExpiryDate" } })
+                                    </div>
+                                </div>
+                            </td>
+
+                        </tr>
+
+
+                        <tr>
+                            <td class="col-md-12" colspan="2">
+                                @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label " })
+                                @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                            </td>
+                        </tr>
+
+                        <!--<tr>
+    <td class="col-md-5">
+        <div style="margin-left:20px" class="form-group">-->
+                        @*@Html.LabelFor(model => model.InActive, htmlAttributes: new { @class = "control-label col-md-2" })*@
+                        <!--<div class="col-md-10">
+                <div class="checkbox">
+                    @Html.CheckBoxFor(model => model.LegalUser) Legal User Active
+                </div>
+            </div>
+        </div>
+    </td>
+    <td class="col-md-5">
+        <div style="margin-left:20px" class="form-group">-->
+                        @*@Html.LabelFor(model => model.InActive, htmlAttributes: new { @class = "control-label col-md-2" })*@
+                        <!--<div class="col-md-10">
+                    <div class="checkbox">
+                        @Html.CheckBoxFor(model => model.InActive) Inactive
+                    </div>
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" class="col-md-12">
+            <input type="submit" value="Save" onclick="SaveRecord()" class="pull-right btn btn-primary" />
+            <input style="margin-right:10px" type="button" value="Back" class="pull-right btn btn-success" onclick="location.href='/CustomerInfo/Index'" />
+        </td>
+    </tr>-->
+                    </table>
+            </div>
+            </div>
+            <br />
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-primary">
+            <div class="box-header">
+                <h3 class="box-title">Operator Info</h3>
+            </div>
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-md-3">
+                        @Html.Label("Name", htmlAttributes: new { @class = "control-label " })
+                        @Html.Editor("EmployeeName", new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessage("EmployeeName", "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-3">
+                        @Html.Label("Phone No", htmlAttributes: new { @class = "control-label " })
+                        @Html.Editor("PhoneNo", new { htmlAttributes = new { @class = "form-control", @type = "number" } })
+                        @Html.ValidationMessage("PhoneNo", "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-3">
+                        @Html.Label("Designation", htmlAttributes: new { @class = "control-label " })
+                        @Html.DropDownListFor(model => model.Designation, (SelectList)ViewBag.Designation, "Select Designation", htmlAttributes: new { @class = "form-control select2" })
+                        @Html.ValidationMessageFor(model => model.Designation, "", new { @class = "text-danger" })
+                    </div>
+
+
+                    <div class="col-md-1">
+                        @Html.Label("Is Contact Person", htmlAttributes: new { @class = "control-label" })
+                        @Html.CheckBox("IsContactPerson", new { htmlAttributes = new { @class = "form-control" } })
+                    </div>
+                    <div class="col-md-1">
+                        <label style="color:white">Button</label>
+                        <div class="input-group">
+                            <button onclick="AddEmpName()" class="btn btn-primary btn-flat">Add</button>
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <table class="table table-bordered" id="tblEmpName">
+                    <thead>
+                        <tr>
+
+                            <th class="col-md-3"> Name</th>
+                            <th class="col-md-3">Phone No</th>
+                            <th class="col-md-3" style="display: none ">Designation</th>
+                            <th class="col-md-3">Designation</th>
+                            <th class="col-md-3">Is Contact Person</th>
+                            <th style="display:none">isContactPerson</th>
+                            <th class="col-md-1">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (Installments.Models.OperatorDetail variant in Model.lstOperatorName)
+                        {
+                            <tr>
+
+                                <td>@variant.OperatorName</td>
+                                <td>@variant.OperatorPhone</td>
+                                <td style="display:none;">@variant.DesignationID</td>
+                                <td >@variant.Designation</td>
+                                <td>@(variant.IsContactPerson==true?"Yes":"No")</td>
+                                <td style="display:none">@variant.IsContactPerson</td>
+                                <td><i class='fa fa-remove text-danger' onclick='removeEmpInfo(this)'></i></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="box box-success">
+            <div class="box-header">
+                <h3 class="box-title">
+                    System Detail
+                </h3>
+            </div>
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        @Html.Label("Ip Address", htmlAttributes: new { @class = "control-label " })
+                        @Html.Editor("IpAddress", new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessage("IpAddress", "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-4">
+                        @Html.Label("Mac Address", htmlAttributes: new { @class = "control-label " })
+                        @Html.Editor("MacAddress", new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessage("MacAddress", "", new { @class = "text-danger" })
+                    </div>
+                    <div id="visibledesktop">
+                        <div class="col-md-2">
+                            @Html.Label("Type", htmlAttributes: new { @class = "control-label " })
+                            <div class="input-group">
+                                @Html.DropDownList("Type", (SelectList)ViewBag.Type, "Select Type", htmlAttributes: new { @class = "form-control Select2" })
+                            </div>
+                        </div>
+                        <div class="col-md-2" style="padding-left:2px;">
+                            <label style="color:white">Button</label>
+                            <div class="input-group">
+                                <button onclick="AddVariant()" class="btn btn-primary btn-flat">Add</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="visibledevice">
+                        <div class="col-md-4" style="display:grid">
+                            @Html.Label("Type", htmlAttributes: new { @class = "control-label " })
+                            <div class="input-group">
+                                @Html.DropDownList("Type", (SelectList)ViewBag.Type, "Select Type", htmlAttributes: new { @class = "form-control Select2" })
+                            </div>
+                        </div>
+                        <div class="col-md-2" style="padding-left:20px;">
+                            <label style="color:white">Button</label>
+                            <div class="input-group">
+                                <button onclick="AddVariant()" class="btn btn-primary btn-flat">Add</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <table class="table table-bordered" id="tblFormName">
+                    <thead>
+                        <tr>
+                            <th style="display:none">TypeID</th>
+                            <th class="col-md-3">Ip Address</th>
+                            <th class="col-md-3">Mac Address</th>
+                            <th class="col-md-2">Type</th>
+                            <th class="col-md-1">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (Installments.Models.SystemDetail variant in Model.lstSystemDetail)
+                        {
+                            <tr>
+                                <td style="display:none">@variant.Type</td>
+                                <td>@variant.IPAddress</td>
+                                <td>@variant.MacAddress</td>
+                                @if (variant.Type == 1)
+                                {
+                                    <td>Server</td>
+                                }
+                                else
+                                {
+                                    <td>Client</td>
+                                }
+                                <td><li class='fa fa-remove text-danger' onclick='removerow(this)'></li></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="text-center">
+                    <h3 class="text-center text-success" id="itemcount"><strong>Total Systems:</strong> 0 </h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-9">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="box box-primary">
+                    <div class="box-header">
+                        <h3 class="box-title">DataBase Name</h3>
+                    </div>
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col-md-3">
+                                @Html.Label("Name", htmlAttributes: new { @class = "control-label " })
+                                @Html.Editor("DBName", new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessage("DBName", "", new { @class = "text-danger" })
+                            </div>
+                            <div class="col-md-3">
+                                @Html.Label("PaymentType", htmlAttributes: new { @class = "control-label required" })
+                                @Html.DropDownList("PaymentType", (SelectList)ViewBag.PaymentType, "Select Payment", htmlAttributes: new { @class = "form-control Select2", id = "PaymentType" })
+                                @Html.ValidationMessage("PaymentType", "", new { @class = "text-danger" })
+                            </div>
+                            <div class="col-md-3">
+                                @Html.Label("Payment", htmlAttributes: new { @class = "control-label " })
+                                @Html.Editor("Payment", new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessage("Payment", "", new { @class = "text-danger" })
+                            </div>
+                            <div class="col-md-2">
+                                <label style="color:white">Button</label>
+                                <div class="input-group">
+                                    <button onclick="AddDBName()" class="btn btn-primary btn-flat">Add Name</button>
+                                </div>
+                            </div>
+                        </div>
+                        <br />
+                        <table class="table table-bordered" id="tblDbName">
+                            <thead>
+                                <tr>
+                                    <th class="col-md-3">DB Name</th>
+                                    <th class="col-md-3 "style="display:none">Payment Type</th>
+                                    <th class="col-md-3">Payment Type</th>
+                                    <th class="col-md-3">Payment</th>
+                                    <th class="col-md-1">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (Installments.Models.DBName variant in Model.lstDBName)
+                                {
+                                    <tr>
+                                        <td>@variant.DbName</td>
+                                        <td style="display:none;">@variant.PaymentTypeID</td>
+                                        <td>@variant.PaymentType</td>
+                                        <td>@variant.Payment</td>
+                                        <td><i class='fa fa-remove text-danger' onclick='removerowDB(this)'></i></td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-success">
+            <div class="box-header">
+
+            </div>
+            <div class="box-body">
+                <div class="col-md-12" id="visibledesktop">
+                    <table style="width:100%">
+                        <tr>
+                            <td class="col-md-3">
+                                <div style="margin-left:20px" class="form-group">
+                                    @*@Html.LabelFor(model => model.InActive, htmlAttributes: new { @class = "control-label col-md-2" })*@
+                                    <div class="col-md-10">
+                                        <div class="checkbox">
+                                            @Html.CheckBoxFor(model => model.LegalUser) Legal User Active
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="col-md-3">
+                                <div style="margin-left:20px" class="form-group">
+                                    @*@Html.LabelFor(model => model.InActive, htmlAttributes: new { @class = "control-label col-md-2" })*@
+                                    <div class="col-md-10">
+                                        <div class="checkbox">
+                                            @Html.CheckBoxFor(model => model.InActive) Inactive
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="col-md-3">
+                                <div style="margin-left:20px" class="form-group">
+                                    @*@Html.LabelFor(model => model.InActive, htmlAttributes: new { @class = "control-label col-md-2" })*@
+                                    <div class="col-md-10">
+                                        <div class="checkbox">
+                                            @Html.CheckBoxFor(model => model.Updated) Updated
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="col-md-3">
+                                <div style="margin-left:20px" class="form-group">
+                                    @*@Html.LabelFor(model => model.InActive, htmlAttributes: new { @class = "control-label col-md-2" })*@
+                                    <div class="col-md-10">
+                                        <div class="checkbox">
+                                            @Html.CheckBoxFor(model => model.PaymentStatus) Payment Status
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" class="col-md-12">
+                                <input type="submit" value="Save" onclick="SaveRecord()" class="pull-right btn btn-primary" />
+                                <input style="margin-right:10px" type="button" value="Back" class="pull-right btn btn-success" onclick="location.href='/CustomerInfo/Index'" />
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="col-md-12" id="visibledevice">
+                    <table style="width:100%">
+                        <tr>
+                            <td class="col-md-3">
+                                <div class="form-group">
+                                    @*@Html.LabelFor(model => model.InActive, htmlAttributes: new { @class = "control-label col-md-2" })*@
+                                    <div class="col-md-12">
+                                        <div class="checkbox">
+                                            @Html.CheckBoxFor(model => model.LegalUser) Legal User Active
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="col-md-3">
+                                <div class="form-group">
+                                    @*@Html.LabelFor(model => model.InActive, htmlAttributes: new { @class = "control-label col-md-2" })*@
+                                    <div class="col-md-12">
+                                        <div class="checkbox">
+                                            @Html.CheckBoxFor(model => model.InActive) Inactive
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-3">
+                                <div class="form-group">
+                                    @*@Html.LabelFor(model => model.InActive, htmlAttributes: new { @class = "control-label col-md-2" })*@
+                                    <div class="col-md-12">
+                                        <div class="checkbox">
+                                            @Html.CheckBoxFor(model => model.Updated) Updated
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="col-md-3">
+                                <div class="form-group">
+                                    @*@Html.LabelFor(model => model.InActive, htmlAttributes: new { @class = "control-label col-md-2" })*@
+                                    <div class="col-md-12">
+                                        <div class="checkbox">
+                                            @Html.CheckBoxFor(model => model.PaymentStatus) Payment Status
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-3">
+                                <input type="submit" value="Save" onclick="SaveRecord()" class="btn btn-primary" />
+                            </td>
+                            <td class="col-md-3">
+                                <input style="margin-right:10px" type="button" value="Back" class="pull-right btn btn-success" onclick="location.href='/CustomerInfo/Index'" />
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+<script>
+    $("#lblCustomerError").hide();
+    GetTotal();
+    @*$("#PaymentType").val(@Model.PaymentType);*@
+    $('#dtpCreatedDate').datepicker({
+        autoclose: true,
+        forceParse: false,
+    });
+    function GetTotal() {
+        var ItemCount = 0;
+        $("#tblFormName TBODY TR").each(function () {
+            ItemCount++;
+        });
+        $('#itemcount').html("<strong>Total Systems: </strong>" + ItemCount);
+    }
+    $("#dtpCreatedDate").val('@Model.CreatedDate.ToString("MM/dd/yyyy")');
+    $('#dtpExpiryDate').datepicker({
+        autoclose: true,
+        forceParse: false,
+    });
+
+    $(document).ready(function () {
+        $("#designationTextBox").change(function () {
+            var selectedValue = $(this).val();
+            if (selectedValue === "") {
+                $("#customDesignation").show().val("");
+            } else {
+                $("#customDesignation").hide();
+            }
+        });
+    });
+
+
+
+    $("#OwnerContactNo , #contactno").on("input", function () {
+        var maxLength = 11;
+        if ($(this).val().length > maxLength) {
+            $(this).val($(this).val().slice(0, maxLength));
+            bootbox.alert("Please enter no more than 11 digits.");
+        }
+    });
+
+    $("#OwnerContactNo , #contactno").focusout(function () {
+        var minLength = 11;
+        if ($(this).val().length < minLength) {
+            bootbox.alert("Please enter a valid 11-digit phone number.");
+        }
+    });
+   
+    $("#PaymentType").change(function () {
+        var paymentType = $(this).val();
+        if (paymentType != "") {
+            $.ajax({
+                type: "GET",
+                url: "/GeneralApis/GetPayment",
+                data: { PaymentType: paymentType },
+                success: function (result) {
+                    $("#Payment").val(result);
+                },
+                error: function () {
+                    bootbox.alert("Error getting payment amount");
+                    $("#Payment").val("");
+                }
+            });
+        } else {
+            $("#Payment").val("");
+        }
+    });
+
+
+    function AddVariant() {
+        var Type = $("#Type").val();
+        var IpAddress = $("#IpAddress").val();
+        var MacAddress = $("#MacAddress").val();
+        if (IpAddress == "" || IpAddress == 0 || IpAddress == null) {
+            bootbox.alert("Please Enter Ip Address");
+            $("#IpAddress").focus();
+            return;
+        }
+        if (MacAddress == "" || MacAddress == 0 || MacAddress == null) {
+            bootbox.alert("Please Enter Mac Address");
+            $("#MacAddress").focus();
+            return;
+        }
+        var exists = 0;
+        $("#tblFormName TBODY TR").each(function () {
+            if (MacAddress == $(this).children("TD").eq(2).html()) {
+                exists = 1;
+                return false;
+            }
+        });
+        if (exists == 1) {
+            bootbox.alert("This MacAddress already been added");
+            return false;
+        }
+        if (Type == "" || Type == 0 || Type == null) {
+            bootbox.alert("Please select Type");
+            $("#Type").focus();
+            return;
+        }
+        var exists = 0;
+        $("#tblFormName TBODY TR").each(function () {
+            if (IpAddress == $(this).children("TD").eq(1).html() && MacAddress == $(this).children("TD").eq(2).html()) {
+                exists = 1;
+                return false;
+            }
+        });
+        if (exists == 1) {
+            bootbox.alert("This Ip Address and Mac Address has already been added");
+            return false;
+        }
+        var TypeTitle = $("#Type option:selected").text();
+        var rowstring = "<tr><td style='display:none'>" + Type + "</td><td>" + IpAddress + "</td><td>" + MacAddress + "</td><td>" + TypeTitle + "</td><td><li class='fa fa-remove text-danger' onclick='removerow(this)'></li></td></tr>";
+        $("#tblFormName").append(rowstring);
+        $("#Type").val('0');
+        $("#Type").prop('selectedIndex', 0).change();
+        $("#MacAddress").val("");
+        $("#IpAddress").val("");
+        GetTotal();
+    }
+    function removerow(objectre) {
+        var row = $(objectre).closest("TR");
+        var table = $("#tblFormName")[0];
+        table.deleteRow(row[0].rowIndex);
+    }
+    function AddDBName() {
+        var DBName = $("#DBName").val();
+        var PaymentType = $("#PaymentType option:selected").text();
+        var PaymentTypeID = $("#PaymentType").val();
+        var Payment = $("#Payment").val();
+        if (DBName == "" || DBName == 0 || DBName == null) {
+            bootbox.alert("Please Enter DB Name");
+            $("#DBName").focus();
+            return;
+        }
+        if (PaymentType == "" || PaymentType == 0 || PaymentType == null) {
+            bootbox.alert("Please Select PaymentType");
+            return;
+        }
+        //var exists = 0;
+        //$("#tblDbName TBODY TR").each(function () {
+        //    if (DBName == $(this).children("TD").eq(0).html()) {
+        //        exists = 1;
+        //        return false;
+        //    }
+        //});
+        //if (exists == 1) {
+        //    bootbox.alert("This DB Name already been added");
+        //    return false;
+        //}
+        var rowstring = "<tr><td>" + DBName + "</td><td style='display:none'>" + PaymentTypeID + "</td><td>" + PaymentType + "</td><td>" + Payment + "</td><td><li class='fa fa-remove text-danger' onclick='removerowDB(this)'></li></td></tr>";
+        $("#tblDbName").append(rowstring);
+        $("#DBName").val("");
+        $("#PaymentType").prop('selectedIndex', 0);
+        $("#Payment").val("");       
+    }
+
+    function AddEmpName() { 
+        var Name = $("#EmployeeName").val();
+        var PhoneNo = $("#PhoneNo").val();
+        var Designation = $("#Designation option:selected").text();
+        var DesignationID = $("#Designation").val();
+        var IsContactPerson = $("#IsContactPerson").prop("checked");
+            if (PhoneNo == "" || PhoneNo == 0 || PhoneNo == null) {
+                bootbox.alert("Please Enter Phone No");
+                $("#PhoneNo").focus();
+                return;
+        }
+        var value = 'No';
+        if (IsContactPerson) {
+            value = 'Yes';
+        }
+        if (!/^\d{11}$/.test(PhoneNo)) {
+            bootbox.alert("Please enter a valid 11-digit phone number.");
+            return;
+        }
+        $("#PhoneNo").on("input", function () {
+            var maxLength = 11;
+            if ($(this).val().length > maxLength) {
+                $(this).val($(this).val().slice(0, maxLength));
+                bootbox.alert("Please enter no more than 11 digits.");
+            }
+        });
+        if (Designation == "" || Designation == 0 || Designation == null) {
+            bootbox.alert("Please Enter Designation");         
+            return;
+        }
+            var exists = 0;
+            $("#tblEmpName TBODY TR").each(function () {
+                if (PhoneNo == $(this).children("TD").eq(1).html()) {
+                    exists = 1;
+                    return false;
+                }
+            });
+            if (exists == 1) {
+                bootbox.alert("This Phone No already been added");
+                return false;
+        }
+        var rowstring = "<tr><td>" + Name + "</td><td>" + PhoneNo + "</td><td style='display:none'>" + DesignationID + "</td><td>" + Designation + "</td><td>" + value + "</td><td style='display:none'>" + IsContactPerson + "</td><td><i class='fa fa-remove text-danger' onclick='removeEmpInfo(this)'></i></td></tr>";
+            $("#tblEmpName").append(rowstring);
+            $("#EmployeeName").val("");
+        $("#PhoneNo").val("");
+        $("#Designation").val("");
+        $("#IsContactPerson").val("");
+    }
+    function removeEmpInfo(objectre) {
+        var row = $(objectre).closest("TR");
+        var table = $("#tblEmpName")[0];
+        table.deleteRow(row[0].rowIndex);
+    }
+       
+    function removerowDB(objectre) {
+        var row = $(objectre).closest("TR");
+        var table = $("#tblDbName")[0];
+        table.deleteRow(row[0].rowIndex);
+    }
+    $("#dtpExpiryDate").val('@Model.ExpiryDate.ToString("MM/dd/yyyy")');
+    var waitingDialog = waitingDialog || (function ($) {
+        'use strict';
+        // Creating modal dialog's DOM
+        var $dialog = $(
+            '<div class="modal fade" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-hidden="true" style="padding-top:15%; overflow-y:visible;">' +
+            '<div class="modal-dialog modal-m">' +
+            '<div class="modal-content">' +
+            '<div class="modal-header"><h3 style="margin:0;"></h3></div>' +
+            '<div class="modal-body">' +
+            '<div class="progress progress-striped active" style="margin-bottom:0;"><div class="progress-bar" style="width: 100%"></div></div>' +
+            '</div>' +
+            '</div></div></div>');
+
+        return {
+		@*/**
+		 * Opens our dialog
+		 * @param message Custom message
+		 * @param options Custom options:
+		 * 				  options.dialogSize - bootstrap postfix for dialog size, e.g. "sm", "m";
+		 * 				  options.progressType - bootstrap postfix for progress bar type, e.g. "success", "warning".
+		 */*@
+        show: function (message, options) {
+            // Assigning defaults
+            if (typeof options === 'undefined') {
+                options = {};
+            }
+            if (typeof message === 'undefined') {
+                message = 'Loading';
+            }
+            var settings = $.extend({
+                dialogSize: 'm',
+                progressType: '',
+                onHide: null // This callback runs after the dialog was hidden
+            }, options);
+
+            // Configuring dialog
+            $dialog.find('.modal-dialog').attr('class', 'modal-dialog').addClass('modal-' + settings.dialogSize);
+            $dialog.find('.progress-bar').attr('class', 'progress-bar');
+            if (settings.progressType) {
+                $dialog.find('.progress-bar').addClass('progress-bar-' + settings.progressType);
+            }
+            $dialog.find('h3').text(message);
+            //Adding callbacks
+            if (typeof settings.onHide === 'function') {
+                $dialog.off('hidden.bs.modal').on('hidden.bs.modal', function (e) {
+                    settings.onHide.call($dialog);
+                });
+            }
+            // Opening dialog
+            $dialog.modal();
+        },
+        /**
+         * Closes dialog
+         */
+        hide: function () {
+            $dialog.modal('hide');
+        }
+    };
+
+}) (jQuery);
+
+
+    $(document).ready(function () {
+        $('#CustomerCompanytitle').on("input", function () {
+            var companyTitle = $(this).val();
+            GetCustomerDetail(companyTitle);
+        });
+        $('#CustomerCompanytitle').change(function () {
+            var companyTitle = $(this).val();
+            GetCustomerDetail(companyTitle);
+        });
+    });
+    function GetCustomerDetail(companyTitle) {
+       
+        if (companyTitle == null || companyTitle == "" || companyTitle == 0) {
+            $("#lblCustomerError").hide();
+        }
+        $.ajax({
+            url: '/GeneralAPIs/CheckCompanyTitle',
+            type: 'POST',
+            data: { companyTitle: companyTitle },
+            success: function (response) {
+                if (response.exists) {
+                    //alert(companyTitle);
+                   
+                    /*   alert('Company title already exists.');*/
+                }
+                else {
+                   
+                    $("#lblCustomerError").hide();
+                }
+
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+            }
+        });
+    }
+
+
+
+    $(document).ready(function () {
+        $("#loading-div-background").css({ opacity: 0.8 });
+    });
+
+    GetPriceTye();
+    $("#Email").on("input", function () {
+        ValidateEmail();
+    });
+    $("#CustomerType").change(function () {
+        GetPriceTye();
+    });
+    function GetPriceTye() {
+        var CustomerType = $("#CustomerType").val();
+        if (CustomerType == 2) {
+            $("#PriceTypeShow").show();
+        }
+        else {
+            $("#PriceTypeShow").hide();
+        }
+    }
+    function ValidateEmail() {
+        var email = document.getElementById("Email").value;
+        var lblError = document.getElementById("lblError");
+        lblError.innerHTML = "";
+        var expr = /^([\w-\.]+)@@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
+        if (!expr.test(email)) {
+            lblError.innerHTML = "Invalid email address.";
+        }
+    }
+    function AddGroup() {
+        var grouptitle = $("#newGroup").val();
+
+        if (grouptitle == "") {
+            $("#newgroupwarning").show();
+            return;
+        }
+        $("#newgroupwarning").hide();
+        $.ajax({
+            type: "POST",
+            url: "/CustomerInfo/AddGroup",
+            data: JSON.stringify({ grouptitle }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (r) {
+                var data = r.split(",");
+                if (data[0] == 'rcode') {
+                    bootbox.alert("Customer Group Title Already Exist Please Enter a different Group Title");
+                    $("#newGroup").focus();
+                    return;
+                }
+                else {
+                    var catid = data[0];
+                    $('#ddlgroupinfo').append('<option value="' + r + '">' + grouptitle + '</option>');
+                    $('#ddlgroupinfo').val(r);
+                    $("#newGroup").val("");
+                    $('#myGroup').modal('hide');
+                }
+            },
+            error: function (x, e) {
+                bootbox.alert("Error");
+            },
+            async: false
+        });
+    }
+    function SaveRecord() {
+        var lstSystemDetail = new Array();
+        $("#tblFormName TBODY TR").each(function () {
+            var product = {};
+            product.Type = $(this).children("TD").eq(0).html();
+            product.IpAddress = $(this).children("TD").eq(1).html();
+            product.MacAddress = $(this).children("TD").eq(2).html();
+            lstSystemDetail.push(product);
+        });
+        var lstDBName = new Array();
+        $("#tblDbName TBODY TR").each(function () {
+            var product = {};
+            product.DBName = $(this).children("TD").eq(0).html();
+            product.PaymentTypeID = $(this).children("TD").eq(1).html();
+            product.Payment = $(this).children("TD").eq(3).html();
+            lstDBName.push(product);
+        });
+        var lstEmpName = new Array();
+        $("#tblEmpName TBODY TR").each(function () {
+            var product = {};          
+            product.OperatorName = $(this).children("TD").eq(0).html();
+            product.OperatorPhone = $(this).children("TD").eq(1).html();
+            product.DesignationID = $(this).children("TD").eq(2).html();
+            product.IsContactPerson = $(this).children("TD").eq(5).html();
+            lstEmpName.push(product);
+        });
+        var objCustomer = {};
+        objCustomer.CustomerID = $("#CustomerID").val();
+        objCustomer.CustomerCompanytitle = $("#CustomerCompanytitle").val();
+        objCustomer.Description = $("#Description").val();
+        objCustomer.CreatedDate = $("#dtpCreatedDate").val();
+        objCustomer.CityID = $("#CityID").val();
+        objCustomer.Persontocontact = $("#Persontocontact").val();
+        objCustomer.contactno = $("#contactno").val();
+        objCustomer.Address = $("#Address").val();
+        objCustomer.BusinessNature = $("#BusinessNature").val();
+        objCustomer.Email = $("#Email").val();
+        objCustomer.Password = $("#Password").val();
+        objCustomer.SystemCustomerID = $("#SystemCustomerID").val();
+        objCustomer.OwnerName = $("#OwnerName").val();
+        objCustomer.OwnerContactNo = $("#OwnerContactNo").val();
+        objCustomer.Branch = $("#Branch").val();
+        objCustomer.ExpiryDate = $("#dtpExpiryDate").val();
+        if ($('#InActive').is(":checked")) {
+            objCustomer.InActive = true;  // it is checked
+        }
+        else {
+            objCustomer.InActive = false;  // it is checked
+        }
+        if ($('#Updated').is(":checked")) {
+            objCustomer.Updated = true;  // it is checked
+        }
+        else {
+            objCustomer.Updated = false;  // it is checked
+        }
+        if ($('#PaymentStatus').is(":checked")) {
+            objCustomer.PaymentStatus = true;  // it is checked
+        }
+        else {
+            objCustomer.PaymentStatus = false;  // it is checked
+        }
+        if ($('#LegalUser').is(":checked")) {
+            objCustomer.LegalUser = true;  // it is checked
+        }
+        else {
+            objCustomer.LegalUser = false;  // it is checked
+        }
+        if (objCustomer.CustomerCompanytitle == "" || objCustomer.CustomerCompanytitle == 0 || objCustomer.CustomerCompanytitle == null) {
+            bootbox.alert("Please Enter Customer Company Name");
+            $("#CustomerCompanytitle").val();
+            return;
+        }
+        if (objCustomer.SystemCustomerID == "" || objCustomer.SystemCustomerID == 0 || objCustomer.SystemCustomerID == null) {
+            bootbox.alert("Please Enter System Customer ID");
+            $("#SystemCustomerID").val();
+            return;
+        }
+        //if (objCustomer.contactno == "" || objCustomer.contactno == 0 || objCustomer.contactno == null) {
+        //    bootbox.alert("Please Enter Contact No");
+        //    $("#contactno").focus();
+        //    return;
+        //}
+      
+    
+
+        $.ajax({
+            type: "POST",
+            url: "/CustomerInfo/Create",
+            data: JSON.stringify({ objCustomer, lstSystemDetail, lstDBName, lstEmpName }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (r) {
+                window.location.href = "/CustomerInfo/Index";
+            },
+            error: function (x, e) {
+                bootbox.alert("Error");
+            },
+        });
+
+    }
+</script>

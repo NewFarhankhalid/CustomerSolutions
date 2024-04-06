@@ -1,0 +1,108 @@
+﻿@model IEnumerable<Installments.Models.UserInfo>
+@{
+    ViewBag.Title = "User Information";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="box">
+    <div class="box-header">
+        <h3 class="box-title">User Information</h3>
+    </div>
+    <div class="box-body">
+        <button type="button" class="btn btn-primary" onclick="location.href = '/UserInfo/Create'">New</button>
+
+        <br>
+        <br>
+
+        <table class="table table-striped" id="designationinfo">
+            <thead>
+                <tr>
+                    <th style="display:none">
+                        @Html.DisplayNameFor(model => model.UserID)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.UserName)
+                    </th>
+                    <th>
+                        @Html.DisplayName("Role Title")
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Inactive)
+                    </th>
+                    @*
+        <th>
+            @Html.DisplayNameFor(model => model.IsSuperAdmin)
+        </th>*@
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                <tr>
+                    <td style="display:none">
+                        @Html.DisplayFor(modelItem => item.UserID)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.UserName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.RoleTitle)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Inactive)
+                    </td>
+
+                    @*
+        <td>
+            @Html.DisplayFor(modelItem => item.IsSuperAdmin)
+        </td>*@
+                    <td>
+                        <button type="button" class="btn btn-primary" onclick="location.href = '/UserInfo/Edit/@item.UserID'">Edit</button>
+                        <button type="button" class="btn btn-danger" id="@item.UserID" onclick="DeleteButtonclicked(this)">Delete</button>
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+
+<script>
+
+    $(document).ready(function () {
+        // $.noConflict();
+        $("#designationinfo").DataTable();
+
+    });
+
+    function DeleteButtonclicked(object) {
+
+
+        bootbox.confirm({
+            size: "small",
+            message: "Are you sure to delete the selected record?",
+            callback: function (result) {
+
+                if (result == true) {
+                    jQuery.ajax({
+                        url: '/UserInfo/Delete',
+                        type: 'POST',
+                        dataType: 'json',
+                        data: { id: object.id },
+                        success: function () {
+
+                            $("#" + object.id).remove();
+                        },
+                        error: function () {
+                            alert('error');
+                        }
+                    })
+                }
+                else {
+                }
+            }
+        })
+    }
+</script>

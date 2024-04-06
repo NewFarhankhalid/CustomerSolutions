@@ -1,0 +1,206 @@
+﻿@model IEnumerable<Installments.Models.PaymentStatus>
+
+@{
+    ViewBag.Title = "Problem Statement";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="box-body">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="row">
+                <div class="col-sm-12">
+                    <label for="StartDate">Customer</label>
+                    @Html.DropDownList("CustomerID", (SelectList)ViewBag.Customer, "Select Customer", htmlAttributes: new { @class = "form-control Select2" })
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label>From Date:</label>
+                <div class="input-group date">
+                    <div class="input-group-addon">
+                        <i class="fa fa-calendar"></i>
+                    </div>
+                    <input type="text" class="form-control pull-right datepicker" data-dateformat="MM/dd/yy" value="@ViewBag.Date" id="FromDate" />
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label>To Date:</label>
+                <div class="input-group date">
+                    <div class="input-group-addon">
+                        <i class="fa fa-calendar"></i>
+                    </div>
+                    <input type="text" class="form-control pull-right datepicker" data-dateformat="MM/dd/yy" value="@ViewBag.Date" id="ToDate" />
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="row">
+                <div class="col-md-12">
+                    <input type="button" value="Filter" onclick="getProductInfo()" style="margin-top:25px" class="btn btn-primary form-control" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+</div>
+<div class="box">
+    <div class="box-header">
+        <h3 class="box-title">Payment Status</h3>
+    </div>
+    <div class="box-body">
+        <button type="button" class="btn btn-primary" onclick="location.href = '/PaymentStatus/Create'">New</button>
+
+        <br>
+        <br>
+        <table class="table table-striped  table-hover" id="categoryinfo">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayName("Customer Name")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Amount Received")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Date Recevied")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Payment Received")
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tfoot>
+                <tr>
+                    <th>
+                        @Html.DisplayName("Customer Name")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Amount Received")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Date Recevied")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Payment Received")
+                    </th>
+                    <th></th>
+                </tr>
+            </tfoot>
+
+            <tbody>
+                @foreach (var item in Model)
+                {
+                <tr id="@item.PaymentStatusID">
+
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CustomerCompanytitle)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.AmountReceived)
+                    </td>
+                    <td>
+                        @Convert.ToDateTime(item.DateReceived).ToString("MM/dd/yyyy")
+                    </td>
+                    @if (item.PaymentType == 1)
+                    {
+                        <td>
+                            Jazz Cash
+                        </td>
+                    }
+                    else if (item.PaymentType == 2)
+                    {
+                        <td>
+                            Bank Account
+                        </td>
+                    }
+                    else if (item.PaymentType == 3)
+                    {
+                <td>
+                    Easy Paisa
+                </td>
+                    }
+                    else
+                    {
+                        <td>
+By hand
+                        </td>
+                    }
+                    <td>
+                        <button type="button" class="btn btn-primary" onclick="location.href = '/PaymentStatus/Edit/@item.PaymentStatusID'">Edit</button>
+                        <button type="button" class="btn btn-danger" onclick='DeleteButtonclicked(this);' id="@item.PaymentStatusID">Delete</button>
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $("#categoryinfo").DataTable();
+        $("#FromDate").val('@DateTime.Parse(ViewBag.FromDate.ToString()).ToString("MM/dd/yyyy")');
+        $("#ToDate").val('@DateTime.Parse(ViewBag.ToDate.ToString()).ToString("MM/dd/yyyy")');
+        $('#FromDate').datepicker({
+            autoclose: true,
+            forceparse: false
+        });
+        $('#ToDate').datepicker({
+            autoclose: true,
+            forceparse: false
+        });
+    });
+
+    function getProductInfo() {
+        location.href = '@Url.Action("Index", "PaymentStatus")?CustomerID=' + $("#CustomerID").val() + "&FromDate=" + $("#FromDate").val() + "&ToDate=" + $("#ToDate").val();
+    }
+    $(document).ready(function () {
+        const urlp = new URLSearchParams(window.location.search);
+        if (urlp == '' || urlp == null) {
+        }
+        else {
+            var usr = decodeURIComponent(urlp.get('CustomerID'));
+            if (typeof usr != 'undefined') {
+                $('#CustomerID').val(usr);
+            }
+            const FromDate = decodeURIComponent(urlp.get('FromDate'));
+            if (typeof FromDate != 'undefined') {
+                $('#FromDate').val(FromDate);
+            }
+            const ToDate = decodeURIComponent(urlp.get('ToDate'));
+            if (typeof ToDate != 'undefined') {
+                $('#ToDate').val(ToDate);
+            }
+        }
+    });
+
+    function DeleteButtonclicked(object) {
+        bootbox.confirm({
+            size: "small",
+            message: "Are you sure to delete the selected record?",
+            callback: function (result) {
+                if (result == true) {
+                    jQuery.ajax({
+                        url: '/PaymentStatus/Delete',
+                        type: 'POST',
+                        dataType: 'json',
+                        data: { id: object.id },
+                        success: function () {
+
+                            $("#" + object.id).remove();
+                        },
+                        error: function () {
+                            alert('error');
+                        }
+                    })
+                }
+                else {
+                }
+            }
+        })
+    }
+</script>

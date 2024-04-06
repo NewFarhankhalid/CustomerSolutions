@@ -1,0 +1,612 @@
+﻿@model Installments.Models.Images
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+@Html.AntiForgeryToken()
+
+<div class="row">
+        <div class="col-md-12">
+            <div class="box box-solid">
+                <div class="box-body">
+                    <div class="col-md-10">
+                        <h4 class="box-title text-danger">Images Info </h4>
+                    </div>
+                    <div class="col-md-2">
+                        @*@Html.ActionLink("Back to List", "Index")*@
+                        <input type="button" value="Save" onclick="SaveRecord()" class="btn btn-primary pull-right" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+<div class="row">
+        @*<div class="col-md-12">
+            <div class="col-md-4">
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div class="form-group">
+                    @Html.LabelFor(model => model.ProductID, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.DropDownListFor(model => model.ProductID, (SelectList)ViewBag.ProductInfo, "Select Product", htmlAttributes: new { @class = "form-control Select2", id = "ddlproductinfo" })
+                        @Html.ValidationMessageFor(model => model.ProductID, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+        </div>*@
+    </div>
+
+<div class="row"  style="padding-top:20px;">
+    <div class="col-md-12">
+        <div class="box box-primary">
+            <div class="box-header">
+                <h3 class="box-title">Image / Photo</h3>
+            </div>
+            <div class="box-body">
+                <div class="col-md-3">
+                    @{
+                        if (Model.ImagePath == null)
+                        {
+                            <img id="output" width="100" height="100" src="@Model.ImagePath" />
+                        }
+                        else
+                        {
+                            <img id="output" width="100" height="100" src="@Url.Content(Model.ImagePath)" />
+                        }
+                    }
+                    <form id="uploadform1">
+                        <input type="file" name="Imagefile" accept="image/*" onchange="loadFile(event)" id="imagefile">
+                    </form>
+                    <div class="col-md-12">
+                    @Html.Label("Remarks", htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-12">
+                        @Html.Editor("Remarks", new { htmlAttributes = new { @class = "form-control", id = "Remarks1" } })
+                    </div>
+                </div>
+            </div>
+                <div class="col-md-3">
+                    @{
+                        if (Model.ImagePath2 == null)
+                        {
+                            <img id="output2" width="100" height="100" src=" @Model.ImagePath2" />
+                        }
+                        else
+                        {
+                            <img id="output2" width="100" height="100" src=" @Url.Content(Model.ImagePath2)" />
+                        }
+                    }
+                    <form id="uploadform2">
+                        <input type="file" name="imagefile2" accept="image/*" onchange="loadFile2(event)" id="imagefile2">
+                    </form>
+
+                    <div class="col-md-12">
+                        @Html.Label("Remarks", htmlAttributes: new { @class = "control-label" })
+                        <div class="col-md-12">
+                            @Html.Editor("Remarks", new { htmlAttributes = new { @class = "form-control", id = "Remarks2" } })
+                        </div>
+                    </div>
+
+
+
+                </div>
+                <div class="col-md-3">
+                    @{
+                        if (Model.ImagePath3 == null)
+                        {
+                            <img id="output3" width="100" height="100" src=" @Model.ImagePath3" />
+                        }
+                        else
+                        {
+                            <img id="output3" width="100" height="100" src=" @Url.Content(Model.ImagePath3)" />
+                        }
+                    }
+                    <form id="uploadform3">
+                        <input type="file" name="imagefile3" accept="image/*" onchange="loadFile3(event)" id="imagefile3">
+                    </form>
+
+                    <div class="col-md-12">
+                        @Html.Label("Remarks", htmlAttributes: new { @class = "control-label" })
+                        <div class="col-md-12">
+                            @Html.Editor("Remarks", new { htmlAttributes = new { @class = "form-control", id = "Remarks3" } })
+                        </div>
+                    </div>
+
+
+
+                </div>
+                <div class="col-md-3">
+                    @{
+                        if (Model.ImagePath4 == null)
+                        {
+                            <img id="output4" width="100" height="100" src=" @Model.ImagePath4" />
+
+                        }
+                        else
+                        {
+                            <img id="output4" width="100" height="100" src=" @Url.Content(Model.ImagePath4)" />
+
+                        }
+
+
+                    }
+                    <form id="uploadform4">
+                        <input type="file" name="imagefile4" accept="image/*" onchange="loadFile4(event)" id="imagefile4">
+                    </form>
+
+                    <div class="col-md-12">
+                        @Html.Label("Remarks", htmlAttributes: new { @class = "control-label" })
+                        <div class="col-md-12">
+                            @Html.Editor("Remarks", new { htmlAttributes = new { @class = "form-control", id = "Remarks4" } })
+                        </div>
+                    </div>
+
+
+                </div>
+
+
+
+                <div class="col-md-3" style="padding-top:20px;">
+                    @{
+                        if (Model.ImagePath5 == null)
+                        {
+                            <img id="output5" width="100" height="100" src=" @Model.ImagePath5" />
+
+                        }
+                        else
+                        {
+                            <img id="output5" width="100" height="100" src=" @Url.Content(Model.ImagePath5)" />
+                        }
+                    }
+                    <form id="uploadform5">
+                        <input type="file" name="imagefile5" accept="image/*" onchange="loadFile5(event)" id="imagefile5">
+                    </form>
+
+                    <div class="col-md-12">
+                        @Html.Label("Remarks", htmlAttributes: new { @class = "control-label" })
+                        <div class="col-md-12">
+                            @Html.Editor("Remarks", new { htmlAttributes = new { @class = "form-control", id = "Remarks5" } })
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="col-md-3" style="padding-top:20px;">
+                    @{
+                        if (Model.ImagePath6 == null)
+                        {
+                            <img id="output6" width="100" height="100" src=" @Model.ImagePath6" />
+
+                        }
+                        else
+                        {
+                            <img id="output6" width="100" height="100" src=" @Url.Content(Model.ImagePath6)" />
+                        }
+                    }
+                    <form id="uploadform6">
+                        <input type="file" name="imagefile6" accept="image/*" onchange="loadFile6(event)" id="imagefile6">
+                    </form>
+                    <div class="col-md-12">
+                        @Html.Label("Remarks", htmlAttributes: new { @class = "control-label" })
+                        <div class="col-md-12">
+                            @Html.Editor("Remarks", new { htmlAttributes = new { @class = "form-control", id = "Remarks6" } })
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3" style="padding-top:20px;">
+                    @{
+                        if (Model.ImagePath7 == null)
+                        {
+                            <img id="output7" width="100" height="100" src=" @Model.ImagePath7" />
+
+                        }
+                        else
+                        {
+                            <img id="output7" width="100" height="100" src=" @Url.Content(Model.ImagePath7)" />
+                        }
+                    }
+                    <form id="uploadform4">
+                        <input type="file" name="imagefile7" accept="image/*" onchange="loadFile7(event)" id="imagefile7">
+                    </form>
+
+                    <div class="col-md-12">
+                        @Html.Label("Remarks", htmlAttributes: new { @class = "control-label" })
+                        <div class="col-md-12">
+                            @Html.Editor("Remarks", new { htmlAttributes = new { @class = "form-control", id = "Remarks7" } })
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <script>
+                    var loadFile = function (event) {
+                        var output = document.getElementById('output');
+                        output.src = URL.createObjectURL(event.target.files[0]);
+                        output.onload = function () {
+                            URL.revokeObjectURL(output.src) // free memory
+                        }
+                    };
+                    var loadFile2 = function (event) {
+                        var output = document.getElementById('output2');
+                        output.src = URL.createObjectURL(event.target.files[0]);
+                        output.onload = function () {
+                            URL.revokeObjectURL(output.src) // free memory
+                        }
+                    };
+                    var loadFile3 = function (event) {
+                        var output = document.getElementById('output3');
+                        output.src = URL.createObjectURL(event.target.files[0]);
+                        output.onload = function () {
+                            URL.revokeObjectURL(output.src) // free memory
+                        }
+                    };
+                    var loadFile4 = function (event) {
+                        var output = document.getElementById('output4');
+                        output.src = URL.createObjectURL(event.target.files[0]);
+                        output.onload = function () {
+                            URL.revokeObjectURL(output.src) // free memory
+
+                        }
+                    };
+                    var loadFile5 = function (event) {
+                        var output = document.getElementById('output5');
+                        output.src = URL.createObjectURL(event.target.files[0]);
+                        output.onload = function () {
+                            URL.revokeObjectURL(output.src) // free memory
+
+                        }
+                    };
+
+                    var loadFile6 = function (event) {
+                        var output = document.getElementById('output6');
+                        output.src = URL.createObjectURL(event.target.files[0]);
+                        output.onload = function () {
+                            URL.revokeObjectURL(output.src) // free memory
+
+                        }
+                    };
+                    var loadFile7 = function (event) {
+                        var output = document.getElementById('output7');
+                        output.src = URL.createObjectURL(event.target.files[0]);
+                        output.onload = function () {
+                            URL.revokeObjectURL(output.src) // free memory
+
+                        }
+                    };
+
+                </script>
+            </div>
+        </div>
+
+
+        @*<div class="col-md-1">
+            @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "control-label" })
+            </div>
+            <div class="col-md-12">
+                @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
+            </div>*@
+        
+
+    </div>
+
+
+
+
+</div>
+
+
+
+
+
+
+
+@*<div class="form-group">
+    @Html.LabelFor(model => model.ImagePath, htmlAttributes: new { @class = "control-label col-md-2" })
+    <div class="col-md-10">
+        @Html.EditorFor(model => model.ImagePath, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(model => model.ImagePath, "", new { @class = "text-danger" })
+    </div>
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(model => model.ImagePath2, htmlAttributes: new { @class = "control-label col-md-2" })
+    <div class="col-md-10">
+        @Html.EditorFor(model => model.ImagePath2, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(model => model.ImagePath2, "", new { @class = "text-danger" })
+    </div>
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(model => model.ImagePath3, htmlAttributes: new { @class = "control-label col-md-2" })
+    <div class="col-md-10">
+        @Html.EditorFor(model => model.ImagePath3, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(model => model.ImagePath3, "", new { @class = "text-danger" })
+    </div>
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(model => model.ImagePath4, htmlAttributes: new { @class = "control-label col-md-2" })
+    <div class="col-md-10">
+        @Html.EditorFor(model => model.ImagePath4, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(model => model.ImagePath4, "", new { @class = "text-danger" })
+    </div>
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(model => model.ImagePath5, htmlAttributes: new { @class = "control-label col-md-2" })
+    <div class="col-md-10">
+        @Html.EditorFor(model => model.ImagePath5, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(model => model.ImagePath5, "", new { @class = "text-danger" })
+    </div>
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(model => model.ImagePath6, htmlAttributes: new { @class = "control-label col-md-2" })
+    <div class="col-md-10">
+        @Html.EditorFor(model => model.ImagePath6, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(model => model.ImagePath6, "", new { @class = "text-danger" })
+    </div>
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(model => model.ImagePath7, htmlAttributes: new { @class = "control-label col-md-2" })
+    <div class="col-md-10">
+        @Html.EditorFor(model => model.ImagePath7, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(model => model.ImagePath7, "", new { @class = "text-danger" })
+    </div>
+</div>*@
+
+
+
+
+
+
+@*<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>*@
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+
+<script>
+
+    function SaveRecord() {
+
+        var Images = {};
+        Images.ImageID = 0;
+        //Images.ProductID = $("#ddlproductinfo").val();
+        Images.Remarks1 = $("#Remarks1").val();
+        Images.Remarks2 = $("#Remarks2").val();
+        Images.Remarks3 = $("#Remarks3").val();
+        Images.Remarks4 = $("#Remarks4").val();
+        Images.Remarks5 = $("#Remarks5").val();
+        Images.Remarks6 = $("#Remarks6").val();
+        Images.Remarks7 = $("#Remarks7").val();
+        Images.Image1 = $("#imagefile").val();
+        Images.Image2 = $("#imagefile2").val();
+        Images.Image3 = $("#imagefile3").val();
+        Images.Image4 = $("#imagefile4").val();
+        Images.Image5 = $("#imagefile5").val();
+        Images.Image6 = $("#imagefile6").val();
+        Images.Image7 = $("#imagefile7").val();
+
+        //if (Images.ProductID == 0 || Images.ProductID == null || Images.ProductID == "") {
+        //    alert("Please Select Product");
+        //    return;
+        //}
+        if (Images.Image1 == 0 || Images.Image1 == null || Images.Image1 == "") {
+            alert("Please Select Proper Image 1");
+            return;
+        }
+        if (Images.Image2 == 0 || Images.Image2 == null || Images.Image2 == "") {
+            alert("Please Select Proper Image 2");
+            return;
+        }
+        if (Images.Image3 == 0 || Images.Image3 == null || Images.Image3 == "") {
+            alert("Please Select Proper Image  3");
+            return;
+        }
+        var flagImageExist = 1;
+        var secondImageExist = 1;
+        var thirdImageExist = 1;
+        var fourthImageExist = 1;
+        var fiveImageExist = 1;
+        var SixImageExist = 1;
+        var SevenImageExist = 1;
+
+        $.ajax({
+
+            type: "POST",
+            url: "/Images/Create",
+            data: JSON.stringify({ Images }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            async: false,
+            success: function (r) {
+                var data = r.split(",");
+                if (data[0] == 'rcode') {
+                    bootbox.alert("Stock already exists Please enter different Stock");
+                    $("#StockEntryID").focus();
+                    return;
+                }
+                else if (data[0] == 'true') {
+                    Images.ImageID = data[1];
+                    if (flagImageExist == 0) {
+                        window.location.href = "/Images/Create";
+                    }
+                }
+            },
+            error: function (x, e) {
+                bootbox.alert("Error");
+                return;
+            },
+        });
+       
+        if (flagImageExist == 1) {
+            var formData = new FormData();
+            formData.append("txtfile", document.getElementById("imagefile").files[0], (Images.ImageID + ",1"));
+            formData.append("Remarks1", Images.Remarks1);
+            var id = Images.ImageID;
+
+            var reqUrl = "/Images/SaveOrUpdateImage";
+            $.ajax({
+                type: "POST",
+                url: reqUrl,
+                async: false,
+                contentType: false,//"application/json; charset=utf-8",
+                processData: false,
+                data: formData,
+                success: function (data) {
+                    window.location.href = "/Images/Create";
+                },
+                error: function (data) {
+                    bootbox.alert("Error image uploading");
+                }
+            });
+        }
+        if (secondImageExist == 1) {
+            var formData = new FormData();
+            formData.append("txtfile2", document.getElementById("imagefile2").files[0], (Images.ImageID + ",2"), Images.Remarks2);
+            formData.append("Remarks2", Images.Remarks2);
+            var id = Images.ImageID;
+
+            var reqUrl = "/Images/SaveOrUpdateImage";
+            $.ajax({
+                type: "POST",
+                url: reqUrl,
+                async: false,
+                contentType: false,//"application/json; charset=utf-8",
+                processData: false,
+                data: formData,
+                success: function (data) {
+                    window.location.href = "/Images/Create";
+                },
+                error: function (data) {
+                    bootbox.alert("Error image uploading");
+                }
+            });
+        }
+        if (thirdImageExist == 1) {
+            var formData = new FormData();
+            formData.append("txtfile3", document.getElementById("imagefile3").files[0], (Images.ImageID + ",3"), Images.Remarks3);
+            formData.append("Remarks3", Images.Remarks3);
+            var id = Images.ImageID;
+
+            var reqUrl = "/Images/SaveOrUpdateImage";
+            $.ajax({
+                type: "POST",
+                url: reqUrl,
+                async: false,
+                contentType: false,//"application/json; charset=utf-8",
+                processData: false,
+                data: formData,
+                success: function (data) {
+                    window.location.href = "/Images/Create";
+                },
+                error: function (data) {
+                    bootbox.alert("Error image uploading");
+                }
+            });
+        }
+        if (fourthImageExist == 1) {
+            var formData = new FormData();
+            formData.append("txtfile4", document.getElementById("imagefile4").files[0], (Images.ImageID + ",4"), Images.Remarks4);
+            formData.append("Remarks4", Images.Remarks4);
+            var id = Images.ImageID;
+
+            var reqUrl = "/Images/SaveOrUpdateImage";
+            $.ajax({
+                type: "POST",
+                url: reqUrl,
+                async: false,
+                contentType: false,//"application/json; charset=utf-8",
+                processData: false,
+                data: formData,
+                success: function (data) {
+                    window.location.href = "/Images/Create";
+                },
+                error: function (data) {
+                    bootbox.alert("Error image uploading");
+                }
+            });
+        }
+        if (fiveImageExist == 1) {
+            var formData = new FormData();
+            formData.append("txtfile5", document.getElementById("imagefile5").files[0], (Images.ImageID + ",5"), Images.Remarks5);
+            formData.append("Remarks5", Images.Remarks5);
+            var id = Images.ImageID;
+
+            var reqUrl = "/Images/SaveOrUpdateImage";
+            $.ajax({
+                type: "POST",
+                url: reqUrl,
+                async: false,
+                contentType: false,//"application/json; charset=utf-8",
+                processData: false,
+                data: formData,
+                success: function (data) {
+                    window.location.href = "/Images/Create";
+                },
+                error: function (data) {
+                    bootbox.alert("Error image uploading");
+                }
+            });
+        }
+        if (SixImageExist == 1) {
+            var formData = new FormData();
+            formData.append("txtfile6", document.getElementById("imagefile6").files[0], (Images.ImageID + ",6"), Images.Remarks6);
+            formData.append("Remarks6", Images.Remarks6);
+            var id = Images.ImageID;
+
+            var reqUrl = "/Images/SaveOrUpdateImage";
+            $.ajax({
+                type: "POST",
+                url: reqUrl,
+                async: false,
+                contentType: false,//"application/json; charset=utf-8",
+                processData: false,
+                data: formData,
+                success: function (data) {
+                    window.location.href = "/Images/Create";
+                },
+                error: function (data) {
+                    bootbox.alert("Error image uploading");
+                }
+            });
+        }
+        if (SevenImageExist == 1) {
+            var formData = new FormData();
+            formData.append("txtfile7", document.getElementById("imagefile7").files[0], (Images.ImageID + ",7"), Images.Remarks7);
+            formData.append("Remarks7", Images.Remarks7);
+            var id = Images.ImageID;
+
+            var reqUrl = "/Images/SaveOrUpdateImage";
+            $.ajax({
+                type: "POST",
+                url: reqUrl,
+                async: false,
+                contentType: false,//"application/json; charset=utf-8",
+                processData: false,
+                data: formData,
+                success: function (data) {
+                    window.location.href = "/Images/Create";
+                },
+                error: function (data) {
+                    bootbox.alert("Error image uploading");
+                }
+            });
+        }
+
+    }
+</script>
+

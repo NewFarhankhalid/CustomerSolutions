@@ -1,0 +1,73 @@
+﻿@model Installments.Models.VariantInfo
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@using (Html.BeginForm("Create","VariantInfo")) 
+{
+    @Html.AntiForgeryToken()
+    
+
+    <div class="box">
+        <div class="box-header">
+            <h3 class="box-title">Variant Info 
+            @if(Model.VariantID==0)
+            {
+                <small>(New)</small>
+            }
+            else
+            {
+                <small>(Edit)</small>
+            }
+
+            </h3>
+        </div>
+        <div class="box-body">
+            <div class="form-horizontal">
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                @Html.HiddenFor(model => model.VariantID, new { htmlAttributes = new { @class = "form-control" } })
+                <div class="col-md-6">
+                    <div class="col-md-12">
+                        @Html.LabelFor(model => model.Title, htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-12">
+                        @Html.LabelFor(model => model.Measurement, htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.Measurement, new { htmlAttributes = new { @class = "form-control", Type = "number" } })
+                        @Html.ValidationMessageFor(model => model.Measurement, "", new { @class = "text-danger" })
+
+                    </div>
+
+                    <div class="col-md-10">
+                        <br>
+                        <input type="submit" value="Create" class="btn btn-primary" />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="col-md-12">
+                        @Html.Label("Short Title", htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.ShortTitle, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.ShortTitle, "", new { @class = "text-danger" })
+                    </div>
+
+
+                    <div class="col-md-12">
+                        <br>
+                        Inactive
+                        @Html.EditorFor(model => model.inactive)
+                        @Html.ValidationMessageFor(model => model.inactive, "", new { @class = "text-danger" })
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>

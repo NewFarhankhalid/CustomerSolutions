@@ -1,0 +1,168 @@
+﻿
+@model Installments.Models.FormInfo
+
+@{
+    ViewBag.Title = "Forms";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="box">
+    <div class="box-header" style="text-align: center;">
+        <h3 class="box-title" style="font-weight: bold;">Form</h3>
+    </div>
+</div>
+
+    @Html.AntiForgeryToken()
+
+    <div class="box box-primary">
+        <div class="box-header">
+            <h3 class="box-title">
+                Form
+                @if (Model.FormID == 0)
+                {
+                    <small>
+                        (New)
+                    </small>
+                }
+                else
+                {
+            <small>
+                (Edit)
+            </small>
+
+                    }
+            </h3>
+        </div>
+        <div class="box-body">
+            <div class="form-horizontal">
+
+                <div class="row">
+                    <div class="col-md-5">
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        @Html.HiddenFor(model => model.FormID)
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.FormTitle, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.FormTitle, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.FormTitle, "", new { @class = "text-danger" })
+                                <div id="formTitleSuggestions"></div>
+                            </div>
+                        </div>
+                        <div id="formTitleSuggestions">
+                            <!-- Suggestions for existing FormTitles will be displayed here -->
+                        </div>
+
+                        <div class="form-group">
+                            <div style="margin-left:100px;" class="col-md-10">
+                                <div class="checkbox">
+                                    @Html.EditorFor(model => model.InActive) InActive
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-offset-2 col-md-10">
+                                <input type="button" value="Back" onclick="BackToList()" class="btn btn-success" />
+                                <input type="button" onclick="SaveRecord()" value="Save" class="btn btn-primary pull-right" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @*<div>
+                @Html.ActionLink("Back to List", "Index")
+            </div>*@
+
+        </div>
+    </div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+<style>
+    .col-md-2 {
+        max-width: 100%;
+    }
+</style>
+
+<script>
+
+  
+        $('#FormTitle').on('input', function () {
+            var inputValue = $(this).val().trim();
+
+            // Check if inputValue is not empty
+            if (inputValue) {
+                // Send AJAX request to the server to fetch existing FormTitles
+                $.ajax({
+                    type: 'POST',
+                    url: '/Forms/CheckForms', // Endpoint to check for existing FormTitles
+                    data: JSON.stringify({ formTitle: inputValue }),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (r) {
+                        var data = r.split(',');
+                        $('#formTitleSuggestions').html('');
+                        if (data[0] == "true") {
+                            $('#formTitleSuggestions').append('<div>' + data[1] + '</div>');
+                        } else {
+                            $('#formTitleSuggestions').append('<div>No matching Form Titles found.</div>');
+                        }
+                    },
+                    error: function (x, e) {
+                        bootbox.alert("Error");
+                    },
+                });
+            }
+            else {
+                $('#formTitleSuggestions').html('');
+            }
+        });
+    function BackToList() {
+        window.location.href = '/Forms/Index';
+    }
+
+    function SaveRecord() {
+        var objFormInfo = {};
+        objFormInfo.FormID = $("#FormID").val();
+        objFormInfo.FormTitle = $("#FormTitle").val();
+        objFormInfo.Description = $("#Description").val();
+        if ($('#InActive').is(":checked")) {
+            objFormInfo.InActive = true;  // it is checked
+        }
+        else {
+            objFormInfo.InActive = false;  // it is checked
+        }
+        if (objFormInfo.FormTitle == "" || objFormInfo.FormTitle == 0 || objFormInfo.FormTitle == null) {
+            bootbox.alert("Please Enter Form Title");
+            $("#FormTitle").focus();
+            return;
+        }
+        $.ajax({
+            type: "POST",
+            url: "/Forms/Create",
+            data: JSON.stringify({ objFormInfo }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (r) {
+                window.location.href = "/Forms/Index";
+            },
+            error: function (x, e) {
+                bootbox.alert("Error");
+            },
+        });
+
+    }
+</script>

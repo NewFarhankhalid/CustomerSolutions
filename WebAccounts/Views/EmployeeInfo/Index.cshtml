@@ -1,0 +1,125 @@
+﻿@model IEnumerable<Installments.Models.EmployeeInfo>
+
+@{
+    /**/
+
+    ViewBag.Title = "Employee Information";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="box">
+    <div class="box-header">
+        <h3 class="box-title">Employee Information</h3>
+    </div>
+    <div class="box-body">
+        <button type="button" class="btn btn-primary" onclick="location.href = '/EmployeeInfo/Create'">New</button>
+
+        <br>
+        <br>
+
+        <table class="table" id="employeeinfo">
+            <thead>
+
+                <tr>
+
+
+                    <th>
+                        @Html.DisplayNameFor(model => model.Name)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.FatherName)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.CNIC)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.MobileTel)
+                    </th>
+
+                    <th></th>
+                </tr>
+            </thead>
+
+            <tfoot>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Name)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.FatherName)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.CNIC)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.MobileTel)
+                    </th>
+
+                    <th></th>
+                </tr>
+            </tfoot>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr id="@item.EmployeeID">
+
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.FatherName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.CNIC)
+                        </td>
+
+                        <td>
+                            @Html.DisplayFor(modelItem => item.MobileTel)
+                        </td>
+
+                        <td>
+                            <button type="button" class="btn btn-primary" onclick="location.href='/EmployeeInfo/Edit/@item.EmployeeID'">Edit</button>
+                            <button type="button" class="btn btn-primary" id="@item.EmployeeID" onclick="DeleteButtonclicked(this)">Delete</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        // $.noConflict();
+        $("#employeeinfo").DataTable();
+
+    });
+
+    function DeleteButtonclicked(object) {
+
+
+        bootbox.confirm({
+            size: "small",
+            message: "Are you sure to delete the selected record?",
+            callback: function (result) {
+
+                if (result == true) {
+                    jQuery.ajax({
+                        url: '/EmployeeInfo/Delete',
+                        type: 'POST',
+                        dataType: 'json',
+                        data: { id: object.id },
+                        success: function () {
+
+                            $("#" + object.id).remove();
+                        },
+                        error: function () {
+                            alert('error');
+                        }
+                    })
+                }
+                else {
+                }
+            }
+        })
+    }
+</script>

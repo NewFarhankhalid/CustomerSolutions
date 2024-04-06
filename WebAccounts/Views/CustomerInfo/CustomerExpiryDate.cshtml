@@ -1,0 +1,270 @@
+﻿
+@model System.Data.DataTable
+@{
+    ViewBag.Title = "Change Price";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    #loading-div-background {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        background: black;
+        width: 100%;
+        height: 100%;
+    }
+
+    #loading-div {
+        width: 300px;
+        height: 200px;
+        background-color: #0c0b0b;
+        text-align: center;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        margin-left: -150px;
+        margin-top: -100px;
+    }
+
+    .box-title {
+        margin: 0px;
+    }
+</style>
+<div class="box box-primary">
+    <div class="box-body">
+        <div class="row">
+            <div class="col-md-2">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <label for="StartDate">Customer</label>
+                        @Html.DropDownList("CustomerID", (SelectList)ViewBag.Customer, "Select Customer", htmlAttributes: new { @class = "form-control Select2" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label for="StartDate">City</label>
+                    @Html.DropDownList("City", (SelectList)ViewBag.City, "All City", htmlAttributes: new { @class = "form-control Select2" })
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <label for="StartDate">Type</label>
+                        @Html.DropDownList("Type", (SelectList)ViewBag.Type, "All Type", htmlAttributes: new { @class = "form-control Select2" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label>Date From:</label>
+                    <div class="input-group date">
+                        <div class="input-group-addon">
+                            <i class="fa fa-calendar"></i>
+                        </div>
+                        <input type="text" class="form-control pull-right datepicker" id="FromDate" value="@ViewBag.FromDate" data-dateformat="mm/dd/yy" />
+                    </div>
+                    <!-- /.input group -->
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label>Date To:</label>
+                    <div class="input-group date">
+                        <div class="input-group-addon">
+                            <i class="fa fa-calendar"></i>
+                        </div>
+                        <input type="text" class="form-control pull-right datepicker" id="ToDate" value="@ViewBag.ToDate" data-dateformat="mm/dd/yy" />
+                    </div>
+                    <!-- /.input group -->
+                </div>
+            </div>
+            <div class="col-md-1">
+                <input type="button" value="Filter" onclick="GetSearch()" style="margin-top:25px" class="btn btn-primary form-control" />
+            </div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Expiry Date:</label>
+                        <div class="input-group date">
+                            <div class="input-group-addon">
+                                <i class="fa fa-calendar"></i>
+                            </div>
+                            <input type="text" class="form-control pull-right datepicker" id="ExpiryDate" value="@ViewBag.ExpiryDate" data-dateformat="mm/dd/yy" />
+                        </div>
+                        <!-- /.input group -->
+                    </div>
+                </div>
+                <div class="col-md-1">
+                    <input type="button" value="Save" onclick="Save()" style="margin-top:25px" class="btn btn-primary form-control" />
+                </div>
+                <div class="col-md-7">
+                </div>
+                <div class="col-md-1">
+                    <button class="btn btn-warning pull-right" onclick="location.href='/Home/Index'"> <i class="fa fa-arrow-left"></i> Back</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <br>
+</div>
+<div class="box box-primary">
+    <div class="box-header">
+        <h2 class="box-title">Set Expiry Date </h2>
+        <div class="pull-right">
+
+        </div>
+    </div>
+    <div class="box-body">
+        <br>
+        <br>
+        <div class="row">
+            <div class="col-md-12 scrollit">
+
+                <table class="table table-bordered table-condensed" style="text-align:center" id="ChangeExpiryDate">
+                    <thead>
+                        <tr>
+                            <td style="display:none">Customer ID</td>
+                            <th class="col-md-3 text-center">Company Name</th>
+                            <th class="col-md-2 text-center">Type</th>
+                            <th class="col-md-2 text-center">City</th>
+                            <th class="col-md-2 text-center">Expiry Date</th>
+                            <th class="col-md-1 text-center">Inactive</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (System.Data.DataRow dr in Model.Rows)
+                        {
+                            <tr id="@dr["CustomerID"]">
+                                <td style="display:none">@dr["CustomerID"]</td>
+                                <td class="col-md-3">@dr["CustomerCompanyTitle"]</td>
+                                @if (int.Parse(dr["PaymentType"].ToString()) == 1)
+                                {
+                                    <td class="col-md-2">Yearly</td>
+                                }
+                                @if (int.Parse(dr["PaymentType"].ToString()) == 2)
+                                {
+                                    <td class="col-md-2">Quartely</td>
+                                }
+                                @if (int.Parse(dr["PaymentType"].ToString()) == 3)
+                                {
+                                    <td class="col-md-2">Monthly</td>
+                                }
+                                <td class="col-md-2">@dr["CityName"]</td>
+                                <td class="col-md-2">@(DateTime.Parse(dr["ExpiryDate"].ToString()).ToString("MM/dd/yyyy"))</td>
+                                @if (dr["Inactive"] != DBNull.Value)
+                                {
+                                    if (bool.Parse(dr["Inactive"].ToString()) == false)
+                                    {
+                                        <td class="col-md-1"><input type="checkbox" id="Inactive"></td>
+                                    }
+                                    if (bool.Parse(dr["Inactive"].ToString()) == true)
+                                    {
+                                        <td class="col-md-1"><input type="checkbox" checked="checked" id="Inactive"></td>
+                                    }
+                                }
+                                else
+                                {
+                                    <td class="col-md-1"><input type="checkbox" checked="checked" id="Inactive"></td>
+                                }
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $('#FromDate').datepicker({
+        autoclose: true,
+        forceParse: false,
+    });
+    $("#FromDate").val('@ViewBag.FromDate.ToString("MM/dd/yyyy")');
+    $('#ToDate').datepicker({
+        autoclose: true,
+        forceParse: false,
+    });
+    $("#ToDate").val('@ViewBag.ToDate.ToString("MM/dd/yyyy")');
+    $('#ExpiryDate').datepicker({
+        autoclose: true,
+        forceParse: false,
+    });
+    $("#ExpiryDate").val('@ViewBag.ExpiryDate.ToString("MM/dd/yyyy")');
+
+    function GetSearch() {
+        location.href = '@Url.Action("CustomerExpiryDate", "CustomerInfo")?CustomerID=' + $("#CustomerID").val() + "&City=" + $("#City").val()
+            + "&Type=" + $("#Type").val() + "&FromDate=" + $("#FromDate").val() + "&ToDate=" + $("#ToDate").val();
+    }
+    $(document).ready(function () {
+        const urlp = new URLSearchParams(window.location.search);
+        var usr = decodeURIComponent(urlp.get('CustomerID'));
+        if (typeof usr != 'undefined') {
+            $('#CustomerID').val(usr);
+        }
+        const City = decodeURIComponent(urlp.get('City'));
+        if (typeof City != 'undefined') {
+            $('#City').val(City);
+        }
+        const Type = decodeURIComponent(urlp.get('Type'));
+        if (typeof Type != 'undefined') {
+            $('#Type').val(Type);
+        }
+        const FromDate = decodeURIComponent(urlp.get('FromDate'));
+        if (typeof FromDate != 'undefined') {
+            $('#FromDate').val(FromDate);
+        }
+        const ToDate = decodeURIComponent(urlp.get('ToDate'));
+        if (typeof ToDate != 'undefined') {
+            $('#ToDate').val(ToDate);
+        }
+        if (urlp == "") {
+            $('#CustomerID').val("");
+            $('#City').val("");
+            $('#Type').val("");
+            $('#FromDate').val("");
+            $('#ToDate').val("");
+        }
+    });
+    function Save() {
+        var lstChangeExpiryDate = new Array();
+        var rowCount = $('#ChangeExpiryDate tr tbody').length;
+        if (rowCount < 0) {
+            bootbox.alert("There is No Product In th Table");
+            return;
+        }
+        $("#ChangeExpiryDate TBODY TR").each(function () {
+            var ChangeExpiryDate = {};
+            ChangeExpiryDate.CustomerID = $(this).children("TD").eq(0).html();
+            var value = $(this).find("td:eq(5) input[type='checkbox']").is(":checked");
+            if (value == true) {
+                ChangeExpiryDate.Inactive = true;  // it is checked
+            }
+            else {
+                ChangeExpiryDate.Inactive = false;  // it is checked
+            }
+            lstChangeExpiryDate.push(ChangeExpiryDate);
+        });
+        var ExpiryDate = $("#ExpiryDate").val();
+        $.ajax({
+            type: "POST",
+            url: "/CustomerInfo/SaveChangeExpiryDate",
+            data: JSON.stringify({ lstChangeExpiryDate, ExpiryDate }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (r) {
+                window.location.reload();
+            },
+            error: function (e) {
+                alert("error " + e);
+            }
+        });
+    }
+
+</script>

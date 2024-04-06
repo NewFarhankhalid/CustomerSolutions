@@ -1,0 +1,459 @@
+﻿
+@model Installments.Models.NewProblemStatement
+
+
+@{
+    ViewBag.Title = "Problem Solutions";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    #output {
+        border-radius: 5px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+        #output:hover {
+            opacity: 0.7;
+        }
+
+    /* The Modal (background) */
+    .modal {
+        display: none; /* Hidden by default */
+        position: fixed; /* Stay in place */
+        z-index: 1; /* Sit on top */
+        padding-top: 100px; /* Location of the box */
+        left: 170px;
+        top: 0;
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgb(255,255,255); /* Fallback color */
+        background-color: #f1f1f1; /* Black w/ opacity */
+    }
+
+    /* Modal Content (image) */
+    .modal-content {
+        margin: auto;
+        display: block;
+        width: 100%;
+        max-width: 1000px;
+    }
+
+    /* Caption of Modal Image */
+    #caption {
+        margin: auto;
+        display: block;
+        width: 80%;
+        max-width: 700px;
+        text-align: center;
+        color: #ccc;
+        padding: 10px 0;
+        height: 150px;
+    }
+
+    /* Add Animation */
+    .modal-content, #caption {
+        -webkit-animation-name: zoom;
+        -webkit-animation-duration: 0.6s;
+        animation-name: zoom;
+        animation-duration: 0.6s;
+    }
+
+    .close {
+        position: absolute;
+        top: 80px;
+        right: 35px;
+        color: black;
+        font-size: 40px;
+        font-weight: bold;
+        transition: 0.3s;
+    }
+
+        .close:hover,
+        .close:focus {
+            color: #bbb;
+            text-decoration: none;
+            cursor: pointer;
+        }
+</style>
+
+
+@Html.AntiForgeryToken()
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-primary">
+            <div class="box-header">
+                <h2 class="box-title text-center text-green">
+                    Problem Statement Information
+                </h2>
+                <button class="btn btn-success  pull-right" style="margin-left:10px;" onclick="myFunction('printable')">Print <i class="fa fa-print"></i></button>
+                @*<button class="btn btn-danger pull-right" onclick="DeleteButtonclicked()" style="margin-left:10px;">Delete <i class="fa fa-trash"></i></button>*@
+                @*<a href="/NewProblemStatement/Edit/@ViewBag.ProblemStatementID" class="btn btn-success pull-right" style="margin-left:10px;">Edit <i class="fa fa-edit"></i></a>*@
+                <button type="button" style="margin:3px;float:right;" class="btn btn-sm btn-primary btn-flat pull-right " onclick="location.href='@Url.Action("Edit", "NewProblemStatement",new { Id=Model.ProblemStatementID})'"><i class="fa fa-edit" aria-hidden="true"></i> Edit</button>
+
+                @if (ViewBag.Solved == false)
+                {
+                    <a href="/NewProblemStatement/ProblemSolved/@ViewBag.partyid" class="btn btn-info pull-right" style="margin-left:10px;">Mark As Solved <i class="fa fa-edit"></i></a>
+                }
+                <a href="/NewProblemStatement/Create" class="btn btn-primary pull-right" style="margin-left:10px;">New <i class="fa fa-plus"></i></a>
+                <a href="/NewProblemStatement/Index" class="btn btn-warning pull-right"><i class="fa fa-arrow-left"></i> Back</a>
+            </div>
+
+            <div class="box-body">
+                <h2 class="text-danger"><i class="fa fa-tag"></i> @Model.CustomerID - @Model.CustomerTitle</h2>
+                @*<h2 class="text-danger"><i class="fa fa-tag"></i>@ViewBag.CustomerName </h2>*@
+                <h3 class="text-primary">@ViewBag.Partytitle </h3>
+                <div class="form-horizontal">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="col-md-6">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                @Html.DisplayNameFor(model => model.ProblemTitle)
+                                            </th>
+                                            <th>
+                                                @Html.DisplayNameFor(model => model.Description)
+                                            </th>
+                                            <th>
+                                                @Html.DisplayName("More Images Path")
+                                            </th>
+                                            <th>
+                                                @Html.DisplayName("Work Category")
+                                            </th>
+                                            <th>
+                                                @Html.DisplayName("Assign To")
+                                            </th>
+                                            <th>
+                                                @Html.DisplayName("Work Priority")
+                                            </th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                @Html.DisplayFor(model => model.ProblemTitle)
+                                            </td>
+                                            <td>
+                                                <font>@Html.Raw(Model.Description)</font>
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(model => model.ProblemImagePath)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(model => model.WorkCategory)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(model => model.AssignToName)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(model => model.WorkPriorityName)
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-md-6">
+                                @{
+                                    if (Model.ProblemImage == null || Model.ProblemImage == "")
+                                    {
+                                        <img id="output" name="output" width="100" height="100" src="@Model.ProblemImage" alt="No Image Found" />
+                                    }
+                                    else
+                                    {
+                                        <img id="output" name="output" width="100" height="100" src="@Url.Content(Model.ProblemImage)" />
+                                    }
+                                }
+                            </div>
+                            <div id="myModal" class="modal">
+                                <span class="close">&times;</span>
+                                <img class="modal-content" id="img01">
+                                <div id="caption"></div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<br />
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-success">
+            <table class="table table-bordered" id="tblFormName">
+                <thead>
+                    <tr>
+                        <th style="display:none">Form ID</th>
+                        <th class="col-md-4">Form Title</th>
+                        <th class="col-md-5">Description</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (Installments.Models.FormName variant in Model.lstFormName)
+                    {
+                        <tr>
+                            <td style="display:none">@variant.FormID</td>
+                            <td>@variant.FormTitle</td>
+                            <td>@Html.Raw(variant.FormDescription)</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div id="printable" class="box box-danger" style="display:none;">
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-primary">
+                <div class="box-header">
+                    <h2 class="box-title text-center text-green">
+                        Problem Statement Information
+                    </h2>
+                </div>
+
+                <div class="box-body">
+                    <h2 class="text-danger"><i class="fa fa-tag"></i>@ViewBag.CustomerName </h2>
+                    <h3 class="text-primary">@ViewBag.Partytitle </h3>
+                    <div class="form-horizontal">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="col-md-6">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>
+                                                    @Html.DisplayNameFor(model => model.ProblemTitle)
+                                                </th>
+                                                <th>
+                                                    @Html.DisplayNameFor(model => model.Description)
+                                                </th>
+                                                <th>
+                                                    @Html.DisplayName("More Images Path")
+                                                </th>
+                                                <th>
+                                                    @Html.DisplayName("Work Category")
+                                                </th>
+                                                <th>
+                                                    @Html.DisplayName("Assign To")
+                                                </th>
+                                                <th>
+                                                    @Html.DisplayName("Work Priority")
+                                                </th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    @Html.DisplayFor(model => model.ProblemTitle)
+                                                </td>
+                                                <td>
+                                                    <font>@Html.Raw(Model.Description)</font>
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(model => model.ProblemImagePath)
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(model => model.WorkCategory)
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(model => model.AssignTo)
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(model => model.WorkPriority)
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="col-md-6">
+                                    @{
+                                        if (Model.ProblemImage == null || Model.ProblemImage == "")
+                                        {
+                                            <img id="output" name="output" width="100" height="100" src="@Model.ProblemImage" alt="No Image Found" />
+                                        }
+                                        else
+                                        {
+                                            <img id="output" name="output" width="100" height="100" src="@Url.Content(Model.ProblemImage)" />
+                                        }
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-success">
+                <table class="table table-bordered" id="tblFormName">
+                    <thead>
+                        <tr>
+                            <th style="display:none">Form ID</th>
+                            <th class="col-md-4">Form Title</th>
+                            <th class="col-md-5">Description</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (Installments.Models.FormName variant in Model.lstFormName)
+                        {
+                            <tr>
+                                <td style="display:none">@variant.FormID</td>
+                                <td>@variant.FormTitle</td>
+                                <td>@variant.FormDescription</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col-md-12">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="box box-primary">
+                <div class="box-header">
+                </div>
+                <div class="box-body">
+                    <table class="table table-bordered" id="tblOperatorInfo">
+                        <thead>
+                            <tr>
+                                <th class="col-md-3">Operator Name</th>
+                                <th class="col-md-3">Phone No</th>
+                                <th class="col-md-3">Designation</th>
+                                <th class="col-md-3">IsContactPerson</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (Installments.Models.OperatorDetail variant in Model.lstOperatorDetail)
+                            { 
+                                    <tr>
+                                        <td>@variant.OperatorName</td>
+                                        <td>@variant.OperatorPhone</td>
+                                        <td>@variant.Designation</td>
+                                        <td>@variant.IsContactPerson</td>
+                                    </tr>                                                         
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+<style>
+    .col-md-2 {
+        max-width: 100%;
+    }
+</style>
+
+
+
+<script>
+    $(document).keyup(function (e) {
+        if (e.which === 27) {
+            var modal = document.getElementById("myModal");
+            modal.style.display = "none";
+        }
+    });
+    var modal = document.getElementById("myModal");
+    // Get the image and insert it inside the modal - use its "alt" text as a caption
+    var img = document.getElementById("output");
+    var modalImg = document.getElementById("img01");
+    var captionText = document.getElementById("caption");
+    img.onclick = function () {
+        modal.style.display = "block";
+        modalImg.src = this.src;
+        captionText.innerHTML = this.alt;
+    }
+    var span = document.getElementsByClassName("close")[0];
+    span.onclick = function () {
+        modal.style.display = "none";
+    }
+
+    var Category = '@ViewBag.ProblemImage';
+    var output = $('#output').attr('src');
+
+    function myFunction(el) {
+        var getelement = document.getElementById(el).innerHTML;
+        document.body.innerHTML = getelement;
+        window.print();
+        window.location.reload();
+    }
+    @*function DeleteButtonclicked(object) {
+        bootbox.confirm({
+            size: "small",
+            message: "Are you sure to delete the selected record?",
+            callback: function (result) {
+                if (result == true) {
+                    jQuery.ajax({
+                        url: '/NewProblemStatement/Delete',
+                        type: 'POST',
+                        dataType: 'json',
+                        data: { id: @Model.ProblemStatementID },
+                        success: function () {
+                            location.href = "/NewProblemStatement/";
+                        },
+                        error: function () {
+                            alert('error');
+                        }
+                    })
+                }
+                else {
+                }
+            }
+        })
+    }*@
+
+   function DeleteButtonclicked() {
+       var idToDelete = @Model.ProblemStatementID;
+       console.log("ID to delete:", idToDelete);
+    bootbox.confirm({
+        size: "small",
+        message: "Are you sure you want to delete the selected record?",
+        callback: function (result) {
+            if (result) {
+                jQuery.ajax({
+                    url: '/NewProblemStatement/Delete',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: { id: idToDelete },
+                    success: function () {
+                        location.href = "/NewProblemStatement/";
+                    },
+                    error: function () {
+                        alert('An error occurred while deleting the record.');
+                    }
+                });
+            }
+        }
+    });
+}
+
+
+</script>

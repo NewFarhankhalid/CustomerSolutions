@@ -1,0 +1,165 @@
+﻿
+@model System.Data.DataTable
+@{
+    ViewBag.Title = "MassDiscount";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="box box-primary">
+
+    <div class="box-header">
+        <h2 class="box-title">Product Availability</h2>
+    </div>
+    <div class="box-body">
+        <div class="row">
+            <div class="col-md-1 ">
+                <input type="button" class="btn btn-warning" value="Back" onclick="back()" />
+            </div>
+            <div class="col-md-1 pull-right">
+                <input type="button" class="btn btn-primary" value="Save" onclick="Save()">
+            </div>
+        </div>
+        <br>
+        <br>
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table table-bordered table-condensed" id="ProductDiscountPrice">
+                    <thead>
+                        <tr>
+                            <th style="display:none">ProductID</th>
+                            <th class="col-md-4 text-center">Product Code & Title</th>
+                            <th class="col-md-2 text-center">Product Priority</th>
+                            <th class="col-md-2 text-center"><input type="checkbox" id="allowedmaser">Available</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (System.Data.DataRow dr in Model.Rows)
+                        {
+                        <tr id="@dr["ProductID"]">
+                            <td style="display:none" id="ProductID">@dr["ProductID"]</td>
+                            <td class="col-md-4 text-center">@(dr["ProductCode"] + "-" + dr["ProductName"])</td>
+                            @{
+                                if (dr["ProductPriority"] == null)
+                                {
+                                    <td class="col-md-2 text-center"><input type="number" id="Available" class="text-center" /></td>
+
+                                }
+                                else
+                                {
+                                    <td class="col-md-2 text-center"><input type="number" id="Available" class="text-center" value="@dr["ProductPriority"]" /></td>
+                                }
+                            }
+
+                            @{
+                                if (dr["Available"] == DBNull.Value)
+                                {
+                                    <td class="col-md-2 text-center">
+                                        <input type="checkbox" id="Available" value="0" />
+                                    </td>
+                                }
+                                else
+                                {
+                                    if (int.Parse(dr["Available"].ToString()) == 1)
+                                    {
+                                        <td class="col-md-2 text-center">
+                                            <input type="checkbox" checked id="Available" value="1" />
+                                        </td>
+
+                                    }
+                                    else
+                                    {
+                                        <td class="col-md-2 text-center">
+                                            <input type="checkbox" id="Available" value="0" />
+                                        </td>
+                                    }
+                                }
+
+
+                            }
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function(){
+        $('.Dtp').datepicker({
+            autoclose: true
+        });
+    });
+
+     function back() {
+        window.location.href = "@Url.Action("Index", "ProductInfo")";
+    }
+    $("#allowedmaser").change(function () {
+        if (this.checked) {
+            CheckboxesinThisColumn(3);
+        }
+        else {
+            UnCheckboxesinThisColumn(3);
+        }
+    });
+
+
+    function CheckboxesinThisColumn(index) {
+        $("#ProductDiscountPrice TBODY TR").each(function () {
+            $(this).children("TD").eq(index).find("input[type='checkbox']").prop("checked", true);
+        });
+    }
+    function UnCheckboxesinThisColumn(index) {
+        $("#ProductDiscountPrice TBODY TR").each(function () {
+            $(this).children("TD").eq(index).find("input[type='checkbox']").prop("checked", false);
+        });
+    }
+
+    //$('#Available').on('change', function () {
+    //    this.value = this.checked ? 1 : 0;
+    //    alert(this.value);
+    //}).change();
+
+
+    function Save() {
+
+        var StockAdjustmentID = 0;
+        var lstStockAdjustment = new Array();
+        $("#ProductDiscountPrice TBODY TR").each(function () {
+            var ProductOpeningStock = {};
+            ProductOpeningStock.StockAdjustmentID = 0;
+            ProductOpeningStock.ProductID = $(this).children("TD").eq(0).html();
+            ProductOpeningStock.ProductPriority = $(this).children("TD").eq(2).find('input[type=number]').val();
+            if ($(this).children("TD").eq(3).find('input[type=checkbox]').is(":checked")) {
+                ProductOpeningStock.Available = 1;
+            }
+            else {
+                ProductOpeningStock.Available = 0;
+            }     
+    ProductOpeningStock.Remarks = "";
+            lstStockAdjustment.push(ProductOpeningStock);
+        });
+
+
+        
+            $.ajax({
+            type: "POST",
+                url: "/ProductInfo/SaveMassAvailable",
+                data: JSON.stringify({ lstStockAdjustment }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (r) {
+                bootbox.alert("Posted / Updated");
+                window.location.href = "@Url.Action("Index", "ProductInfo")";
+            },
+            error: function (e) {
+                alert("Error in Updating" + e);
+
+            }
+            });
+    }
+</script>
+
+
+

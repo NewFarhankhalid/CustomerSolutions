@@ -1,0 +1,193 @@
+﻿
+@model IEnumerable<Installments.Models.CustomerInfo>
+
+@{
+    ViewBag.Title = "Customer Information";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@*<div class="box">
+    <div class="box-header">
+        <h3 class="box-title">Customer Information</h3>
+
+    </div>*@
+
+    <div class="box">
+        <div class="box-header" style="text-align: center;">
+            <h3 class="box-title" style="font-weight: bold;">Customer Information</h3>
+        </div>
+    </div>
+    <div class="box-body">
+
+        <button type="button" class="btn btn-success" onclick="location.href = '/CustomerInfo/Create'">New</button>
+
+        <br>
+        <br>
+
+        <table class="table" id="Customerinfo">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.SystemCustomerID)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.OwnerName)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.CustomerCompanytitle)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.CityName)
+                    </th>
+
+                    <th>
+                        @Html.DisplayNameFor(model => model.Persontocontact)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.contactno)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.LegalUser)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.InActive)
+                    </th>
+
+                    <th></th>
+                </tr>
+            </thead>
+            <tfoot>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.SystemCustomerID)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.OwnerName)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.CustomerCompanytitle)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.CityName)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Persontocontact)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.contactno)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.LegalUser)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.InActive)
+                    </th>
+                    <th></th>
+                </tr>
+            </tfoot>
+
+            <tbody>
+
+                @foreach (var item in Model)
+                {
+                    <tr id="@item.CustomerID">
+                        <td>
+                            @Html.DisplayFor(modelItem => item.SystemCustomerID)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.OwnerName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.CustomerCompanytitle)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.CityName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Persontocontact)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.contactno)
+                        </td>
+                        <td>
+                            @if (item.LegalUser == false)
+                            {
+                                <span>No</span>
+                            }
+                            else
+                            {
+                                <strong>Yes</strong>
+                            }
+                        </td>
+                        <td>
+                            @if (item.InActive == false)
+                            {
+                                <span>No</span>
+                            }
+                            else
+                            {
+                                <strong>Yes</strong>
+                            }
+
+                        </td>
+
+                        <td>
+
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-primary" onclick="location.href='/CustomerInfo/CustomerInformation/@item.CustomerID'">View</button>
+                                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                                    <span class="caret"></span>
+                                    <span class="sr-only">Toggle Dropdown</span>
+                                </button>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li> <a href='/CustomerInfo/Edit/@item.CustomerID'>Edit</a>
+                                    <li><a href='javascript:;' onclick='DeleteButtonclicked(this);' id="@item.CustomerID"> Delete</a>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        // $.noConflict();
+        $("#Customerinfo").DataTable();
+
+    });
+
+    function DeleteButtonclicked(object) {
+
+
+        bootbox.confirm({
+            size: "small",
+            message: "Are you sure to delete the selected record?",
+            callback: function (result) {
+                if (result == true) {
+                    jQuery.ajax({
+                        url: '/CustomerInfo/Delete',
+                        type: 'POST',
+                        dataType: 'json',
+                        data: { id: object.id },
+                        success: function (r) {
+                            if (r == "true") {
+                                $("#" + object.id).remove();
+                            }
+                            else {
+                                bootbox.alert("" + r);
+                            }
+                        },
+                        error: function () {
+                            alert('error');
+                        }
+                    })
+                }
+                else {
+                }
+            }
+        })
+    }
+</script>

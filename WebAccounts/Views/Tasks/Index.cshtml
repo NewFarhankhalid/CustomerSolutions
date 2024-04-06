@@ -1,0 +1,105 @@
+﻿
+@model IEnumerable<Installments.Models.NewProblemStatement>
+
+@{
+    ViewBag.Title = "Problem Statement";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="box">
+    <div class="box-header">
+        <div class="box-header" style="text-align: center;">
+            <h3 class="box-title" style="font-weight: bold;">Tasks</h3>
+        </div>
+    </div>
+    <div class="box-body">
+        @*<button type="button" class="btn btn-primary" onclick="location.href = '/NewProblemStatement/Create'">New</button>*@
+
+        <br>
+        <br>
+        <table class="table table-striped  table-hover" id="categoryinfo">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.ProblemTitle)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.PromiseDate)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.CustomerTitle)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.WorkPriority)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tfoot>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.ProblemTitle)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.PromiseDate)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.CustomerTitle)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.WorkPriority)
+                    </th>
+                    <th></th>
+                </tr>
+            </tfoot>
+            <tbody>
+
+                @foreach (var item in Model)
+                {
+                    <tr id="@item.ProblemStatementID">
+
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ProblemTitle)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.PromiseDate)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.CustomerTitle)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.WorkPriorityName)
+                        </td>
+
+                        <td>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-primary" onclick="location.href = '/Tasks/TasksInformation/@item.ProblemStatementID'">View</button>
+
+                                @*<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">*@
+                                @*<span class="caret"></span>
+                    <span class="sr-only">Toggle Dropdown</span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                    @if (item.Solved == false)
+                    {
+                        <li> <a href='/NewProblemStatement/ProblemSolved/@item.ProblemStatementID'>Mark As Solved</a></li>
+                    }
+                    <li> <a href='/NewProblemStatement/Edit/@item.ProblemStatementID'>Edit</a></li>
+                    <li><a href='javascript:;' onclick='DeleteButtonclicked(this);' id="@item.ProblemStatementID"> Delete</a></li>
+                </ul>*@
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $("#categoryinfo").DataTable();
+    });
+
+    
+</script>
+

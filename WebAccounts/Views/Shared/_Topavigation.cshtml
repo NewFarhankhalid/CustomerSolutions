@@ -1,0 +1,32 @@
+<body class="hold-transition skin-blue layout-top-nav">
+  
+  <header class="main-header">
+    <nav class="navbar navbar-static-top" style="margin-left:0px">
+
+      <ul class="nav navbar-nav">
+        <li class="" id="AccountConfiguration"><a href="/AccountConfiguration/Index">Account Configuration<span class="sr-only">(current)</span></a></li>
+
+        <li id="Reports"><a href="/Reports/SaleInvoiceSettings">Sale Slip Configuration<span class="sr-only">(current)</span></a></li>
+
+        <li id="CompanyInformation"><a href="/CompanyInformation/Create">Company Information<span class="sr-only">(current)</span></a></li>
+
+        <li id="AccountConfigurationAdminSettings"><a href="/AccountConfiguration/AdminSettings">Administratives<span class="sr-only">(current)</span></a></li>
+        <li id="AccountConfigurationUploadProductFile"><a href="/AccountConfiguration/UploadProductFile">Upload Data<span class="sr-only">(current)</span></a></li>
+    </ul>
+    </nav>
+  </header>
+</body>
+<script>
+  if("@ViewContext.RouteData.Values["action"].ToString()"=="AdminSettings")
+  {
+   $("#AccountConfigurationAdminSettings").addClass("active");
+  }
+  else if ("@ViewContext.RouteData.Values["action"].ToString()"=="UploadProductFile")
+  {
+   $("#AccountConfigurationUploadProductFile").addClass("active");
+  }
+  else
+  {
+  $("#@ViewContext.RouteData.Values["controller"]").addClass("active");
+  }
+</script>

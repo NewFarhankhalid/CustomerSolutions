@@ -1,0 +1,174 @@
+﻿@model System.Data.DataTable
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="box  box-primary">
+    <div class="box-header">
+        <h3 class="box-title">Product Information</h3>
+    </div>
+    <div class="box-body">
+        <button type="button" class="btn btn-primary" onclick="location.href = '/ProductInfo/Create'">New</button>
+        <button type="button" class="btn btn-primary text-center" onclick="location.href = '/ProductInfo/MassAvailable'">Product Priority and Availability</button>
+        <button type="button" class="btn btn-success text-center pull-right" onclick="location.href='/ProductInfo/MassDiscount'">Mass Discount</button>
+        @*<button type="button" class="btn btn-success text-center pull-right" onclick="location.href='/ProductInfo/MassPriority'">Mass Priority</button>*@
+        <br>
+        <br>
+        <table class="table table-striped  table-hover" id="productinfo">
+            <thead>
+                <tr>
+                    <th class="col-md-1">
+                        Category
+                    </th>
+                    <th class="col-md-1">
+                        P. Code
+                    </th>
+                    <th class="col-md-2">
+                        Product Name
+                    </th>
+
+                    <th class="col-md-1">
+                        Sale Price
+                    </th>
+                    <th class="col-md-2">
+                        Pur. Price
+                    </th>
+
+
+
+                    <th class="col-md-2">Actions</th>
+                </tr>
+            </thead>
+            <tfoot>
+                <tr>
+                    <th class="col-md-1">
+                        Category
+                    </th>
+                    <th class="col-md-1">
+                        P. Code
+                    </th>
+                    <th class="col-md-3">
+                        Product Name
+                    </th>
+
+                    <th class="col-md-1">
+                        Sale Price
+                    </th>
+                    <th class="col-md-1">
+                        Pur. Price
+                    </th>
+
+                    <th class="col-md-2">Actions</th>
+                </tr>
+            </tfoot>
+            @*<tbody>
+                            @foreach (System.Data.DataRow item in Model.Rows)
+                            {
+                            <tr id="@item["ProductID"]">
+                                <td>
+                                   @item["CategoryTitle"]
+                                </td><td>
+                @item["ProductCode"]
+            </td>
+                                     <td>
+                                         @item["ProductName"]                         </td>
+
+                                     <td>
+                                         @item["Price"]
+                                     </td>
+                                     <td>
+                                         @item["PurchasePrice"]
+                                     </td>
+
+                                     <td>
+                                         @item["SaleAccountTitle"]
+                                     </td>
+
+                                     <td>
+                                         @item["PurchaseAccountTitle"]
+                                     </td>
+
+
+                                <td>
+                                    <button type="button" class="btn btn-primary" onclick="location.href='/ProductInfo/Edit/@item["ProductID"]'">Edit</button>
+                                    <button type="button" class="btn btn-primary" id="@item["ProductID"]" onclick="DeleteButtonclicked(this)">Delete</button>
+                                </td>
+                            </tr>
+                            }
+
+                        </tbody>*@
+        </table>
+    </div>
+    </div>
+        <script>
+            $(document).ready(function () {
+                // $.noConflict();
+
+                $.ajax({
+                    type: "Get",
+                    url: '/ProductInfo/GetAllProducts',
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (data) {
+                        
+                        $("#productinfo").DataTable(
+                            {
+
+                                data: data,
+
+                                    columns: [
+                                        { 'data': 'CategoryTitle' },
+                                        { 'data': 'ProductCode' },
+                                        { 'data': 'ProductName' },
+                                        { 'data': 'Price' },
+                                        { 'data': 'PurchasePrice' },
+                                        {
+                                            'data': 'ProductID',
+                                            'render': function (data, type, row, meta) {
+                                                return "<button type='button' class='btn btn-primary' id=" + data + " onclick='EditRecord(this)'>Edit</button><button type='button' class='btn btn-primary' id=" + data + " onclick='DeleteButtonclicked(this)'>Delete</button>";
+                                            }
+                                        }
+                                    ],
+
+                                    rowId: 'ProductID',
+                                    deferRender: true
+                                
+                            });
+                    }
+                });
+                
+            });
+            function EditRecord(object) {
+                window.location.href = "/ProductInfo/Edit/" + object.id;
+            }
+            function DeleteButtonclicked(object) {
+
+
+                bootbox.confirm({
+                    size: "small",
+                    message: "Are you sure to delete the selected record?",
+                    callback: function (result) {
+
+                        if (result == true) {
+                            jQuery.ajax({
+                                url: '/ProductInfo/Delete',
+                                type: 'POST',
+                                dataType: 'json',
+                                data: { id: object.id },
+                                success: function () {
+
+                                    $("#" + object.id).remove();
+                                },
+                                error: function () {
+                                    alert('error');
+                                }
+                            })
+                        }
+                        else {
+                        }
+                    }
+                })
+            }
+        </script>

@@ -1,0 +1,1804 @@
+﻿@model Installments.Models.ProductInfo
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@Html.AntiForgeryToken()
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-solid">
+
+            <div class="box-body">
+                <div class="col-md-10">
+                    @if (Model.ProductID == 0)
+                    {
+                        <h4 class="box-title text-danger">Product Info <small>(New)</small></h4>
+                    }
+                    else
+                    {
+                        <h4 class="box-title text-danger">Product Info <small>(Edit)</small></h4>
+                    }
+                </div>
+                <div class="col-md-2">
+                    @Html.ActionLink("Back to List", "Index")
+                    <input type="button" value="Save" onclick="SaveRecord()" class="btn btn-primary pull-right" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+
+        <div class="box box-primary">
+            <div class="box-header">
+                <h3 class="box-title">Basic Info </h3>
+            </div>
+            <div class="box-body">
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                @Html.HiddenFor(model => model.ProductID)
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-12">
+                                @Html.LabelFor(model => model.CatagoryID, htmlAttributes: new { @class = "control-label" })
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-11">
+                                @Html.DropDownListFor(model => model.CatagoryID, (SelectList)ViewBag.CatagoryList, "Select Catagory", htmlAttributes: new { @class = "form-control Select2", id = "ddlcatagoryinfo" })
+                                @Html.ValidationMessageFor(model => model.CatagoryID, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="col-md-1" style="padding-left:0px">
+                                <button class="btn btn-primary btn-flat btn-sm" data-toggle="modal" data-target="#myModal" value="Add Category" id="addcategory"><i class="fa fa-plus"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+
+
+                        @Html.LabelFor(model => model.ProductCode, htmlAttributes: new { @class = "control-label " })
+                        @Html.EditorFor(model => model.ProductCode, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.ProductCode, "", new { @class = "text-danger" })
+
+
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        @Html.LabelFor(model => model.ProductName, htmlAttributes: new { @class = "control-label " })
+                        @Html.EditorFor(model => model.ProductName, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.ProductName, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="row">
+
+                    <div class="col-md-12">
+                        @Html.LabelFor(model => model.AlternateTitle, htmlAttributes: new { @class = "control-label " })
+                        @Html.EditorFor(model => model.AlternateTitle, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.AlternateTitle, "", new { @class = "text-danger" })
+
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        @Html.LabelFor(model => model.Ampere, htmlAttributes: new { @class = "control-label " })
+                        @Html.EditorFor(model => model.Ampere, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Ampere, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label>Product Type</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                @Html.DropDownListFor(model => model.ProductType, (SelectList)ViewBag.ProductType, "Select Product Type", htmlAttributes: new { @class = "form-control Select2" })
+                                @Html.ValidationMessageFor(model => model.ProductType, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6" id="Dimensions">
+                        @Html.LabelFor(model => model.Dimension, htmlAttributes: new { @class = "control-label " })
+                        @Html.EditorFor(model => model.Dimension, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Dimension, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-6" id="Weights">
+                        @Html.LabelFor(model => model.Weight, htmlAttributes: new { @class = "control-label " })
+                        @Html.EditorFor(model => model.Weight, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Weight, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-6" id="NoofPlate">
+                        @Html.LabelFor(model => model.NoofPlates, htmlAttributes: new { @class = "control-label " })
+                        @Html.EditorFor(model => model.NoofPlates, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.NoofPlates, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="row" id="UPS">
+                    <div class="col-md-4">
+                        @Html.LabelFor(model => model.TotalCapacity, htmlAttributes: new { @class = "control-label " })
+                        @Html.EditorFor(model => model.TotalCapacity, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.TotalCapacity, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-4">
+                        @Html.LabelFor(model => model.SolarCapacity, htmlAttributes: new { @class = "control-label " })
+                        @Html.EditorFor(model => model.SolarCapacity, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.SolarCapacity, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-4">
+                        @Html.LabelFor(model => model.BatteryChargerCapacity, htmlAttributes: new { @class = "control-label " })
+                        @Html.EditorFor(model => model.BatteryChargerCapacity, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.BatteryChargerCapacity, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="row" id="SolarPanel">
+
+                    <div class="col-md-4">
+                        @Html.LabelFor(model => model.PMax, htmlAttributes: new { @class = "control-label " })
+                        @Html.EditorFor(model => model.PMax, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.PMax, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-4">
+                        @Html.LabelFor(model => model.VMax, htmlAttributes: new { @class = "control-label " })
+                        @Html.EditorFor(model => model.VMax, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.VMax, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-4">
+                        @Html.LabelFor(model => model.IMP, htmlAttributes: new { @class = "control-label " })
+                        @Html.EditorFor(model => model.IMP, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.IMP, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="row" id="SolarPanel1">
+
+                    <div class="col-md-4">
+                        @Html.LabelFor(model => model.ISC, htmlAttributes: new { @class = "control-label " })
+                        @Html.EditorFor(model => model.ISC, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.ISC, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-4">
+                        @Html.LabelFor(model => model.OCV, htmlAttributes: new { @class = "control-label " })
+                        @Html.EditorFor(model => model.OCV, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.OCV, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-4">
+                        @Html.LabelFor(model => model.MSV, htmlAttributes: new { @class = "control-label " })
+                        @Html.EditorFor(model => model.MSV, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.MSV, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="row" id="SolarPanel2">
+
+                    <div class="col-md-6">
+                        @Html.LabelFor(model => model.TemperatureOperatingfrom, htmlAttributes: new { @class = "control-label " })
+                        @Html.EditorFor(model => model.TemperatureOperatingfrom, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.TemperatureOperatingfrom, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-6">
+                        @Html.LabelFor(model => model.TemperatureOperatingTo, htmlAttributes: new { @class = "control-label " })
+                        @Html.EditorFor(model => model.TemperatureOperatingTo, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.TemperatureOperatingTo, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label>Default Variant</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-11">
+                                @Html.DropDownListFor(model => model.DefaultVariant, (SelectList)ViewBag.Variants, "Select Variant", htmlAttributes: new { @class = "form-control Select2" })
+                                @Html.ValidationMessageFor(model => model.DefaultVariant, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="col-md-1" style="padding-left:0px">
+                                <button class="btn btn-primary btn-flat btn-sm" data-toggle="modal" data-target="#mdlVariant" value="Add Category" id="addcategory"><i class="fa fa-plus"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                @*<div class="col-md-12">*@
+                <div class="row">
+                    <div class="col-md-12">
+                        <label>T and C</label>
+                        @*@Html.LabelFor(model => model.TandCID, htmlAttributes: new { @class = "control-label" })*@
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-11">
+                        @Html.DropDownListFor(model => model.TandCID, (SelectList)ViewBag.TandCInfo, "Select T & C", htmlAttributes: new
+                        {
+                            @class = "form-control Select2 ",
+                            id = "ddlTandCInfo"@*, multiple = "multiple"*@})
+                        @Html.ValidationMessageFor(model => model.TandCID, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-1" style="padding-left:0px">
+                        <button class="btn btn-primary btn-flat btn-sm" data-toggle="modal" data-target="#myTandCInfo" value="Add T & C" id="AddTandCInfo"><i class="fa fa-plus"></i></button>
+                    </div>
+                </div>
+                @*</div>*@
+            </div>
+
+
+            @*<div class="row">
+
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label>Color Detail</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-11">
+                            @Html.DropDownListFor(model => model.ColourID, (SelectList)ViewBag.Color, "Select Color", htmlAttributes: new { @class = "form-control Select2"})
+                            @Html.ValidationMessageFor(model => model.ColourID, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="col-md-1" style="padding-left:0px">
+                            <button class="btn btn-primary btn-flat btn-sm" data-toggle="modal" data-target="#mdlColor" value="Add Category" id="addcategory"><i class="fa fa-plus"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>*@
+
+            @*<div class="row">
+
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label>Size Detail</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-11">
+                            @Html.DropDownListFor(model => model.SizeID, (SelectList)ViewBag.Size, "Select Size", htmlAttributes: new { @class = "form-control Select2"  })
+                            @Html.ValidationMessageFor(model => model.SizeID, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="col-md-1" style="padding-left:0px">
+                            <button class="btn btn-primary btn-flat btn-sm" data-toggle="modal" data-target="#mdlSize" value="Add Category" id="addcategory"><i class="fa fa-plus"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>*@
+
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="col-md-4">
+                        <label>Sale Price</label>
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-money"></i></span>
+                            @Html.EditorFor(model => model.Price, new { htmlAttributes = new { @class = "form-control", type = "number", min = "0" } })
+                        </div>
+                        @Html.ValidationMessageFor(model => model.Price, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="col-md-4">
+                        @Html.LabelFor(model => model.PurchasePrice, htmlAttributes: new { @class = "control-label " })
+
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-money"></i></span>
+                            @Html.EditorFor(model => model.PurchasePrice, new { htmlAttributes = new { @class = "form-control", type = "number", min = "0" } })
+                        </div>
+                        @Html.ValidationMessageFor(model => model.PurchasePrice, "", new { @class = "text-danger" })
+
+
+                    </div>
+                    <div class="col-md-4">
+                        <label class="control-label">Discount in %</label>
+                        @*@Html.LabelFor(model => model.Discount, htmlAttributes: new { @class = "control-label " })*@
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-money"></i></span>
+                            @Html.EditorFor(model => model.Discount, new { htmlAttributes = new { @class = "form-control", type = "number", min = "0" } })
+                        </div>
+                        @Html.ValidationMessageFor(model => model.Discount, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+
+                <div class="col-md-12" style="padding-left:30px; padding-right:30px;">
+                    @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label " })
+
+                    @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control" } })
+
+                    @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6" style="padding-left:50px; padding-right:30px;">
+                    <div class="checkbox">
+                        @Html.CheckBoxFor(model => model.UPS) For UPS
+                    </div>
+                </div>
+                <div class="col-md-6" style="padding-right: 30px; padding-left: 30px;">
+                    <div class="checkbox">
+                        @Html.CheckBoxFor(model => model.InActive) Inactive
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        @*    <div class="box box-primary">
+            <div class="box-header">
+                <h3 class="box-title">Accounts Info</h3>
+            </div>
+            <div class="box-body">
+
+                <div class="row">
+
+                    <div class="col-md-12">
+                        @Html.LabelFor(model => model.SalesAccountID, htmlAttributes: new { @class = "control-label " })
+                        @Html.DropDownListFor(model => model.SalesAccountID, (SelectList)ViewBag.COA, "Select Account", htmlAttributes: new { @class = "form-control Select2" })
+                        @Html.ValidationMessageFor(model => model.SalesAccountID, "", new { @class = "text-danger" })
+
+                        <a href="/ChartofAccount/Create" target="_blank">Create Account</a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        @Html.LabelFor(model => model.PurchaseAccountID, htmlAttributes: new { @class = "control-label " })
+                        @Html.DropDownListFor(model => model.PurchaseAccountID, (SelectList)ViewBag.COA, "Select Account", htmlAttributes: new { @class = "form-control Select2" })
+                        @Html.ValidationMessageFor(model => model.PurchaseAccountID, "", new { @class = "text-danger" })
+                        <a href="/ChartofAccount/Create" target="_blank">Create Account</a>
+                    </div>
+                </div>
+
+
+
+
+
+            </div>
+        </div>
+
+
+        *@
+        <div class="col-md-12">
+            <div class="row">
+                <div class="box box-primary">
+                    <div class="box-header">
+                        <h3 class="box-title">Barcodes</h3>
+                    </div>
+                    <div class="box-body">
+
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                @Html.Label("Barcode", htmlAttributes: new { @class = "control-label " })
+                            </div>
+                        </div>
+                        <div class="row">
+
+                            <div class="col-md-6">
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-barcode"></i></span>
+
+                                    @Html.Editor("Barcode", new { htmlAttributes = new { @class = "form-control" } })
+                                </div>
+                            </div>
+
+                            <div class="col-md-2" style="padding-left:2px;">
+                                <button onclick="AddBarcode()" class="btn btn-primary btn-flat">Add Barcode</button>
+                            </div>
+                        </div>
+                        <br>
+                        <table class="table table-bordered" id="tblBarcode">
+                            <thead>
+                                <tr>
+                                    <th class="col-md-10">Barcode</th>
+                                    <th class="col-md-10">Qty</th>
+                                    <th class="col-md-2"><li class="fa fa-remove text-danger"></li></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (Installments.Models.ProductBarcodes barcode in Model.lstProductBarcodes)
+                                {
+                                    <tr>
+                                        <td>@barcode.Barcode</td>
+                                        <td><input type="number" value="@barcode.Qty" class="form-control" /> </td>
+                                        <td><li class='fa fa-remove text-danger' onclick='removebarcoderow(this)'></li></td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        @*<div class="col-md-12">
+            <div class="row">
+                <div class="box box-primary">
+                    <div class="box-header">
+                        <h3 class="box-title">Tags</h3>
+                    </div>
+                    <div class="box-body">
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                @Html.Label("Tags", htmlAttributes: new { @class = "control-label " })
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-9">
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-tags"></i></span>
+                                    @Html.DropDownList("Tags", (SelectList)ViewBag.Tags, htmlAttributes: new { @class = "form-control Select2" })
+                                </div>
+                                <a href="/TagsInfo/Create" target="_blank">Create Tags</a>
+                            </div>
+                            <div class="col-md-2" style="padding-left:2px;">
+                                <button onclick="AddTags()" class="btn btn-primary btn-flat">Add Tags</button>
+                            </div>
+                        </div>
+
+                        <table class="table table-bordered" id="tblTags">
+                            <thead>
+                                <tr>
+                                    <th style="display:none">TagID</th>
+                                    <th class="col-md-7">Tag Title</th>
+                                    <th class="col-md-4"><li class="fa fa-remove text-danger"></li></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (Installments.Models.ProductTagAssociation Tag in Model.lstproductTagAssociation)
+                                {
+                                    <tr>
+                                        <td style="display:none">@Tag.TagsID</td>
+                                        <td>@Tag.TagTitle</td>
+                                        <td><li class='fa fa-remove text-danger' onclick='removerow2(this)'></li></td>
+                                    </tr>
+                                }
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>*@
+
+    </div>
+
+    
+    <div class="col-md-6">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="box box-primary">
+                <div class="box-header">
+                    <h3 class="box-title">Image / Photo</h3>
+                </div>
+                <div class="box-body">
+                    <div class="col-md-3">
+                        @{
+                            if (Model.ProductImage == null || Model.ProductImage == "")
+                            {
+                                <img id="output" width="100" height="100" src="@Model.ProductImage" />
+                            }
+                            else
+                            {
+                                <img id="output" width="100" height="100" src="@Url.Content(Model.ProductImage)" />
+                            }
+                        }
+                        <form id="uploadform1">
+                            <input type="file" name="Imagefile" accept="image/*" onchange="loadFile(event)" id="imagefile">
+                        </form>
+                    </div>
+                    @*<div class="col-md-3">
+                        <img id="output2" width="100" height="100" src=" @Model.ProductImage" />
+                        <form id="uploadform2">
+                            <input type="file" name="imagefile2" accept="image/*" onchange="loadFile2(event)" id="imagefile2">
+                        </form>
+                    </div>
+                    <div class="col-md-3">
+                        <img id="output3" width="100" height="100" src=" @Model.ProductImage" />
+                        <form id="uploadform3">
+                            <input type="file" name="imagefile3" accept="image/*" onchange="loadFile3(event)" id="imagefile3">
+                        </form>
+                    </div>
+                    <div class="col-md-3">
+                        <img id="output4" width="100" height="100" src=" @Model.ProductImage" />
+                        <form id="uploadform4">
+                            <input type="file" name="imagefile4" accept="image/*" onchange="loadFile4(event)" id="imagefile4">
+                        </form>
+                    </div>*@
+
+
+
+                    <script>
+                        var loadFile = function (event) {
+                            var output = document.getElementById('output');
+                            output.src = URL.createObjectURL(event.target.files[0]);
+                            output.onload = function () {
+                                URL.revokeObjectURL(output.src) // free memory
+                            }
+                        };
+                        //var loadFile2 = function (event) {
+                        //    var output = document.getElementById('output2');
+                        //    output.src = URL.createObjectURL(event.target.files[0]);
+                        //    output.onload = function () {
+                        //        URL.revokeObjectURL(output.src) // free memory
+                        //    }
+                        //};
+                        //var loadFile3 = function (event) {
+                        //    var output = document.getElementById('output3');
+                        //    output.src = URL.createObjectURL(event.target.files[0]);
+                        //    output.onload = function () {
+                        //        URL.revokeObjectURL(output.src) // free memory
+                        //    }
+                        //};
+                        //var loadFile4 = function (event) {
+                        //    var output = document.getElementById('output4');
+                        //    output.src = URL.createObjectURL(event.target.files[0]);
+                        //    output.onload = function () {
+                        //        URL.revokeObjectURL(output.src) // free memory
+                        //    }
+                        //};
+                    </script>
+                </div>
+            </div>
+
+        </div>
+        </div>
+        <div class="col-md-12">
+            <div class="row">
+                <div class="box box-primary">
+                    <div class="box-header">
+                        <h3 class="box-title">Variants</h3>
+                    </div>
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                @Html.Label("Variants", htmlAttributes: new { @class = "control-label " })
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-9">
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-tags"></i></span>
+                                    @Html.DropDownList("Variants", (SelectList)ViewBag.Variants, htmlAttributes: new { @class = "form-control Select2" })
+                                </div>
+                                @*<div class="form-group">
+                                <div class="custom-control custom-checkbox">
+                                    <input class="custom-control-input" type="checkbox" id="customCheckbox1" value="option1">
+                                    <label for="customCheckbox1" class="custom-control-label">Red</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input class="custom-control-input" type="checkbox" id="customCheckbox2" checked value="option2">
+                                    <label for="customCheckbox2" class="custom-control-label">Blue</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input class="custom-control-input" type="checkbox" id="customCheckbox3" value="option3">
+                                    <label for="customCheckbox3" class="custom-control-label">Black</label>
+                                </div>
+                            </div>*@
+                                <a href="/VariantInfo/Create" target="_blank">Create Variant</a>
+                            </div>
+                            <div class="col-md-2" style="padding-left:2px;">
+                                <button onclick="AddVariant()" class="btn btn-primary btn-flat">Add Variant</button>
+                            </div>
+                        </div>
+                        <table class="table table-bordered" id="tblVariant">
+                            <thead>
+                                <tr>
+                                    <th style="display:none">VariantID</th>
+                                    <th class="col-md-7">Variant</th>
+                                    <th class="col-md-4">Measurement</th>
+                                    <th class="col-md-4"><li class="fa fa-remove text-danger"></li></th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (Installments.Models.ProductVariantAssociation variant in Model.lstProductVariantAssociation)
+                                {
+                                    <tr>
+                                        <td style="display:none">@variant.VariantId</td>
+                                        <td>@variant.VariantTitle</td>
+                                        <td><input value=' @variant.Measurement' id='" + variant + "' class='form-control text-center' type='number' /></td>
+                                        <td><li class='fa fa-remove text-danger' onclick='removerow(this)'></li></td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="row">
+                <div class="box box-primary">
+                    <div class="box-header">
+                        <h3 class="box-title">Tags</h3>
+                    </div>
+                    <div class="box-body">
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                @Html.Label("Tags", htmlAttributes: new { @class = "control-label " })
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-9">
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-tags"></i></span>
+                                    @Html.DropDownList("Tags", (SelectList)ViewBag.Tags, htmlAttributes: new { @class = "form-control Select2" })
+                                </div>
+                                <a href="/TagsInfo/Create" target="_blank">Create Tags</a>
+                            </div>
+                            <div class="col-md-2" style="padding-left:2px;">
+                                <button onclick="AddTags()" class="btn btn-primary btn-flat">Add Tags</button>
+                            </div>
+                        </div>
+
+                        <table class="table table-bordered" id="tblTags">
+                            <thead>
+                                <tr>
+                                    <th style="display:none">TagID</th>
+                                    <th class="col-md-7">Tag Title</th>
+                                    <th class="col-md-4"><li class="fa fa-remove text-danger"></li></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (Installments.Models.ProductTagAssociation Tag in Model.lstproductTagAssociation)
+                                {
+                                    <tr>
+                                        <td style="display:none">@Tag.TagsID</td>
+                                        <td>@Tag.TagTitle</td>
+                                        <td><li class='fa fa-remove text-danger' onclick='removerow2(this)'></li></td>
+                                    </tr>
+                                }
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!--<div class="row">
+        <div class="box box-primary">
+            <div class="box-header">
+                <h3 class="box-title">Color</h3>
+            </div>
+            <div class="box-body">
+
+
+                <div class="row">
+                    <div class="col-md-12">
+                        @Html.Label("Color", htmlAttributes: new { @class = "control-label " })
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-9">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-tags"></i></span>
+                            @Html.DropDownListFor(model => model.ColourID, (SelectList)ViewBag.Color, htmlAttributes: new { @class = "form-control Select2", multiple = "multiple", id = "ddlColor" })
+                            @Html.ValidationMessageFor(model => model.ColourID, "", new { @class = "text-danger" })
+                        </div>
+
+
+                        <a href="/ColourInfo/Create" target="_blank">Create Color</a>
+                    </div>-->
+        @*<div class="col-md-2" style="padding-left:2px;">
+            <button onclick="AddColor()" class="btn btn-primary btn-flat">Add Color</button>
+        </div>*@
+        <!--</div>-->
+        @* <table class="table table-bordered" id="tblColor">
+            <thead>
+                <tr>
+                    <th style="display:none">ColorID</th>
+                    <th class="col-md-7">Color</th>
+                    <th class="col-md-4">RGB Code</th>
+                    <th class="col-md-4"><li class="fa fa-remove text-danger"></li></th>
+
+                </tr>
+            </thead>
+            <tbody>
+                foreach (Installments.Models.ProductColorAssociation Colour in Model.lstProductColorAssociations)
+                {
+                    <tr>
+                        <td style="display:none">@Colour.ColorID</td>
+                        <td>@Colour.ColorTitle</td>
+                        <td><input value=' @Colour.RGBCode' id='" + Color + "' class='form-control text-center' type='text' /></td>
+                        <td><li class='fa fa-remove text-danger' onclick='removerow1(this)'></li></td>
+                    </tr>
+                }
+
+            </tbody>
+        </table>*@
+        <!--</div>
+        </div>
+    </div>-->
+        <!--<div class="row">
+        <div class="box box-primary">
+            <div class="box-header">
+                <h3 class="box-title">Size</h3>
+            </div>
+            <div class="box-body">
+
+                <div class="row">
+                    <div class="col-md-12">
+                        @Html.Label("Size", htmlAttributes: new { @class = "control-label " })
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-9">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-tags"></i></span>
+                            @Html.DropDownListFor(model => model.SizeID, (SelectList)ViewBag.Size, htmlAttributes: new { @class = "form-control Select2", id = "ddlSize", multiple = "multiple" })
+                            @Html.ValidationMessageFor(model => model.SizeID, "", new { @class = "text-danger" })
+                        </div>
+                        <a href="/SizeInfo/Create" target="_blank">Create Size</a>
+                    </div>-->
+        @*<div class="col-md-2" style="padding-left:2px;">
+            <button onclick="AddSize()" class="btn btn-primary btn-flat">Add Size</button>
+        </div>*@
+        <!--</div>-->
+        @*<table class="table table-bordered" id="tblSize">
+            <thead>
+                <tr>
+                    <th style="display:none">SizeID</th>
+                    <th class="col-md-7">Size</th>
+                    <th class="col-md-4"><li class="fa fa-remove text-danger"></li></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (Installments.Models.ProductSizeAssociation Size in Model.lstProductSizeAssociations)
+                {
+                    <tr>
+                        <td style="display:none">@Size.SizeID</td>
+                        <td>@Size.SizeTitle</td>
+                        <td><li class='fa fa-remove text-danger' onclick='removerow2(this)'></li></td>
+                    </tr>
+                }
+
+            </tbody>
+        </table>*@
+        <!--</div>
+        </div>
+    </div>-->
+
+
+    </div>
+
+
+
+        <div class="modal fade" id="mdlVariant" role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Add Variant</h4>
+                    </div>
+                    <div class="modal-body">
+                        <label>Variant Title</label>
+                        <input type="text" class="form-control" id="newvariant" />
+                        <span class="text-danger" style="display:none" id="newvariantwarning">Please enter variant Title</span>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" onclick="AddNewVariant()">Add Variant</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+        <div class="modal fade" id="mdlColor" role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Add Color</h4>
+                    </div>
+                    <div class="modal-body">
+                        <label>Color Title</label>
+                        <input type="text" class="form-control" id="newcolor" />
+                        <span class="text-danger" style="display:none" id="newcolorwarning">Please enter color Title</span>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" onclick="AddNewcolor()">Add Color</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="modal fade" id="mdlSize" role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Add Size</h4>
+                    </div>
+                    <div class="modal-body">
+                        <label>Size Title</label>
+                        <input type="text" class="form-control" id="newsize" />
+                        <span class="text-danger" style="display:none" id="newsizewarning">Please enter Size Title</span>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" onclick="AddNewSize()">Add Size</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="modal fade" id="mdlTag" role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Add Tag</h4>
+                    </div>
+                    <div class="modal-body">
+                        <label>Tag Title</label>
+                        <input type="text" class="form-control" id="newtag" />
+                        <span class="text-danger" style="display:none" id="newTagwarning">Please Enter Tag Title</span>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" onclick="AddNewTag()">Add Tag</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+
+
+        <div class="modal fade" id="myModal" role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Add Category</h4>
+                    </div>
+                    <div class="modal-body">
+                        <label>Category Title</label>
+                        <input type="text" class="form-control" id="newcategory" />
+                        <span class="text-danger" style="display:none" id="newcategorywarning">Please enter Category Title</span>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" onclick="AddCategory()">Add Category</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+
+        <div class="modal fade" id="myTandCInfo" role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Add T & C</h4>
+                    </div>
+                    <div class="modal-body">
+                        <label>Term Title</label>
+                        <input type="text" class="form-control" id="newTandCInfo" />
+                        <span class="text-danger" style="display:none" id="newTandCwarning">Please enter Tag Title</span>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" onclick="AddTandC()">Add T & C</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+<style>
+    .col-md-2 {
+        max-width: 100%;
+    }
+</style>
+
+@if (ViewBag.DefaultSalesAccount != null)
+{
+
+<script>
+    $(document).ready(function () {
+
+    $("#PurchaseAccountID").val(@ViewBag.DefaultPurchaseAccount);
+        $("#SalesAccountID").val(@ViewBag.DefaultSalesAccount);
+        $("#DefaultVariant").val(@Model.DefaultVariant);
+        $("#ColourID").val(@Model.ColourID);
+        $("#SizeID").val(@Model.SizeID);
+        $("#TagsID").val(@Model.TagsID);
+        });
+
+</script>
+
+}
+else
+{
+<script>
+    $(document).ready(function () {
+
+    $("#PurchaseAccountID").val(@(Model.PurchaseAccountID));
+$("#SalesAccountID").val(@(Model.SalesAccountID));
+        $("#ColourID").val(@Model.ColourID);
+        $("#SizeID").val(@Model.SizeID);
+        if ('@ViewBag.Status' == 'True') {
+            $("#TagsID").val(@Model.TagsID);
+            $("#DefaultVariant").val(@Model.DefaultVariant);
+            $("#ProductType").val(@Model.ProductType);
+        }
+
+    });
+
+</script>
+
+}
+<script>
+
+    $(document).ready(function () {
+        getdetail();
+        $("#Barcode").on('keyup', function (e) {
+            if (e.keyCode === 13) {
+
+                AddBarcode();
+            }
+        });
+    });
+    $("#Dimensions").hide();
+    $("#Weights").hide();
+    $("#NoofPlate").hide();
+    $("#UPS").hide();
+    $("#SolarPanel").hide();
+    $("#SolarPanel1").hide();
+    $("#SolarPanel2").hide();
+    var pimage = '@ViewBag.ProductImage';
+    var output = $('#output').attr('src');
+    $("#ProductType").on("change", function () {
+        getdetail();
+    });
+
+    function getdetail() {
+        var Type = $("#ProductType").val();
+        if (Type == 0 || Type == null || Type == "") {
+            $("#Dimensions").hide();
+            $("#Weights").hide();
+            $("#NoofPlate").hide();
+            $("#UPS").hide();
+            $("#SolarPanel").hide();
+            $("#SolarPanel1").hide();
+            $("#SolarPanel2").hide();
+
+        }
+        else {
+            if (Type == 1) {
+                $("#Dimensions").show();
+                $("#NoofPlate").show();
+                $("#Weights").hide();
+                $("#UPS").hide();
+                $("#SolarPanel").hide();
+                $("#SolarPanel1").hide();
+                $("#SolarPanel2").hide();
+            }
+            if (Type == 2) {
+                $("#Weights").show();
+                $("#Dimensions").show();
+                $("#UPS").show();
+                $("#NoofPlate").hide();
+                $("#SolarPanel").hide();
+                $("#SolarPanel1").hide();
+                $("#SolarPanel2").hide();
+            }
+            if (Type == 3) {
+                $("#Dimensions").show();
+                $("#Weights").show();
+                $("#SolarPanel").show();
+                $("#SolarPanel1").show();
+                $("#SolarPanel2").show();
+                $("#NoofPlate").hide();
+                $("#UPS").hide();
+            }
+        }
+    }
+
+    function AddVariant() {
+        var variant = $("#Variants").val();
+        if (variant == "" || variant == 0 || variant == null) {
+            bootbox.alert("Please select Variant from dropdown");
+            $("#Variant").focus();
+            return;
+        }
+        var exists = 0;
+        $("#tblVariant TBODY TR").each(function () {
+            if (variant == $(this).children("TD").eq(0).html()) {
+                exists = 1;
+                return false;
+            }
+        });
+        if (exists == 1) {
+            bootbox.alert("This Variant has already been added");
+            return false;
+        }
+        var varianttitle = $("#Variants option:selected").text();
+        var measurement = 1;
+        $.ajax({
+            type: "POST",
+            url: "/ProductInfo/GetVariantMeasurement",
+            data: JSON.stringify({ variantid: variant }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (r) {
+                measurement = r;
+            },
+            error: function (x, e) {
+                bootbox.alert("Error");
+            },
+            async: false
+        });
+        var rowstring = "<tr><td style='display:none'>" + variant + "</td><td>" + varianttitle + "</td><td><input value='" + measurement + "' id='" + variant + "' class='form-control text-center' type='number'/></td><td><li class='fa fa-remove text-danger' onclick='removerow(this)'></li></td></tr>";
+        $("#tblVariant").append(rowstring);
+    }
+
+
+    function AddColor() {
+        var color = $("#Colors").val();
+        if (color == "" || color == 0 || color == null) {
+            bootbox.alert("Please select Color from dropdown");
+            $("#Color").focus();
+            return;
+        }
+        var exists = 0;
+        $("#tblColor TBODY TR").each(function () {
+            if (color == $(this).children("TD").eq(0).html()) {
+                exists = 1;
+                return false;
+            }
+        });
+        if (exists == 1) {
+            bootbox.alert("This Color has already been added");
+            return false;
+        }
+        var colortitle = $("#Colors option:selected").text();
+        var colorrgbcode = 1;
+        $.ajax({
+            type: "POST",
+            url: "/ProductInfo/GetRGBColour",
+            data: JSON.stringify({ colorid: color }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (r) {
+                colorrgbcode = r;
+            },
+            error: function (x, e) {
+                bootbox.alert("Error");
+            },
+            async: false
+        });
+        var rowstring = "<tr><td style='display:none'>" + color + "</td><td>" + colortitle + "</td><td><li class='fa fa-remove text-danger' onclick='removerow1(this)'></li></td></tr>";
+        $("#tblColor").append(rowstring);
+    }
+
+
+    function AddSize() {
+        var size = $("#Sizes").val();
+        if (size == "" || size == 0 || size == null) {
+            bootbox.alert("Please select Size from dropdown");
+            $("#Sizes").focus();
+            return;
+        }
+        var exists = 0;
+        $("#tblSize TBODY TR").each(function () {
+            if (size == $(this).children("TD").eq(0).html()) {
+                exists = 1;
+                return false;
+            }
+        });
+        if (exists == 1) {
+            bootbox.alert("This Size has already been added");
+            return false;
+        }
+        var Sizetitle = $("#Sizes option:selected").text();
+        var sizez=1
+        $.ajax({
+            type: "POST",
+            url: "/ProductInfo/GetSizeInfo",
+            data: JSON.stringify({ sizeid: size }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (r) {
+                sizez = r;
+            },
+            error: function (x, e) {
+                bootbox.alert("Error");
+            },
+            async: false
+        });
+        var rowstring = "<tr><td style='display:none'>" + size + "</td><td>" + Sizetitle + "</td><td style='display:none'> id='" + size + "' </td><td><li class='fa fa-remove text-danger' onclick='removerow2(this)'></li></td></tr>";
+        $("#tblSize").append(rowstring);
+    }
+
+    function AddTags() {
+        var Tag = $("#Tags").val();
+        if (Tag == "" || Tag == 0 || Tag == null) {
+            bootbox.alert("Please select Tag from dropdown");
+            $("#Tags").focus();
+            return;
+        }
+        var exists = 0;
+        $("#tblTags TBODY TR").each(function () {
+            if (Tag == $(this).children("TD").eq(0).html()) {
+                exists = 1;
+                return false;
+            }
+        });
+        if (exists == 1) {
+            bootbox.alert("This Tag has already been added");
+            return false;
+        }
+        var TagTitle = $("#Tags option:selected").text();
+        var Tags = 1
+        $.ajax({
+            type: "POST",
+            url: "/ProductInfo/GetTagsInfo",
+            data: JSON.stringify({ Tagsid: Tag }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (r) {
+                tags = r;
+            },
+            error: function (x, e) {
+                bootbox.alert("Error");
+            },
+            async: false
+        });
+        var rowstring = "<tr><td style='display:none'>" + Tag + "</td><td>" + TagTitle + "</td><td style='display:none'> id='" + Tag + "' </td><td><li class='fa fa-remove text-danger' onclick='removerow3(this)'></li></td></tr>";
+        $("#tblTags").append(rowstring);
+    }
+
+
+    function AddCategory() {
+        var categorytitle = $("#newcategory").val();
+
+        if (categorytitle == "") {
+            $("#newcategorywarning").show();
+            return;
+        }
+        $("#newcategorywarning").hide();
+        $.ajax({
+            type: "POST",
+            url: "/ProductInfo/AddCategory",
+            data: JSON.stringify({ categorytitle }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (r) {
+                var catid = r;
+                $('#ddlcatagoryinfo').append('<option value="' + r + '">' + categorytitle + '</option>');
+                $('#ddlcatagoryinfo').val(r);
+                $("#newcategory").val("");
+                $('#myModal').modal('hide');
+            },
+            error: function (x, e) {
+                bootbox.alert("Error");
+            },
+            async: false
+        });
+
+    }
+
+        function AddTandC() {
+            var Termstitle = $("#newTandCInfo").val();
+
+            if (Termstitle == "") {
+                $("#newTandCwarning").show();
+                return;
+            }
+            $("#newTandCwarning").hide();
+            $.ajax({
+                type: "POST",
+                url: "/ProductInfo/AddTandC",
+                data: JSON.stringify({ Termstitle }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (r) {
+                    var catid = r;
+                    $('#ddlTandCInfo').append('<option value="' + r + '">' + Termstitle + '</option>');
+                    $('#ddlTandCInfo').val(r);
+                    $("#newTandCInfo").val("");
+                    $('#myTandCInfo').modal('hide');
+                },
+                error: function (x, e) {
+                    bootbox.alert("Error");
+                },
+                async: false
+            });
+
+        }
+
+    function AddNewVariant() {
+        var varianttitle = $("#newvariant").val();
+
+        if (varianttitle == "") {
+            $("#newvariantwarning").show();
+            return;
+        }
+        $("#newvariantwarning").hide();
+        $.ajax({
+            type: "POST",
+            url: "/ProductInfo/newvariant",
+            data: JSON.stringify({ varianttitle }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (r) {
+                var catid = r;
+                $('#DefaultVariant').append('<option value="' + r + '">' + varianttitle + '</option>');
+                $('#DefaultVariant').val(r);
+                $("#newvariant").val("");
+                $('#mdlVariant').modal('hide');
+            },
+            error: function (x, e) {
+                bootbox.alert("Error");
+            },
+            async: false
+        });
+
+    }
+
+    function AddNewColor() {
+        var colortitle = $("#newcolor").val();
+        if (colortitle == "") {
+            $("#newcolorwarning").show();
+            return;
+        }
+        $("#newcolorwarning").hide();
+        $.ajax({
+            type: "POST",
+            url: "/ProductInfo/newcolor",
+            data: JSON.stringify({ colortitle }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (r) {
+                var catid = r;
+                $('#ColourID').append('<option value="' + r + '">' + colortitle + '</option>');
+                $('#ColourID').val(r);
+                $("#newcolor").val("");
+                $('#mdlColor').modal('hide');
+            },
+            error: function (x, e) {
+                bootbox.alert("Error");
+            },
+            async: false
+        });
+
+    }
+
+    function AddNewsize() {
+        var sizetitle = $("#newsize").val();
+
+        if (sizetitle == "") {
+            $("#newsizewarning").show();
+            return;
+        }
+        $("#newsizewarning").hide();
+
+        $.ajax({
+            type: "POST",
+            url: "/ProductInfo/newsize",
+            data: JSON.stringify({ sizetitle }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (r) {
+                var catid = r;
+                $('#SizeID').append('<option value="' + r + '">' + sizetitle + '</option>');
+                $('#SizeID').val(r);
+                $("#newsize").val("");
+                $('#mdlSize').modal('hide');
+            },
+            error: function (x, e) {
+                bootbox.alert("Error");
+            },
+            async: false
+        });
+
+    }
+    function AddNewTag() {
+        var Tagtitle = $("#newtag").val();
+
+        if (Tagtitle == "") {
+            $("#newTagwarning").show();
+            return;
+        }
+        $("#newTagwarning").hide();
+
+        $.ajax({
+            type: "POST",
+            url: "/ProductInfo/newtag",
+            data: JSON.stringify({ Tagtitle }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (r) {
+                var catid = r;
+                $('#TagsID').append('<option value="' + r + '">' + Tagtitle + '</option>');
+                $('#TagsID').val(r);
+                $("#newTag").val("");
+                $('#mdlTag').modal('hide');
+            },
+            error: function (x, e) {
+                bootbox.alert("Error");
+            },
+            async: false
+        });
+
+    }
+
+    function AddBarcode() {
+        var Barcode = $("#Barcode").val();
+        if (Barcode == "" || Barcode == 0 || Barcode == null) {
+
+            bootbox.alert("Please enter barcode first");
+            $("#Barcode").focus();
+            return;
+        }
+        var exists = 0;
+        $("#tblBarcode TBODY TR").each(function () {
+            if (Barcode == $(this).children("TD").eq(0).html()) {
+                exists = 1;
+                return false;
+            }
+        });
+        if (exists == 1) {
+            bootbox.alert("This Barcode has already been added", function () {
+                $("#Barcode").focus();
+            });
+            return false;
+        }
+        var rowstring = "<tr><td>" + Barcode + "</td><td>   <input type='number'class='form-control' value='1'/> </td><td><li class='fa fa-remove text-danger' onclick='removebarcoderow(this)'></li></td></tr>";
+        $("#tblBarcode").append(rowstring);
+        $("#Barcode").val("");
+        $("#Barcode").focus();
+    }
+    function removerow(objectre) {
+        var row = $(objectre).closest("TR");
+        var table = $("#tblVariant")[0];
+        table.deleteRow(row[0].rowIndex);
+    }
+
+    function removerow1(objectre) {
+        var row = $(objectre).closest("TR");
+        var table = $("#tblColor")[0];
+        table.deleteRow(row[0].rowIndex);
+    }
+
+    function removerow2(objectre) {
+        var row = $(objectre).closest("TR");
+        var table = $("#tblSize")[0];
+        table.deleteRow(row[0].rowIndex);
+    }
+
+    function removerow3(objectre) {
+        var row = $(objectre).closest("TR");
+        var table = $("#tblTags")[0];
+        table.deleteRow(row[0].rowIndex);
+    }
+
+    function removebarcoderow(objectre) {
+        var row = $(objectre).closest("TR");
+        var table = $("#tblBarcode")[0];
+        table.deleteRow(row[0].rowIndex);
+    }
+    function SaveRecord() {
+        var lstProductVariantAssociation = new Array();
+        $("#tblVariant TBODY TR").each(function () {
+
+            var product = {};
+            product.ProductID = 0;
+            product.VariantId = $(this).children("TD").eq(0).html();
+            product.VariantTitle = $(this).children("TD").eq(1).html();
+            product.Measurement = $(this).children("TD").eq(2).find("input").val();
+            lstProductVariantAssociation.push(product);
+        });
+        //var lstProductColorAssociation = new Array();
+        //$("#tblColor TBODY TR").each(function ()
+        //{
+
+        //    var product = {};
+        //    product.ProductID = 0;
+        //    product.ColorId = $(this).children("TD").eq(0).html();
+        //    product.ColorTitle = $(this).children("TD").eq(1).html();
+        //    lstProductColorAssociation.push(product);
+        //});
+
+        //var lstProductSizeAssociation = new Array();
+        //$("#tblSize TBODY TR").each(function ()
+        //{
+        //    var product = {};
+        //    product.ProductID = 0;
+        //    product.SizeId = $(this).children("TD").eq(0).html();
+        //    product.SizeTitle = $(this).children("TD").eq(1).html();
+        //    lstProductSizeAssociation.push(product);
+        //});
+
+
+        var lstproductTagAssociation = new Array();
+        $("#tblTags TBODY TR").each(function () {
+            var product = {};
+            product.ProductID = 0;
+            product.TagId = $(this).children("TD").eq(0).html();
+            product.TagTitle = $(this).children("TD").eq(1).html();
+            lstproductTagAssociation.push(product);
+        });
+
+        var lstBarcode = new Array();
+        $("#tblBarcode TBODY TR").each(function () {
+
+            var product = {};
+            product.ProductID = 0;
+            product.Barcode = $(this).children("TD").eq(0).html();
+            product.Qty = $(this).children("TD").eq(1).find("input").val();
+            lstBarcode.push(product);
+        });
+
+        var TermsandCondition = $("#ddlTandCInfo").val();
+        var lstTandCAssociation = new Array();
+        var i = 0;
+        var length = TermsandCondition.length;
+        for (i = 0; i < length;i++)
+        {
+                var product = {};
+            product.ProductID = 0;
+            product.TandCID = TermsandCondition[i];
+            lstTandCAssociation.push(product);
+        }
+
+        //var Color = $("#ddlColor").val();
+        //var lstProductColorAssociation = new Array();
+        //var i = 0;
+        //var length = Color.length;
+        //for (i = 0; i < length; i++)
+        //{
+        //    var product = {};
+        //    product.ProductID = 0;
+        //    product.ColourID = Color[i];
+        //    lstProductColorAssociation.push(product);
+        //}
+
+
+        //var Size = $("#ddlSize").val();
+        //var lstProductSizeAssociation = new Array();
+        //var i = 0;
+        //var length = Size.length;
+        //for (i = 0; i < length; i++) {
+        //    var product = {};
+        //    product.ProductID = 0;
+        //    product.SizeID = Size[i];
+        //    lstProductSizeAssociation.push(product);
+        //}
+
+        var objproduct = {};
+
+        objproduct.ProductID = $("#ProductID").val();
+        objproduct.ProductCode = $("#ProductCode").val();
+        objproduct.ProductName = $("#ProductName").val();
+        objproduct.AlternateTitle = $("#AlternateTitle").val();
+        objproduct.Ampere = $("#Ampere").val();
+        objproduct.Price = $("#Price").val();
+        objproduct.Discount = $("#Discount").val();
+        objproduct.PurchasePrice = $("#PurchasePrice").val();
+        if ($('#InActive').is(":checked"))
+        {
+            objproduct.InActive = true;  // it is checked
+        }
+        else
+        {
+            objproduct.InActive = false;  // it is checked
+        }
+        if ($('#UPS').is(":checked")) {
+            objproduct.UPS = true;
+        }
+        else {
+            objproduct.UPS = false;
+        }
+        objproduct.Description = $("#Description").val();
+        objproduct.ProductImage = $("#imagefile").val();
+        objproduct.CatagoryID = $("#ddlcatagoryinfo").val();
+
+        objproduct.SalesAccountID = $("#SalesAccountID").val();
+        objproduct.PurchaseAccountID = $("#PurchaseAccountID").val();
+        objproduct.DefaultVariant = $("#DefaultVariant").val();
+        objproduct.ProductType = $("#ProductType").val();
+        objproduct.Dimension = $("#Dimension").val();
+        objproduct.NoofPlates = $("#NoofPlates").val();
+        objproduct.Weight = $("#Weight").val();
+        objproduct.TotalCapacity = $("#TotalCapacity").val();
+        objproduct.SolarCapacity = $("#SolarCapacity").val();
+        objproduct.BatteryChargerCapacity = $("#BatteryChargerCapacity").val();
+        objproduct.PMax = $("#PMax").val();
+        objproduct.VMax = $("#VMax").val();
+        objproduct.IMP = $("#IMP").val();
+        objproduct.ISC = $("#ISC").val();
+        objproduct.OCV = $("#OCV").val();
+        objproduct.MSV = $("#MSV").val();
+        objproduct.TemperatureOperatingfrom = $("#TemperatureOperatingfrom").val();
+        objproduct.TemperatureOperatingTo = $("#TemperatureOperatingTo").val();
+
+        if (objproduct.CatagoryID == "" || objproduct.CatagoryID == 0) {
+            bootbox.alert("Please Select Product Category");
+            $("#CatagoryID").val();
+            return;
+        }
+
+
+        if (objproduct.DefaultVariant == "" || objproduct.DefaultVariant == 0 || objproduct.DefaultVariant == null) {
+            bootbox.alert("Please Select Default Variant");
+            $("#DefaultVariant").val();
+            return;
+        }
+
+        if (objproduct.ProductCode == "" || objproduct.ProductCode == 0) {
+            bootbox.alert("Please enter Proper Product Code");
+            $("#ProductCode").val();
+            return;
+        }
+
+        if (objproduct.ProductName == "") {
+            bootbox.alert("Please enter Proper Product Name");
+            $("#ProductName").val();
+            return;
+        }
+        if (objproduct.Price == "" || objproduct.Price == 0) {
+            bootbox.alert("Please enter Proper Product price");
+            $("#Price").val();
+            return;
+        }
+        if (objproduct.PurchasePrice == "" || objproduct.PurchasePrice == 0) {
+            bootbox.alert("Please enter Proper Product purchase price");
+            $("#PurchasePrice").val();
+            return;
+        }
+        if (objproduct.ProductCode == "" || objproduct.ProductCode == 0) {
+            bootbox.alert("Please enter Proper Product Code");
+            $("#ProductCode").val();
+            return;
+        }
+        if (objproduct.Ampere == "" || objproduct.Ampere==0) {
+            bootbox.alert("Please Enter Ampere");
+            $("#Ampere").val();
+            return;
+        }
+        if (objproduct.SalesAccountID == "" || objproduct.SalesAccountID == 0) {
+            bootbox.alert("Please Select Sale Account");
+            $("#SalesAccountID").val();
+            return;
+        }
+        if (objproduct.PurchaseAccountID == "" || objproduct.PurchaseAccountID == 0) {
+            bootbox.alert("Please select Purchase Account");
+            $("#PurchaseAccountID").val();
+            return;
+        }
+        if (document.getElementById("imagefile").files[0] == null )
+        {
+            if (pimage = output) {
+                objproduct.ProductImage = pimage;
+            }
+            else {
+                alert("Please Select Proper Image");
+            }
+        }
+        else {
+            objproduct.ProductImage = objproduct.ProductImage;
+        }
+            //bootbox.alert("Please select image, images are compulsory");
+            //return;
+        
+
+        var flagImageExist = 0;
+
+    if (document.getElementById("imagefile").files.length == 0)
+    {
+        if (pimage.length == 0 || output.length == 0) {
+            flagImageExist = 0;
+            return;
+        }
+        else {
+            flagImageExist = 1;
+        }
+    }
+    else
+    {
+        flagImageExist = 1;
+    }
+        $.ajax({
+
+            type: "POST",
+            url: "/ProductInfo/Create",
+            data: JSON.stringify({ objproduct, lstProductVariantAssociation, lstBarcode/*,*//* lstProductColorAssociation,*//* lstProductSizeAssociation,*/ ,lstproductTagAssociation, lstTandCAssociation}),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            async:false,
+            success: function (r) {
+                var data = r.split(",");
+
+                if (data[0] == 'rcode') {
+                    bootbox.alert("Product Code already exists Please enter different Product Code");
+                    $("#ProductCode").focus();
+                    flagImageExist = 0;
+                    return;
+                }
+                else if (data[0] == 'true') {
+                    objproduct.ProductID = data[1];
+                    if (flagImageExist == 0) {
+                        window.location.href = "/ProductInfo/Index";
+                    }
+                }
+            },
+            error: function (x, e) {
+                bootbox.alert("Error");
+                flagImageExist = 0;
+                return;
+            },
+        });
+
+
+        if (flagImageExist == 1)
+        {
+            var formData = new FormData();
+            if (document.getElementById("imagefile").files[0] == null) {
+                formData.append("txtfile", $('#output').val());
+            }
+            else {
+                formData.append("txtfile", document.getElementById("imagefile").files[0], (objproduct.ProductID + ",1"));
+            }
+            var productid = objproduct.ProductID
+            var reqUrl = "/ProductInfo/SaveOrUpdateImage";
+            $.ajax({
+                type: "POST",
+                url: reqUrl,
+                async: false,
+                contentType: false,//"application/json; charset=utf-8",
+                processData: false,
+                data: formData,
+                success: function (data) {
+                    window.location.href = "/ProductInfo/Index";
+                },
+                error: function (data) {
+                    bootbox.alert("Error image uploading");
+                }
+            });
+
+            //var formData1 = new FormData();
+            //formData1.append("txtfile", document.getElementById("imagefile2").files[0], (objproduct.ProductID + ",1"));
+            //var productid = objproduct.ProductID
+            //var requrl1 = "/ProductInfo/SaveOrUpdateImage";
+            //$.ajax({
+            //    type: "POST",
+            //    url: requrl1,
+            //    async: false,
+            //    contentType: false,
+            //    processData: false,
+            //    data: txtfile,
+            //    success: function (data) {
+            //        window.location.href = "/ProductInfo/Index";
+            //    },
+            //    error: function (data) {
+            //        bootbox.alert("Error image Uploading");
+            //    }
+            //});
+            //var formData2 = new FormData();
+            //formData2.append("txtfile", document.getElementById("imagefile3").files[0], (objproduct.ProductID + ",1"));
+            //var productid = objproduct.ProductID
+            //var requrl2 = "/ProductInfo/SaveOrUpdateImage";
+            //$.ajax({
+            //    type: "POST",
+            //    url: requrl2,
+            //    async: false,
+            //    contentType: false,
+            //    processData: false,
+            //    data: txtfile,
+            //    success: function (data) {
+            //        window.location.href = "/ProductInfo/Index";
+            //    },
+            //    error: function (data) {
+            //        bootbox.alert("Error image Uploading");
+            //    }
+            //});
+            //var formData3 = new FormData();
+            //formData3.append("txtfile", document.getElementById("imagefile4").files[0], (objproduct.ProductID + ",1"));
+            //var productid = objproduct.ProductID
+            //var requrl3 = "/ProductInfo/SaveOrUpdateImage";
+            //$.ajax({
+            //    type: "POST",
+            //    url: requrl3,
+            //    async: false,
+            //    contentType: false,
+            //    processData: false,
+            //    data: txtfile,
+            //    success: function (data) {
+            //        window.location.href = "/ProductInfo/Index";
+            //    },
+            //    error: function (data) {
+            //        bootbox.alert("Error image Uploading");
+            //    }
+            //});
+        }
+
+
+        //
+    //    function loadFile(event) {
+    //        var formData = new FormData();
+    //        var fileUpload = $("#uploadfile").get(0).files;
+    //        if (files.length > 0) {
+    //            console.log(files[0]);
+    //            data.append("uploadfile".files[0]);
+    //            formData.append("txtfile", document.getElementById("uploadfile").files[0]);
+    //        }
+    //    var reqUrl = "/UploadImage";
+    //    $.ajax({
+    //        type: "POST",
+    //        url: reqUrl,
+    //        async: false,
+    //        contentType: "application/json; charset=utf-8",//,false
+    //        processData: false,
+    //        data: formData,
+    //        success: function (data) {
+    //            bootbox.alert("File Saved Successfully!");
+    //        },
+    //        error: function (data) {
+    //            bootbox.alert("File Not Save Due to Error!");
+    //        }
+    //    });
+    //}
+    }
+</script>

@@ -1,0 +1,105 @@
+﻿
+@model System.Data.DataTable
+
+@{
+    ViewBag.Title = "Payment Type";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="box">
+    <div class="box-header">
+        <div class="box-header" style="text-align: center;">
+            <h3 class="box-title" style="font-weight: bold;">Payment Type</h3>
+        </div>
+    </div>
+    <div class="box-body">
+        <button type="button" class="btn btn-primary" onclick="location.href = '/PaymentType/Create'">New</button>
+
+        <br>
+        <br>
+        <table class="table table-striped  table-hover" id="categoryinfo">
+            <thead>
+                <tr>
+
+                    <th>Payment Type</th>
+                    <th>Amount</th>
+
+                    <th></th>
+                </tr>
+            </thead>
+            <tfoot>
+                <tr>
+
+                    <th>Payment Type</th>
+                    <th>Amount</th>
+
+                  
+                    <th></th>
+                </tr>
+            </tfoot>
+
+            <tbody>
+                @foreach (System.Data.DataRow item in Model.Rows)
+                {
+                    <tr id="@item["Id"]">
+
+                        <td>
+                            @item["Name"]
+                        </td>
+                        <td>
+                            @item["Amount"]
+                        </td>
+                        <td>
+                            <div class="btn-group">
+                                @*<button type="button" class="btn btn-primary" onclick="location.href = '/#/@item["Id"]'">View</button>
+                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                    <span class="caret"></span>
+                    <span class="sr-only">Toggle Dropdown</span>
+                </button>
+                <ul class="dropdown-menu" role="menu">*@
+                                <button type="button" class="btn btn-primary" onclick="location.href = '/PaymentType/Edit/@item["Id"]'">Edit</button>
+                                <button type="button" class="btn btn-primary" onclick="DeleteButtonclicked(this);" id="@item["id"]">Delete</button>
+
+
+                                <!--<-->@*li> <a href='/TasksType/Edit/@item["Id"]'>Edit</a></li>
+                <li><a href='javascript:;' onclick='DeleteButtonclicked(this);' id="@item["Id"]"> Delete</a></li>*@
+                                <!--</ul>-->
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>
+
+
+    function DeleteButtonclicked(object) {
+        bootbox.confirm({
+            size: "small",
+            message: "Are you sure to delete the selected record?",
+            callback: function (result) {
+                if (result == true) {
+                    jQuery.ajax({
+                        url: '/PaymentType/Delete',
+                        type: 'POST',
+                        dataType: 'json',
+                        data: { id: object.id },
+                        success: function () {
+
+                            $("#" + object.id).remove();
+                        },
+                        error: function () {
+                            alert('error');
+                        }
+                    })
+                }
+                else {
+                }
+            }
+        })
+    }
+</script>
+
+

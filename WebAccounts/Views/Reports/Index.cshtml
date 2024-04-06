@@ -1,0 +1,703 @@
+﻿
+
+@{
+    ViewBag.Title = "Reports";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .pad {
+        padding-top: 5px;
+        padding-bottom: 5px;
+    }
+</style>
+<div class="row">
+
+    @{
+        {
+            <div class="col-md-12">
+
+                <div class="box box-solid">
+                    <div class="box-header with-border">
+                        <h3 class="box-title"><i class="fas fa-money-bill-wave"></i> Financial</h3>
+                    </div>
+                    <div class="box-body">
+                        <div class="col-md-4">
+                            @{
+                                if (ViewBag.TRBal == true)
+                                {
+                                    <div class="row pad"><a onclick="ShowLoad(event)" href="~/Reports/TrialBalance">1. Trial Balance</a> </div>
+                                }
+                                if (ViewBag.CashFlows == true)
+                                {
+                                    <div class="row pad">
+                                        <a onclick="ShowLoad(event)" href="~/Reports/CashFlowStatement">2. Cash Flow Statement</a>
+                                    </div>
+                                }
+                                if (ViewBag.Ins == true)
+                                {
+                                    <div class="row pad">
+                                        <a onclick="ShowLoad(event)" href="~/Reports/IncomeStatement">3. Income Statement</a>
+                                    </div>
+                                }
+                            }
+                        </div>
+                        <div class="col-md-4">
+                            @{
+                                if (ViewBag.Bankflows == true)
+                                {
+                                    <div class="row pad">
+                                        <a onclick="ShowLoad(event)" href="~/Reports/BankStatement">4. Bank Flow Statement</a>
+                                    </div>
+                                }
+                                if (ViewBag.BalS == true)
+                                {
+                                    <div class="row pad">
+                                        <a onclick="ShowLoad(event)" href="/Reports/BalanceSheet">5. Balance Sheet</a>
+                                    </div>
+                                }
+                                if (ViewBag.GenJou == true)
+                                {
+                                    <div class="row pad">
+                                        <a onclick="ShowLoad(event)" href="~/Reports/GeneralJournal">6. General Journal</a>
+                                    </div>
+                                }
+                            }
+                        </div>
+                        <div class="col-md-4">
+                            @{
+                                if (ViewBag.AccReclist == true)
+                                {
+                                    <div class="row pad">
+                                        <a onclick="ShowLoad(event)" href="~/Reports/PartyRecieveable">7. Accounts Recieveable List </a>
+                                    </div>
+                                }
+
+                            }
+
+                            @{
+                                if (ViewBag.AccPayList == true)
+                                {
+                                    <div class="row pad">
+                                        <a onclick="ShowLoad(event)" href="~/Reports/PartyPayable">8. Accounts Payable List</a>
+                                    </div>
+                                }
+                                if (ViewBag.GenLeg == true)
+                                {
+                                    <div class="row pad">
+                                        <a onclick="ShowLoad(event)" href="~/Reports/Ledger">9. General Ledger</a>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        }
+    }
+
+</div>
+
+<hr style="border-top: 1px solid #d2d6de;">
+<div class="row">
+
+    @{
+        if (ViewBag.Prodlist == false && ViewBag.Prodledger == false && ViewBag.PurReg == false && ViewBag.Stock == false && ViewBag.ProdWPur == false && ViewBag.ProdRReg == false && ViewBag.InvenActs == false && ViewBag.PPOrders == false && ViewBag.StockIssue == false && ViewBag.StockWaste == false && ViewBag.StockProduction == false)
+        {
+
+        }
+        else
+        {
+            <div class="col-md-6">
+                <div class="box box-solid">
+                    <div class="box-header with-border">
+                        <h3 class="box-title"><i class="fas fa-boxes"></i> Inventory</h3>
+                    </div>
+                    <div class="box-body">
+
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    @if (ViewBag.Prodlist == true)
+                                    {
+                                        <div class="row pad">
+                                            <a onclick="ShowLoad(event)" href="~/Reports/ProductList">10. Product List</a>
+                                        </div>
+                                    }
+                                    @if (ViewBag.InvenActs == true)
+                                    {
+                                        <div class="row pad">
+                                            <a onclick="ShowLoad(event)" href="~/Reports/InventoryTransactionSheet">11. Inventory Activity Sheet</a>
+                                        </div>
+                                    }
+                                </div>
+                                <div class="col-md-6">
+                                    @if (ViewBag.Prodledger == true)
+                                    {
+                                        <div class="row pad">
+                                            <a onclick="ShowLoad(event)" href="~/Reports/ProductLedger">12. Product Ledger</a>
+                                        </div>
+                                    }
+                                    @if (ViewBag.Stock == true)
+                                    {
+                                        <div class="row pad">
+                                            <a onclick="ShowLoad(event)" href="/Reports/StockRegister">13. Stock</a>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+
+                            <hr style="border-top: 1px solid #d2d6de;">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    @{
+
+                                        if (ViewBag.PurReg == true)
+                                        {
+                                            <div class="row pad">
+                                                <a onclick="ShowLoad(event)" href="~/Reports/PurchaseRegister">14. Purchase Register</a>
+                                            </div>
+                                        }
+
+                                        if (ViewBag.ProdRReg == true)
+                                        {
+                                            <div class="row pad">
+                                                <a onclick="ShowLoad(event)" href="~/Reports/PurchaseReturnRegister">15. Purchase Return Register</a>
+                                            </div>
+                                        }
+
+
+
+
+                                    }
+                                </div>
+                                <div class="col-md-6">
+                                    @{
+                                        if (ViewBag.ProdWPur == true)
+                                        {
+                                            <div class="row pad">
+                                                <a onclick="ShowLoad(event)" href="~/Reports/PurchaseRegisterByItem">16. Product Wise Purchase</a>
+                                            </div>
+                                        }
+
+
+                                        if (ViewBag.PPOrders == true)
+                                        {
+                                            <div class="row pad">
+                                                <a onclick="ShowLoad(event)" href="/Reports/PendingPurchaseOrders">17. Pending Purchase Orders</a>
+                                            </div>
+                                        }
+
+
+                                    }
+                                </div>
+                            </div>
+
+
+
+                            <hr style="border-top: 1px solid #d2d6de;">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    @{
+
+
+
+
+                                        if (ViewBag.StockIssue == true)
+                                        {
+                                            <div class="row pad">
+                                                <a onclick="ShowLoad(event)" href="~/Reports/StockIssue">18. Stock Issue</a>
+                                            </div>
+                                            <div class="row pad">
+                                                <a onclick="ShowLoad(event)" href="~/Reports/StockIssueVsStockIn">19. Stock Issue Vs Stock In</a>
+                                            </div>
+                                        }
+
+                                        <div class="row pad">
+                                            <a onclick="ShowLoad(event)" href="~/Reports/StockProduction">20. Recieve for Sale</a>
+                                        </div>
+
+
+                                    }
+                                </div>
+                                <div class="col-md-6">
+                                    @{
+
+
+                                        if (ViewBag.StockWaste == true)
+                                        {
+                                            <div class="row pad">
+                                                <a onclick="ShowLoad(event)" href="~/Reports/StockWaste">21. Stock Waste</a>
+                                            </div>
+                                        }
+                                        <div class="row pad">
+                                            <a href="~/Reports/WareHouseDetail" onclick="ShowLoad(event)">22. Stock Transfer</a>
+                                        </div>
+
+                                    }
+                                </div>
+                            </div>
+
+
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        }
+    }
+
+    <div class="col-md-6">
+
+        <div class="box box-solid">
+            @{
+                if (ViewBag.SaleReg == false && ViewBag.SaleRetReg == false && ViewBag.CatWsale == false && ViewBag.MWSanalysis == false && ViewBag.ProdWSale == false && ViewBag.PenSaleOr == false && ViewBag.ProdWPro == false && ViewBag.SalesTarget == false)
+                {
+
+                }
+                else
+                {
+                    <div class="box-header with-border">
+                        <h3 class="box-title"><i class="fas fa-cart-arrow-down"></i> Sale</h3>
+                    </div>
+                    <div class="box-body">
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    @{
+                                        if (ViewBag.SaleReg == true)
+                                        {
+                                            <div class="row pad">
+                                                <a onclick="ShowLoad(event)" href="~/Reports/SaleRegister">23. Sales Register</a>
+                                            </div>
+                                        }
+                                        if (ViewBag.CatWsale == true)
+                                        {
+                                            <div class="row pad">
+                                                <a onclick="ShowLoad(event)" href="/Reports/CategoryWiseSale">24. Category Wise Sale</a>
+                                            </div>
+                                        }
+                                        if (ViewBag.SaleRetReg == true)
+                                        {
+                                            <div class="row pad">
+                                                <a onclick="ShowLoad(event)" href="/Reports/SaleReturnRegister">25. Sale Return Register</a>
+                                            </div>
+                                        }
+
+
+                                    }
+
+                                </div>
+                                <div class="col-md-6">
+                                    @{
+                                        if (ViewBag.ProdWSale == true)
+                                        {
+                                            <div class="row pad">
+                                                <a onclick="ShowLoad(event)" href="/Reports/ProductWiseSale">26. Product Wise Sale</a>
+                                            </div>
+                                        }
+                                        if (ViewBag.MWSanalysis == true)
+                                        {
+                                            <div class="row pad">
+                                                <a onclick="ShowLoad(event)" href="/Reports/MonthlySalesAnalysis">27. Month Wise Sales Analysis</a>
+                                            </div>
+                                        }
+
+
+
+                                        if (ViewBag.PenSaleOr == true)
+                                        {
+                                            <div class="row pad">
+                                                <a onclick="ShowLoad(event)" href="/Reports/PendingSaleOrders">28. Pending Sale Orders</a>
+                                            </div>
+                                        }
+
+                                    }
+
+                                </div>
+                            </div>
+                            <hr style="border-top: 1px solid #d2d6de;">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    @{
+
+
+                                        if (ViewBag.ProdWPro == true)
+                                        {
+                                            <div class="row pad">
+                                                <a onclick="ShowLoad(event)" href="/Reports/ProductWiseProfit">29. Product Wise Profit</a>
+                                            </div>
+                                        }
+                                    }
+                                    <div class="row pad">
+                                        <a onclick="ShowLoad(event)" href="/Reports/PartyAggingReport">30. Sales Aging</a>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+
+
+
+                                    @{
+
+                                        if (ViewBag.SalesTarget == true)
+                                        {
+                                            <div class="row pad">
+                                                <a onclick="ShowLoad(event)" href="/Reports/SalesTarget">31. Sales Target</a>
+                                            </div>
+                                        }
+                                        <div class="row pad">
+                                            <a onclick="ShowLoad(event)" href="/Reports/CustomerStatementInfo">30b. Customer Statement</a>
+                                        </div>
+                                    }
+
+                                </div>
+                            </div>
+                            <hr style="border-top: 1px solid #d2d6de;">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row pad">
+                                        <a onclick="ShowLoad(event)" href="/Reports/GodownSummary"> Distribution: Godown Summary</a>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row pad">
+                                        <a onclick="ShowLoad(event)" href="/Reports/SupplyLedger">Distribution: Supply Ledger</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                }
+            }
+        </div>
+
+        @{
+            if (ViewBag.Deflist == false && ViewBag.SaleInsRec == false)
+            {
+
+            }
+            else
+            {
+
+                <div class="box box-solid">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Installment</h3>
+                    </div>
+                    <div class="box-body">
+                        <div class="col-md-6">
+                            @{
+                                if (ViewBag.Deflist == true)
+                                {
+                                    <div class="row pad">
+                                        <a onclick="ShowLoad(event)" href="~/SaleInfo/Aging">32. Defaulter List</a>
+                                    </div>
+                                }
+
+                            }
+                        </div>
+                        <div class="col-md-6">
+                            @if (ViewBag.SaleInsRec == true)
+                            {
+                                <div class="row pad">
+                                    <a onclick="ShowLoad(event)" href="~/Reports/SaleRecovery">33. Sale Installment Recovery</a>
+                                </div>
+                            }
+                            @*<div class="row pad">
+                                    <a href="~/Reports/CollectionCenterRecovery">Employee Wise Collection</a>
+                                </div>*@
+
+                            @*<div class="row pad">
+                                    <a href="~/Reports/Logs">Log Report</a>
+                                </div>*@
+                        </div>
+                    </div>
+                </div>
+
+            }
+        }
+    </div>
+
+</div>
+
+
+<hr style="border-top: 1px solid #d2d6de;">
+<div class="row">
+
+    @{
+        if (ViewBag.EmpList == false && ViewBag.MonAtten == false && ViewBag.DailyAtten == false && ViewBag.EmployeeLedger == false)
+        {
+
+        }
+        else
+        {
+            <div class="col-md-6">
+                <div class="box box-solid">
+
+                    <div class="box-header with-border">
+                        <h3 class="box-title"><i class="fas fa-male"></i> Human Resource</h3>
+                    </div>
+                    <div class="box-body">
+                        <div class="col-md-12">
+                            <div class="row">
+
+                                <div class="col-md-6">
+                                    @{
+                                        if (ViewBag.EmpList == true)
+                                        {
+                                            <div class="row pad">
+                                                <a onclick="ShowLoad(event)" href="~/Reports/EmployeeShiftWiseList">34. Employee List</a>
+                                            </div>
+
+                                        }
+
+                                    }
+                                </div>
+                                <div class="col-md-6">
+                                    @if (ViewBag.EmployeeLedger == true)
+                                    {
+                                        <div class="row pad">
+                                            <a onclick="ShowLoad(event)" href="~/Reports/EmployeeLedger">35. Employee A/C Ledger</a>
+                                        </div>
+                                    }
+                                </div>
+
+                            </div>
+
+                            <hr style="border-top: 1px solid #d2d6de;">
+                            <div class="row">
+
+                                <div class="col-md-6">
+                                    @{
+
+                                        if (ViewBag.DailyAtten == true)
+                                        {
+                                            <div class="row pad">
+                                                <a onclick="ShowLoad(event)" href="~/Reports/AttendanceReport">36. Daily Attendance</a>
+                                            </div>
+                                        }
+                                        <div class="row pad">
+                                            <a onclick="ShowLoad(event)" href="~/Reports/EmployeeWiseAttendanceReport">37. Employee Attendance Ledger</a>
+                                        </div>
+                                        <div class="row pad">
+                                            <a onclick="ShowLoad(event)" href="~/Reports/LateEmployeesReport">38. Late Comming Employees</a>
+                                        </div>
+
+                                    }
+                                </div>
+
+                                <div class="col-md-6">
+                                    @{
+                                        if (ViewBag.MonAtten == true)
+                                        {
+                                            <div class="row pad">
+                                                <a onclick="ShowLoad(event)" href="~/Reports/AttendanceReportMonthlyWise">39. Monthly Attendance</a>
+                                            </div>
+                                        }
+
+                                    }
+                                    <div class="row pad">
+                                        <a onclick="ShowLoad(event)" href="~/Reports/EarlyLeavingEmployee">40. Early Leaving Employees</a>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <hr style="border-top: 1px solid #d2d6de;">
+                            <div class="row">
+
+                                <div class="col-md-6">
+                                    @{
+                                        <div class="row pad">
+                                            <a onclick="ShowLoad(event)" href="~/Reports/LeaveReport">41. Employee Leave</a>
+                                        </div>
+
+                                    }
+                                </div>
+
+
+                            </div>
+                            <hr style="border-top: 1px solid #d2d6de;">
+                            <div class="row">
+
+                                <div class="col-md-6">
+                                    @{
+                                        <div class="row pad">
+                                            <a onclick="ShowLoad(event)" href="~/Reports/EmployeeRecieveable">Employee Recieveable</a>
+                                        </div>
+
+                                    }
+                                </div>
+                                <div class="col-md-6">
+                                    @{
+                                        <div class="row pad">
+                                            <a onclick="ShowLoad(event)" href="~/Reports/EmployeePayable"> Employee Payable</a>
+                                        </div>
+
+                                    }
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+
+
+    <div class="col-md-6">
+        <div class="box box-solid">
+            <div class="box-header with-border">
+                <h3 class="box-title"><i class="fas fa-clipboard"></i> Custom Reports</h3>
+            </div>
+            <div class="box-body">
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-6">
+                            @*<div class="row pad">
+                                <a onclick="ShowLoad(event)" href="~/Reports/CustomIncomeStatmentReport">42. @(new General().CustomReport1()) </a>
+                            </div>
+                            <div class="row pad">
+                                <a onclick="ShowLoad(event)" href="~/Reports/CustomIncomeStatmentReport2">43. @(new General().CustomReport2())</a>
+                            </div>*@
+
+                        </div>
+                        <div class="col-md-6">
+                            @*<div class="row pad">
+                                <a onclick="ShowLoad(event)" href="~/Reports/CustomIncomeStatmentReport3">44. @(new General().CustomReport3())</a>
+                            </div>*@
+                            <div class="row pad">
+                                <a onclick="ShowLoad(event)" href="~/Reports/CustomIncomeStatmentReport4">45. Custom Report 4</a>
+                            </div>
+                            @if (ViewBag.MWSanalysis == true)
+                            {
+                                <div class="row pad">
+                                    <a onclick="ShowLoad(event)" href="/Reports/SaleAnalysisStyle2">27 b. @(ViewBag.MWSReportTitle) </a>
+                                </div>
+                            }
+                        </div>
+
+                    </div>
+                    <hr style="border-top: 1px solid #d2d6de;">
+                    @if (General.FetchData(" Select * from InterDBDeliveryConfiguration").Rows.Count > 0)
+                    {
+                        <div class="row">
+
+                            <div class="col-md-6">
+                                <div class="row pad">
+
+                                    <a onclick="ShowLoad(event)" href="~/Reports/InterDBProductComparison">44b. Inter Domain Product Comparison</a>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="row pad">
+
+                                    <a onclick="ShowLoad(event)" href="~/Reports/DeliveryReceiptComparison">44c. Inter Domain Stock Delivery Receipt Comparison</a>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    <hr style="border-top: 1px solid #d2d6de;">
+                    <div class="row">
+
+                        <div class="col-md-6">
+                            <div class="row pad">
+
+                                <a onclick="ShowLoad(event)" href="~/Reports/ItemWiseConsumptionSheet"> Items Consumption Analysis</a>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="row pad">
+
+                                <a onclick="ShowLoad(event)" href="~/Reports/SingleProductConsumptionSheet"> Single Item Consumption </a>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row">
+
+                        <div class="col-md-6">
+                            <div class="row pad">
+
+                                <a onclick="ShowLoad(event)" href="~/Reports/PartyStockIssueStockConsumptionandStockIn"> Stock Issue Vs Stock Consumption</a>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="row pad">
+
+                                <a onclick="ShowLoad(event)" href="~/Reports/SalesVsConsumptionDepartment"> External Sale Vs Consumption </a>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="row pad">
+
+                                <a onclick="ShowLoad(event)" href="~/Reports/ConsumedProductLedger"> Consumed Product Ledger </a>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<div class="row">
+    @{
+        if (ViewBag.LogReport == false && ViewBag.FileUpload == false)
+        {
+
+        }
+        else
+        {
+            <div class="col-md-6">
+                <div class="box box-solid">
+                    <div class="box-header with-border">
+                        <h3 class="box-title"><i class="fas fa-history"></i>Software Logs &amp; History</h3>
+                    </div>
+                    <div class="box-body">
+                        <div class="col-md-6">
+                            @{
+                                if (ViewBag.LogReport == true)
+                                {
+                                    <div class="row pad">
+                                        <a onclick="ShowLoad(event)" href="~/Reports/Logs">45. Log Report</a>
+                                    </div>
+                                }
+                            }
+
+                        </div>
+
+
+
+                        <div class="col-md-6">
+                            @{ if (ViewBag.FileUpload == true)
+                                {
+                                    <div class="row pad">
+                                        <a onclick="ShowLoad(event)" href="~/Reports/FileUpload">46. File Upload History</a>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+
+
+</div>
+<script>
+    (function () {
+        window.onpageshow = function (event) {
+            if (event.persisted) {
+                window.location.reload();
+            }
+        };
+    })();
+</script>

@@ -1,0 +1,312 @@
+﻿@model Installments.Models.CompanyInformation
+
+@{
+    ViewBag.Title = "Company Information";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    #output {
+        border-radius: 5px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+        #output:hover {
+            opacity: 0.7;
+        }
+
+    /* The Modal (background) */
+    .modal {
+        display: none; /* Hidden by default */
+        position: fixed; /* Stay in place */
+        z-index: 1; /* Sit on top */
+        padding-top: 100px; /* Location of the box */
+        left: 0;
+        top: 0;
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgb(255,255,255); /* Fallback color */
+        background-color: #f1f1f1; /* Black w/ opacity */
+    }
+
+    /* Modal Content (image) */
+    .modal-content {
+        margin: auto;
+        display: block;
+        width: 100%;
+        max-width: 1000px;
+    }
+
+    /* Caption of Modal Image */
+    #caption {
+        margin: auto;
+        display: block;
+        width: 80%;
+        max-width: 700px;
+        text-align: center;
+        color: #ccc;
+        padding: 10px 0;
+        height: 150px;
+    }
+
+    /* Add Animation */
+    .modal-content, #caption {
+        -webkit-animation-name: zoom;
+        -webkit-animation-duration: 0.6s;
+        animation-name: zoom;
+        animation-duration: 0.6s;
+    }
+
+    .close {
+        position: absolute;
+        top: 80px;
+        right: 35px;
+        color: black;
+        font-size: 40px;
+        font-weight: bold;
+        transition: 0.3s;
+    }
+
+        .close:hover,
+        .close:focus {
+            color: #bbb;
+            text-decoration: none;
+            cursor: pointer;
+        }
+</style>
+
+@*@Html.Partial("~/Views/Shared/_Topavigation.cshtml")*@
+
+@*<div class="col-md-12" style="padding-left:0px; background-color:#605ca8">
+    @Html.Partial("~/Views/Shared/_Topavigation.cshtml")
+</div>*@
+<br>
+
+@Html.AntiForgeryToken()
+<div class="row">
+    <div class="col-md-12">
+        <div class="box">
+            <div class="box-header" style="text-align: center;">
+                <h4 class="box-header-title" style="font-weight: bold;">Company Information</h4>
+            </div>
+            <div class="box-body">
+
+
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                <div class="col-md-1">
+                </div>
+                <div class="col-md-10">
+                    <div class="row">
+                        <div class="col-md-6">
+
+                            @Html.LabelFor(model => model.CompanyName, htmlAttributes: new { @class = "control-label required" })
+
+                            @Html.EditorFor(model => model.CompanyName, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.CompanyName, "", new { @class = "text-danger" })
+
+                        </div>
+
+
+                        <div class="col-md-6">
+                            @Html.LabelFor(model => model.Address, htmlAttributes: new { @class = "control-label " })
+                            @Html.EditorFor(model => model.Address, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.Address, "", new { @class = "text-danger" })
+
+                        </div>
+                    </div>
+
+                    <div class="row">
+
+
+
+                        <div class="col-md-6">
+
+                            @Html.LabelFor(model => model.PhoneNo, htmlAttributes: new { @class = "control-label required" })
+
+                            @Html.EditorFor(model => model.PhoneNo, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.PhoneNo, "", new { @class = "text-danger" })
+
+                        </div>
+
+                        <div class="col-md-6">
+
+                            @Html.LabelFor(model => model.NTNNo, htmlAttributes: new { @class = "control-label " })
+
+                            @Html.EditorFor(model => model.NTNNo, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.NTNNo, "", new { @class = "text-danger" })
+
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+
+                            @Html.LabelFor(model => model.EmailAddress, htmlAttributes: new { @class = "control-label " })
+
+                            @Html.EditorFor(model => model.EmailAddress, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.EmailAddress, "", new { @class = "text-danger" })
+
+                        </div>
+
+                        <div class="col-md-6">
+
+                            @{
+                                if (Model.LogoPath == null || Model.LogoPath == "")
+                                {
+                                    <img id="output" width="150" height="100" src="@Model.LogoPath" />
+                                }
+                                else
+                                {
+                                    <img id="output" width="150" height="100" src="@Url.Content(Model.LogoPath)" />
+                                }
+                            }
+                            <form id="uploadform">
+                                <input type="file" accept="image/*" onchange="loadFile(event)" id="Logo" name="Logo" />
+                            </form>
+                        </div>
+                        <script>
+                            var loadFile = function (event) {
+                                var output = document.getElementById('output');
+                                output.src = URL.createObjectURL(event.target.files[0]);
+                                output.onload = function () {
+                                    URL.revokeObjectURL(output.src) // free memory
+                                }
+                            };
+                        </script>
+                    </div>
+                    <div id="myModal" class="modal">
+                        <span class="close">&times;</span>
+                        <img class="modal-content" id="img01">
+                        <div id="caption"></div>
+                    </div>
+                    <div class="row">
+
+                        <div class="col-md-10">
+                            <br>
+                            <input type="button" onclick="Save()" value="Save" class="btn btn-primary" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-1">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+<style>
+    .col-md-2 {
+        max-width: 100%;
+    }
+</style>
+
+<style>
+    .col-md-2 {
+        max-width: 100%;
+    }
+</style>
+
+<script>
+    $(document).keyup(function (e) {
+        if (e.which === 27) {
+            var modal = document.getElementById("myModal");
+            modal.style.display = "none";
+        }
+    });
+    var modal = document.getElementById("myModal");
+    // Get the image and insert it inside the modal - use its "alt" text as a caption
+    var img = document.getElementById("output");
+    var modalImg = document.getElementById("img01");
+    var captionText = document.getElementById("caption");
+    img.onclick = function () {
+        modal.style.display = "block";
+        modalImg.src = this.src;
+        captionText.innerHTML = this.alt;
+    }
+    var span = document.getElementsByClassName("close")[0];
+    span.onclick = function () {
+        modal.style.display = "none";
+    }
+
+    var Path = '@Model.LogoPath';
+        function Save() {
+        var company = {};
+        company.CompanyName = $("#CompanyName").val();
+        company.Address = $("#Address").val();
+        company.PhoneNo = $("#PhoneNo").val();
+        company.NTNNo = $("#NTNNo").val();
+        company.EmailAddress = $("#EmailAddress").val();
+            company.Logo = $("#Logo").val();
+            company.LogoPath = Path;
+        if (company.CompanyName == 0 || company.CompanyName == null || company.CompanyName == "") {
+            bootbox.alert("Please Enter Company Information!");
+            $("#CompanyName").focus();
+            return;
+        }
+        if (company.PhoneNo == 0 || company.PhoneNo == null || company.PhoneNo == "") {
+            bootbox.alert("Please Enter Phone No");
+            $("#PhoneNo").focus();
+            return;
+        }
+        var flagImageExist = 0;
+        if (document.getElementById("Logo").files.length == 0) {
+            flagImageExist = 0;
+        }
+        else {
+            flagImageExist = 1;
+        }
+        $.ajax({
+            type: "POST",
+            url: "/CompanyInformation/Create",
+            data: JSON.stringify({ company }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            async: false,
+            success: function (r) {
+                var data = r.split(",");
+                if (data[0] == 'true') {
+                    company.CompanyID = data[1];
+                    if (flagImageExist == 0) {
+                        window.location.href = "/Home/Index";
+                    }
+                }
+            },
+            error: function (e) {
+                alert("error " + e);
+            }
+        });
+        if (flagImageExist == 1) {
+            var formData = new FormData();
+            formData.append("txtfile", document.getElementById("Logo").files[0], (company.CompanyID + ",1"));
+            var id = company.Logo;
+            var reqUrl = "/CompanyInformation/SaveOrUpdateImage";
+            $.ajax({
+                type: "POST",
+                url: reqUrl,
+                async: false,
+                contentType: false,//"application/json; charset=utf-8",
+                processData: false,
+                data: formData,
+                success: function (data) {
+                    window.location.href = "/Home/Index";
+                },
+                error: function (data) {
+                    bootbox.alert("Error Uploading Logo");
+                }
+            });
+        }
+    }
+
+
+</script>

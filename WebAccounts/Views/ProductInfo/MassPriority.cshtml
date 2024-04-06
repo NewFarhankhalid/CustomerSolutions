@@ -1,0 +1,115 @@
+﻿
+
+@model System.Data.DataTable
+@{
+    ViewBag.Title = "Mass Priority";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="box box-primary">
+
+    <div class="box-header">
+        <h2 class="box-title">Product Priority</h2>
+    </div>
+    <div class="box-body">
+        <div class="row">
+            <div class="col-md-1 ">
+                <input type="button" class="btn btn-warning" value="Back" onclick="back()" />
+            </div>
+            <div class="col-md-1 pull-right">
+                <input type="button" class="btn btn-primary" value="Save" onclick="Save()">
+            </div>
+        </div>
+        <br>
+        <br>
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table table-bordered table-condensed" id="ProductDiscountPrice">
+                    <thead>
+                        <tr>
+                            <th style="display:none">ProductID</th>
+                            <th class="col-md-4 text-center">Product Code & Title</th>
+                            <th class="col-md-2 text-center">Available</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (System.Data.DataRow dr in Model.Rows)
+                        {
+                            <tr id="@dr["ProductID"]">
+                                <td style="display:none" id="ProductID">@dr["ProductID"]</td>
+                                <td class="col-md-4">@(dr["ProductCode"] + "-" + dr["ProductName"])</td>
+                                @{
+                                    if (dr["ProductPriority"] == null)
+                                    {
+                                        <td class="col-md-2 text-center"><input type="number" id="Available" class="text-center" /></td>
+
+                                    }
+                                    else
+                                    {
+                                        <td class="col-md-2 text-center"><input type="number" id="Available" class="text-center" value="@dr["ProductPriority"]" /></td>
+ }
+                                }
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function(){
+        $('.Dtp').datepicker({
+            autoclose: true
+        });
+    });
+
+     function back() {
+        window.location.href = "@Url.Action("Index", "ProductInfo")";
+    }
+
+
+    //$('#Available').on('change', function () {
+    //    this.value = this.checked ? 1 : 0;
+    //    alert(this.value);
+    //}).change();
+
+
+    function Save() {
+
+        var StockAdjustmentID = 0;
+        var lstStockAdjustment = new Array();
+        $("#ProductDiscountPrice TBODY TR").each(function () {
+            var ProductOpeningStock = {};
+            ProductOpeningStock.StockAdjustmentID = 0;
+            ProductOpeningStock.ProductID = $(this).children("TD").eq(0).html();
+            ProductOpeningStock.ProductPriority = $(this).children("TD").eq(2).find('input[type=number]').val();
+            alert("Product Priority =" + ProductOpeningStock.ProductPriority);
+            ProductOpeningStock.Remarks = "";
+            lstStockAdjustment.push(ProductOpeningStock);
+        });
+
+
+
+            $.ajax({
+            type: "POST",
+                url: "/ProductInfo/SaveMassPriority",
+                data: JSON.stringify({ lstStockAdjustment }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (r) {
+                bootbox.alert("Posted / Updated");
+                window.location.href = "@Url.Action("Index", "ProductInfo")";
+            },
+            error: function (e) {
+                alert("Error in Updating" + e);
+
+            }
+            });
+    }
+</script>
+
+
+
+

@@ -1,0 +1,109 @@
+﻿
+@model IEnumerable < Installments.Models.ProblemSolutions>
+
+@{
+    ViewBag.Title = "Problem Solutions";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="box">  
+    <div class="box-header" style="text-align: center;">
+        <h3 class="box-title" style="font-weight: bold;">Problem Solutions Information</h3>
+    </div>
+    <div class="box-body">
+        <button type="button" class="btn btn-primary" onclick="location.href = '/ProblemSolutions/Create'">New</button>
+
+        <br>
+        <br>
+        <table class="table table-striped  table-hover" id="categoryinfo">
+            <thead>
+                <tr>
+
+                    <th>
+                        @Html.DisplayNameFor(model => model.ProblemTitle)
+                    </th>
+                    @*<th>
+                            @Html.DisplayNameFor(model => model.Description)
+                        </th>*@
+                    <th></th>
+                </tr>
+            </thead>
+            <tfoot>
+
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.ProblemTitle)
+                    </th>
+                    @*<th>
+                            @Html.DisplayNameFor(model => model.Description)
+                        </th>*@
+                    <th></th>
+                </tr>
+            </tfoot>
+
+            <tbody>
+
+                @foreach (var item in Model)
+                {
+                    <tr id="@item.ProblemSolutionID">
+
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ProblemTitle)
+                        </td>
+                        @*<td>
+                                @Html.DisplayFor(modelItem => item.Description)
+                            </td>*@
+                        <td>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-primary" onclick="location.href = '/ProblemSolutions/ProblemInformation/@item.ProblemSolutionID'">View</button>
+                                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                                    <span class="caret"></span>
+                                    <span class="sr-only">Toggle Dropdown</span>
+                                </button>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li> <a href='/ProblemSolutions/Edit/@item.ProblemSolutionID'>Edit</a>
+                                    <li><a href='javascript:;' onclick='DeleteButtonclicked(this);' id="@item.ProblemSolutionID"> Delete</a>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        // $.noConflict();
+        $("#categoryinfo").DataTable();
+
+    });
+
+    function DeleteButtonclicked(object) {
+
+
+        bootbox.confirm({
+            size: "small",
+            message: "Are you sure to delete the selected record?",
+            callback: function (result) {
+
+                if (result == true) {
+                    jQuery.ajax({
+                        url: '/ProblemSolutions/Delete',
+                        type: 'POST',
+                        dataType: 'json',
+                        data: { id: object.id },
+                        success: function () {
+
+                            $("#" + object.id).remove();
+                        },
+                        error: function () {
+                            alert('error');
+                        }
+                    })
+                }
+                else {
+                }
+            }
+        })
+    }
+</script>

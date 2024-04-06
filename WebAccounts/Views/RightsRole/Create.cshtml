@@ -1,0 +1,280 @@
+﻿@model Installments.Models.RightsRole
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@using (Html.BeginForm("Create","RightsRole")) 
+{
+    @Html.AntiForgeryToken()
+<div class="box box-primary">
+    <div class="box-header" style="text-align: center;">
+        <h2 class="box-title" style="font-weight: bold;">Rights Role</h2>
+    </div>
+
+
+ 
+
+    <div class="box-body">
+        <div class="form-horizontal">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+            @if (!string.IsNullOrEmpty(ViewBag.Message))
+            {
+                <h3 class="text-center">@ViewBag.Message</h3>
+                <br>
+            }
+
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            @Html.HiddenFor(model => model.RoleID)
+            <div class="row">
+                <div class="col-md-6">
+                    <label>Role Title</label>
+                    @Html.EditorFor(model => model.RoleTitle, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.RoleTitle, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="col-md-6">
+                    <label>Role Description</label>
+                    @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <br />
+                    @Html.EditorFor(model => model.Inactive) Inactive
+                    @Html.ValidationMessageFor(model => model.Inactive, "", new { @class = "text-danger" })
+                    <br />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <table class="table table-bordered table-condensed table-responsive" id="Roles">
+                        <thead>
+                            <tr>
+                                <th class="col-md-2 bg-info"><input type="checkbox" id="allowedmaser"> Allowed</th>
+                                <th class="col-md-4 bg-info">Menu</th>
+                                <th class="col-md-1 bg-info"><input type="checkbox" id="newmaster"> New</th>
+                                <th class="col-md-1 bg-info"><input type="checkbox" id="editmaster"> Edit</th>
+                                <th class="col-md-1 bg-info"><input type="checkbox" id="deletemaster"> Delete</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (int i = 0; i < Model.LstRoleDetail.Count; i++)
+                            {
+                                <tr>
+                                    <td>
+                                        @Html.HiddenFor(model => Model.LstRoleDetail[i].MenuID)
+                                        @Html.HiddenFor(model => Model.LstRoleDetail[i].RoleID)
+                                        @Html.CheckBoxFor(model => Model.LstRoleDetail[i].Allowed)
+                                    </td>
+                                    <td>
+                                        @if (Model.LstRoleDetail[i].ParentID == 0)
+                                        {
+                                            <strong>@(Model.LstRoleDetail[i].MenuTitle)</strong>
+                                        }
+                                        else
+                                        {
+                                            <span style="margin-left:20px">@(Model.LstRoleDetail[i].MenuTitle)</span>
+                                        }
+                                        @Html.HiddenFor(model => Model.LstRoleDetail[i].ParentID)
+                                    </td>
+                                    <td>
+                                        @if (Model.LstRoleDetail[i].ParentID != 0)
+                                        {
+                                            @Html.CheckBoxFor(model => Model.LstRoleDetail[i].New)
+                                        }
+                                    </td>
+                                    <td>
+
+                                        @if (Model.LstRoleDetail[i].ParentID != 0)
+                                        {
+                                            @Html.CheckBoxFor(model => Model.LstRoleDetail[i].Edit)
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (Model.LstRoleDetail[i].ParentID != 0)
+                                        {
+                                            @Html.CheckBoxFor(model => Model.LstRoleDetail[i].Delete)
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                @*<div class="col-md-5">
+                    <div class="scrollit">
+                        <table class="table table-bordered table-condensed table-responsive" id="Report">
+                            <thead>
+                                <tr>
+                                    <th class="col-md-6 bg-info">Section</th>
+                                    <th class="col-md-6 bg-info">Report</th>
+
+                                    <th class="col-md-1 bg-info"> <input type="checkbox" id="allowedRepmaser">Allowed</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    for (int j = 0; j < Model.LstReportDetail.Count; j++)
+                                    {
+                                        <tr>
+
+                                            @Html.HiddenFor(model => Model.LstReportDetail[j].ReportID)
+                                            @Html.HiddenFor(model => Model.LstReportDetail[j].RoleID)
+                                            <td>
+                                                <strong>@(Model.LstReportDetail[j].SectionTitle)</strong>
+                                            </td>
+                                            <td>
+                                                <strong>@(Model.LstReportDetail[j].ReportTitle)</strong>
+                                            </td>
+
+                                            <td>
+                                                @Html.CheckBoxFor(model => Model.LstReportDetail[j].ReportAllowed)
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>*@
+            </div>
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Save" class="btn btn-primary" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+<script>
+    $('#Roles').DataTable({
+        "paging": false,
+        "ordering": false,
+        "info": false,
+        "searching": false
+    });
+    $('#dashboard').DataTable({
+        "paging": false,
+        "ordering": false,
+        "info": false
+    });
+    $('#Report').DataTable({
+        "paging": false,
+        "ordering": false,
+        "info": false,
+        "searching": false
+    });
+
+    $(document).ready(function () {
+
+        $("#allowedmaser").change(function () {
+            if (this.checked) {
+                CheckAllboxesinThisColumn(0);
+            }
+            else {
+                UnCheckAllboxesinThisColumn(0);
+            }
+        });
+        $("#alloweddashmaser").change(function () {
+            if (this.checked) {
+                CheckboxesinThisColumn(1);
+            }
+            else {
+                UnCheckboxesinThisColumn(1);
+            }
+        });
+        $("#allowedRepmaser").change(function () {
+            if (this.checked) {
+                RepCheckboxesinThisColumn(2);
+            }
+            else {
+                RepUnCheckboxesinThisColumn(2);
+            }
+        });
+        //$("#dashmaster").change(function () {
+        //    if (this.checked) {
+        //        CheckboxesinThisColumn(0);
+        //    }
+        //    else {
+        //        CheckboxesinThisColumn(0);
+        //    }
+        //});
+
+        $("#newmaster").change(function () {
+            if (this.checked) {
+                CheckAllboxesinThisColumn(2);
+            }
+            else {
+                UnCheckAllboxesinThisColumn(2);
+            }
+        });
+        $("#editmaster").change(function () {
+            if (this.checked) {
+                CheckAllboxesinThisColumn(3);
+            }
+            else {
+                UnCheckAllboxesinThisColumn(3);
+            }
+        });
+        $("#deletemaster").change(function () {
+            if (this.checked) {
+                CheckAllboxesinThisColumn(4);
+            }
+            else {
+                UnCheckAllboxesinThisColumn(4);
+            }
+        });
+    })
+
+    function CheckboxesinThisColumn(index) {
+
+        $("#dashboard TBODY TR").each(function () {
+            $(this).children("TD").eq(index).find("input[type='checkbox']").prop("checked", true);
+        });
+
+    }
+    function UnCheckboxesinThisColumn(index) {
+        $("#dashboard TBODY TR").each(function () {
+
+            $(this).children("TD").eq(index).find("input[type='checkbox']").prop("checked", false);
+        });
+    }
+    function RepCheckboxesinThisColumn(index) {
+
+        $("#Report TBODY TR").each(function () {
+            $(this).children("TD").eq(index).find("input[type='checkbox']").prop("checked", true);
+        });
+
+    }
+    function RepUnCheckboxesinThisColumn(index) {
+        $("#Report TBODY TR").each(function () {
+            $(this).children("TD").eq(index).find("input[type='checkbox']").prop("checked", false);
+        });
+    }
+
+    function CheckAllboxesinThisColumn(index) {
+
+        $("#Roles TBODY TR").each(function () {
+
+            $(this).children("TD").eq(index).find("input[type='checkbox']").prop("checked", true);
+            });
+    }
+    function UnCheckAllboxesinThisColumn(index) {
+
+
+        $("#Roles TBODY TR").each(function () {
+
+            $(this).children("TD").eq(index).find("input[type='checkbox']").prop("checked", false);
+        });
+    }
+</script>
