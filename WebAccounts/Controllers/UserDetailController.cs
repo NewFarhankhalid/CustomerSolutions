@@ -150,9 +150,30 @@ and Password COLLATE Latin1_General_CS_AS ='{Password}' ";
         [HttpPost]
         public JsonResult TotalCheckDetail(int AttendanceType)
         {
-            string sql1 = $@"  Select EmployeeAttendance.EmployeeID,Name,TimeIn,Location,DeviceName from EmployeeAttendance 
- inner join EmployeeInfo on EmployeeAttendance.EmployeeID = EmployeeInfo.EmployeeID
- Where AttendanceType = {AttendanceType} and Cast(TimeIn as date)  = CAST(GETDATE() as date)";
+            string sql1 = "";
+            if(AttendanceType==1)
+            {
+                sql1 = sql1 + $@" Select EmployeeAttendance.EmployeeID,Name,Cast(TimeIn as time)TimeIn,Cast(OpenTime as time)OpenTime,
+Cast(DATEDIFF(MINUTE ,Cast(TimeIn as time), Cast(OpenTime as time))/60 as nvarchar) as Hours,
+Cast(DATEDIFF(MINUTE ,Cast(TimeIn as time), Cast(OpenTime as time))%60 as nvarchar) AS Minutes,
+Location
+	from EmployeeAttendance
+inner join EmployeeInfo on EmployeeAttendance.EmployeeID = EmployeeInfo.EmployeeID
+";
+            }
+            else
+            {
+                sql1 = sql1 + $@" Select EmployeeAttendance.EmployeeID,Name,Cast(TimeIn as time)TimeOut,Cast(OffTime as time)OffTime,
+Cast(DATEDIFF(MINUTE ,Cast(OffTime as time), Cast(TimeIn as time))/60 as nvarchar) as Hours,
+Cast(DATEDIFF(MINUTE ,Cast(OffTime as time), Cast(TimeIn as time))%60 as nvarchar) AS Minutes,
+Location
+	from EmployeeAttendance
+inner join EmployeeInfo on EmployeeAttendance.EmployeeID = EmployeeInfo.EmployeeID";
+            }
+            sql1 = sql1 + $@" Where AttendanceType = {AttendanceType} and Cast(TimeIn as date)  = CAST(GETDATE() as date) ";
+ //           string sql1 = $@"  Select EmployeeAttendance.EmployeeID,Name,TimeIn,Location,DeviceName from EmployeeAttendance 
+ //inner join EmployeeInfo on EmployeeAttendance.EmployeeID = EmployeeInfo.EmployeeID
+ //Where AttendanceType = {AttendanceType} and Cast(TimeIn as date)  = CAST(GETDATE() as date)";
             DataTable dtproductinfo = General.FetchData(sql1);
             List<Dictionary<string, object>> dbrows = GetProductRows(dtproductinfo);
             Dictionary<string, object> JSResponse = new Dictionary<string, object>();

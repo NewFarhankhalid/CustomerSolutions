@@ -35,6 +35,8 @@ namespace Installments.Controllers
             obj.DOB = DateTime.Now;
             obj.ConfirmationDate = DateTime.Now;
             obj.JoiningDate = DateTime.Now;
+            obj.OpenTime = DateTime.Now;
+            obj.OffTime = DateTime.Now;
             return View(obj);
         }
 
@@ -54,42 +56,41 @@ Values (" + objemployee.DepartmentID + "," + objemployee.DesignationID + ",'" + 
                 }
                 else
                 {
-//                    string Query = "";
+                    string Query = "";
 
-//                    Query = Query+$@" UPDATE [dbo].[EmployeeInfo]
-//   SET [Department] = {objemployee.DepartmentID}
-//      ,[Designation] = {objemployee.DesignationID}
-//      ,[Name] = '{objemployee.Name}'
-//      ,[FatherName] = '{objemployee.FatherName}'
-//      ,[CNIC] = '{objemployee.CNIC}'
-//      ,[Nationality] = '{objemployee.Nationality}'
-//      ,[Gender] = '{objemployee.Gender}'
-//      ,[DateOfBirth] = '{objemployee.DOB}'
-//      ,[BloodGroup] = <BloodGroup, nvarchar(50),>
-//      ,[Salary] = <Salary, nvarchar(50),>
-//      ,[UtilityAllowance] = <UtilityAllowance, int,>
-//      ,[MedicalAllowance] = <MedicalAllowance, int,>
-//      ,[GPFundAccNo] = <GPFundAccNo, int,>
-//      ,[KkFund] = <KkFund, int,>
-//      ,[Other] = <Other, nvarchar(50),>
-//      ,[Qualifications] = <Qualifications, nvarchar(50),>
-//      ,[DateOfJoining] = <DateOfJoining, datetime,>
-//      ,[DateOfConfirmation] = <DateOfConfirmation, datetime,>
-//      ,[BankAccountNo] = <BankAccountNo, nvarchar(50),>
-//      ,[BankName] = <BankName, nvarchar(50),>
-//      ,[BranchName] = <BranchName, nvarchar(50),>
-//      ,[Address] = <Address, nvarchar(max),>
-//      ,[Domicile] = <Domicile, nvarchar(50),>
-//      ,[HomeTel] = <HomeTel, nvarchar(50),>
-//      ,[MobileNo] = <MobileNo, nvarchar(50),>
-//      ,[OpenTime] = <OpenTime, datetime,>
-//      ,[OffTime] = <OffTime, datetime,>
-//      ,[FingerID] = <FingerID, nvarchar(max),>
-//      ,[Username] = <Username, nvarchar(50),>
-//      ,[Password] = <Password, nvarchar(50),>
-//      ,[AllowHunderdMeters] = <AllowHunderdMeters, bit,>
-//      ,[IsAdmin] = <IsAdmin, bit,>
-// WHERE <Search Conditions,,>
+                    Query = Query + $@" UPDATE [dbo].[EmployeeInfo]
+   SET [Department] = {objemployee.DepartmentID}
+      ,[Designation] = {objemployee.DesignationID}
+      ,[Name] = '{objemployee.Name}'
+      ,[FatherName] = '{objemployee.FatherName}'
+      ,[CNIC] = '{objemployee.CNIC}'
+      ,[Nationality] = '{objemployee.Nationality}'
+      ,[Gender] = '{objemployee.Gender}'
+      ,[DateOfBirth] = '{objemployee.DOB}'
+      ,[BloodGroup] = '{objemployee.BloodGroup}'
+      ,[Salary] = {objemployee.Salary}
+      ,[UtilityAllowance] = {objemployee.UtilityAllowance}
+      ,[MedicalAllowance] = {objemployee.MedicalAllowance}
+      ,[GPFundAccNo] = {objemployee.GPFundNo}
+      ,[KkFund] = {objemployee.KFFund}
+      ,[Other] = {objemployee.Other}
+      ,[Qualifications] = '{objemployee.Qualifications}'
+      ,[DateOfJoining] = '{objemployee.JoiningDate}'
+      ,[DateOfConfirmation] = '{objemployee.ConfirmationDate}'
+      ,[BankAccountNo] = '{objemployee.BankAccount}'
+      ,[BankName] = '{objemployee.BankName}'
+      ,[BranchName] = '{objemployee.BankBranch}'
+      ,[Address] = '{objemployee.Address}'
+      ,[Domicile] = '{objemployee.Domicile}'
+      ,[HomeTel] = '{objemployee.HomeTel}'
+      ,[MobileNo] = '{objemployee.MobileTel}'
+      ,[OpenTime] = '{objemployee.OpenTime}'
+      ,[OffTime] = '{objemployee.OffTime}'
+      ,[Username] = '{objemployee.UserName}'
+      ,[Password] = '{objemployee.Password}'
+      ,[AllowHunderdMeters] = {(objemployee.AllowHunderdMeters==true?"1":"0")}
+      ,[IsAdmin] = {(objemployee.IsAdmin == true ? "1" : "0")}
+ WHERE EmployeeID={objemployee.EmployeeID}";
 //UPDATE [dbo].[EmployeeInfo]
 //   SET [Department] = <Department, int,>
 //      ,[Designation] = <Designation, int,>
@@ -163,6 +164,9 @@ Values (" + objemployee.DepartmentID + "," + objemployee.DesignationID + ",'" + 
 //                    ViewBag.DesignationList = new DropDown().GetDesignationList();
 //                    ViewBag.GenderList = new DropDown().GetGender();
 //                    General.ExecuteNonQuery(Query);
+                   ViewBag.DesignationList = new DropDown().GetDesignationList();
+                    ViewBag.GenderList = new DropDown().GetGender();
+                    General.ExecuteNonQuery(Query);
                     return Json("true");
                 }
 
@@ -305,11 +309,11 @@ Values (" + objemployee.DepartmentID + "," + objemployee.DesignationID + ",'" + 
                 }
                 if (dr["OpenTime"] != DBNull.Value)
                 {
-                    bi.OpenTime = (dr["OpenTime"].ToString());
+                    bi.OpenTime = DateTime.Parse(dr["OpenTime"].ToString());
                 }
                 if (dr["OffTime"] != DBNull.Value)
                 {
-                    bi.OffTime = (dr["OffTime"].ToString());
+                    bi.OffTime = DateTime.Parse(dr["OffTime"].ToString());
                 }
                 if (dr["BankName"] != DBNull.Value)
                 {

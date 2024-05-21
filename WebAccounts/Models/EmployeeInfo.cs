@@ -85,8 +85,8 @@ namespace Installments.Models
         public decimal MedicalAllowance { get; set; }
         public string EmployeeNo { get; set; }
         public string FingerID { get; set; }
-        public string OpenTime { get; set; }
-        public string OffTime { get; set; }
+        public DateTime OpenTime { get; set; }
+        public DateTime OffTime { get; set; }
         public string UserName { get; set; }
         public string Password { get; set; } 
         public bool AllowHunderdMeters { get; set; }
