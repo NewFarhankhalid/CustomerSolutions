@@ -82,6 +82,20 @@ namespace Installments.Controllers
             return Json("true");
         }
 
+        public ActionResult CheckTasksType(string TasksType)
+        {
+            string sql = $@"Select * from TasksType where Name like '%{TasksType}%'";
+            DataTable dt = General.FetchData(sql);
+            if (dt.Rows.Count > 0)
+            {
+                return Json("true," + dt.Rows[0]["Name"].ToString());
+            }
+            else
+            {
+                return Json("false,");
+            }
+        }
+
         List<TasksType> DataTableToObject(DataTable dt)
         {
             List<TasksType> lstbranch = new List<TasksType>();

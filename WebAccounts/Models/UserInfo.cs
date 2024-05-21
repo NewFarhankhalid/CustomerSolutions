@@ -16,5 +16,6 @@ namespace Installments.Models
         public bool IsSuperAdmin { get; set; }
         public int RoleID { get; set; }
         public string RoleTitle { get; set; }
+        public string FingerID { get; set; }
     }
 }

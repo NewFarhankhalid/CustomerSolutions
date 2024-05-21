@@ -1,0 +1,146 @@
+﻿
+@model IEnumerable<Installments.Models.AddEmployee>
+
+@{
+    ViewBag.Title = "Add Employee";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@*<div class="box">
+    <div class="box-header">
+        <h3 class="box-title">Customer Information</h3>
+
+    </div>*@
+
+<div class="box">
+    <div class="box-header" style="text-align: center;">
+        <h3 class="box-title" style="font-weight: bold;">Add Employee</h3>
+    </div>
+</div>
+<div class="box-body">
+
+    <button type="button" class="btn btn-success" onclick="location.href = '/AddEmployee/Create'">New</button>
+
+    <br>
+    <br>
+
+    <table class="table" id="Customerinfo">
+        <thead>
+            <tr>
+
+                <th>
+                    @Html.DisplayNameFor(model => model.Department)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Designation)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.EmployeeName)
+                </th>
+
+                <th>
+                    @Html.DisplayNameFor(model => model.PhoneNo)
+                </th>
+
+                <th></th>
+            </tr>
+        </thead>
+        <tfoot>
+            <tr>
+
+                <th>
+                    @Html.DisplayNameFor(model => model.Department)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Designation)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.EmployeeName)
+                </th>
+
+                <th>
+                    @Html.DisplayNameFor(model => model.PhoneNo)
+                </th>
+                <th></th>
+            </tr>
+        </tfoot>
+
+        <tbody>
+
+            @foreach (var item in Model)
+            {
+                <tr id="@item.EmployeeID">
+
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Department)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Designation)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.EmployeeName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PhoneNo)
+                    </td>
+
+
+                   
+
+                    <td>
+
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-primary" onclick="location.href='/AddEmployee/EmployeeInformation/@item.EmployeeID'">View</button>
+                            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                                <span class="caret"></span>
+                                <span class="sr-only">Toggle Dropdown</span>
+                            </button>
+                            <ul class="dropdown-menu" role="menu">
+                                <li> <a href='/AddEmployee/Edit/@item.EmployeeID'>Edit</a>
+                                <li><a href='javascript:;' onclick='DeleteButtonclicked(this);' id="@item.EmployeeID"> Delete</a>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+</div>
+
+<script>
+  
+
+    function DeleteButtonclicked(object) {
+
+
+        bootbox.confirm({
+            size: "small",
+            message: "Are you sure to delete the selected record?",
+            callback: function (result) {
+                if (result == true) {
+                    jQuery.ajax({
+                        url: '/AddEmployee/Delete',
+                        type: 'POST',
+                        dataType: 'json',
+                        data: { id: object.id },
+                        success: function (r) {
+                            if (r == "true") {
+                                $("#" + object.id).remove();
+                            }
+                            else {
+                                bootbox.alert("" + r);
+                            }
+                        },
+                        error: function () {
+                            alert('error');
+                        }
+                    })
+                }
+                else {
+                }
+            }
+        })
+    }
+</script>
+

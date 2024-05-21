@@ -1,0 +1,228 @@
+﻿@model Installments.Models.AddEmployee
+
+@{
+    ViewBag.Title = "Customer Information";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="box">
+    <div class="box-header">
+        <h3 class="header-title">
+            Add Employee
+            @if (Model.EmployeeID == 0)
+            {
+                <small>(New)</small>
+
+            }
+            else
+            {
+                <small>(Edit)</small>
+            }
+        </h3>
+    </div>
+</div>
+
+
+
+<div class="box-body">
+    <div class="form-horizontal">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.EmployeeID)
+        <div class="row">
+            <div class="col-md-12">
+                <table style="width:100%">
+                    <tr style="padding:0px">
+                        <td>
+                            <div class="col-md-6">
+                                @Html.Label("Department", htmlAttributes: new { @class = "control-label " })
+                                @Html.DropDownListFor(model => model.Department, (SelectList)ViewBag.Department, "Select Department", htmlAttributes: new { @class = "form-control Select2" })
+                                @Html.ValidationMessageFor(model => model.Department, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="col-md-6">
+                                @Html.Label("Designation", htmlAttributes: new { @class = "control-label " })
+                                @Html.DropDownListFor(model => model.Designation, (SelectList)ViewBag.Designation, "Select Designation", htmlAttributes: new { @class = "form-control Select2" })
+                                @Html.ValidationMessageFor(model => model.Designation, "", new { @class = "text-danger" })
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+
+                            <div class="col-md-6">
+                                @Html.Label("Employee Name", htmlAttributes: new { @class = "control-label " })
+                                @Html.EditorFor(model => model.EmployeeName, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.EmployeeName, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="col-md-6">
+                                @Html.Label("Employee Father Name", htmlAttributes: new { @class = "control-label " })
+                                @Html.EditorFor(model => model.EmployeeFatherName, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.EmployeeFatherName, "", new { @class = "text-danger" })
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="col-md-6">
+                                @Html.Label("Address", htmlAttributes: new { @class = "control-label " })
+                                @Html.EditorFor(model => model.Address, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Address, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="col-md-6">
+                                @Html.Label("City", htmlAttributes: new { @class = "control-label " })
+                                @Html.EditorFor(model => model.City, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.City, "", new { @class = "text-danger" })
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="col-md-6">
+                                @Html.Label("Mobile No", htmlAttributes: new { @class = "control-label " })
+                                @Html.EditorFor(model => model.MobileNo, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.MobileNo, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="col-md-6">
+                                @Html.Label("Phone No", htmlAttributes: new { @class = "control-label " })
+                                @Html.EditorFor(model => model.PhoneNo, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.PhoneNo, "", new { @class = "text-danger" })
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="col-md-6">
+                                @Html.Label("CNIC No", htmlAttributes: new { @class = "control-label " })
+                                @Html.EditorFor(model => model.CNICNo, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.CNICNo, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="col-md-6">
+                                @Html.Label("Salary", htmlAttributes: new { @class = "control-label " })
+                                @Html.EditorFor(model => model.Salary, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Salary, "", new { @class = "text-danger" })
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="col-md-6">
+                                @Html.Label("Open Time", htmlAttributes: new { @class = "control-label " })
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-clock"></i></span>
+                                    <select class="form-control" id="openTimeDropdown"></select>
+
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                @Html.Label("Off Time", htmlAttributes: new { @class = "control-label " })
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-clock"></i></span>
+                                    <select class="form-control" id="offTimeDropdown"></select>
+
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+
+
+                </table>
+                <br />
+                <br />
+                <tr>
+                    <td class="col-md-6">
+                        <input type="submit" value="Save" onclick="SaveRecord()" class="btn btn-primary" />
+                    </td>
+                    <td class="col-md-6">
+                        <input style="margin-right:10px" type="button" value="Back" class="pull-right btn btn-success" onclick="location.href='/AddEmployee/Index'" />
+                    </td>
+                </tr>
+            </div>
+        </div>
+    </div>
+</div>
+ 
+<script>
+
+
+    $(document).ready(function () {
+        // Populate open time dropdown
+        populate12HourDropdown("openTimeDropdown");
+
+        // Populate off time dropdown
+        populate12HourDropdown("offTimeDropdown");
+
+        function populate12HourDropdown(dropdownId) {
+            var dropdown = $("#" + dropdownId);
+
+            // Clear existing options
+            dropdown.empty();
+            dropdown.append($("<option>").val("").text("Select Time"));
+
+            // Populate options for 12 hours (AM)
+            for (var i = 1; i <= 12; i++) {
+                var hour = (i < 10) ? "0" + i : i; // Add leading zero for single-digit hours
+                var optionAM = $("<option>").val(hour + ":00 AM").text(hour + ":00 AM");
+                dropdown.append(optionAM);
+            }
+
+            // Populate options for 12 hours (PM)
+            for (var i = 1; i <= 12; i++) {
+                var hour = (i < 10) ? "0" + i : i; // Add leading zero for single-digit hours
+                var optionPM = $("<option>").val(hour + ":00 PM").text(hour + ":00 PM");
+                dropdown.append(optionPM);
+            }
+        }
+    });
+
+
+
+
+
+
+
+
+    function SaveRecord() {
+        var Employee = {}
+        Employee.EmployeeID = $("#EmployeeID").val();
+        Employee.Department = $("#Department").val();
+        Employee.Designation = $("#Designation").val();
+        Employee.EmployeeName = $("#EmployeeName").val();
+        Employee.EmployeeFatherName = $("#EmployeeFatherName").val();
+        Employee.MobileNo = $("#MobileNo").val();
+        Employee.PhoneNo = $("#PhoneNo").val();
+        Employee.CNICNo = $("#CNICNo").val();
+        Employee.Salary = $("#Salary").val();
+        Employee.TimeIn = $("#TimeIn").val();
+        Employee.Timeout = $("#Timeout").val();
+
+        if (Employee.Department == "" || Employee.Department == null || Employee.Department == 0) {
+            bootbox.alert("Please select Department");
+            return
+        }
+        if (Employee.EmployeeName == "" || Employee.EmployeeName == null || Employee.EmployeeName == 0) {
+            bootbox.alert("Please Enter Employee Name");
+            return
+        }
+        if (Employee.TimeIn == "" || Employee.TimeIn == null || Employee.TimeIn == 0) {
+            bootbox.alert("Please select Time-In");
+            return
+        }
+        if (Employee.Timeout == "" || Employee.Timeout == null || Employee.Timeout == 0) {
+            bootbox.alert("Please select Time-Out");
+            return
+        }
+        $.ajax({
+            type: "Post",
+            URL: "AddEmployee/Create/",
+            data: json.stringify({ br }),
+            contentType: "application/json; charset=utf-8",
+            dataType: JSON,
+            Success: function (r) {
+                window.location.href = "/AddEmployee/Index";
+            },
+            error: function (x, e) {
+                bootbox.alert("Error");
+            },
+        });
+    }
+</script>
+

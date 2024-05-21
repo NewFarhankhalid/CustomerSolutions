@@ -34,7 +34,8 @@ namespace Installments.Models
         [StringLength(50)]
         [Display(Name = "Person To Contact")]
         public string Persontocontact { get; set; }
-       
+        public string OffDay { get; set; }
+
         [StringLength(50)]
         [Display(Name = "Contact No.")]
         public string contactno { get; set; }
@@ -44,6 +45,8 @@ namespace Installments.Models
         public string Email { get; set; }
         [Display(Name ="Software Version")]
         public string SoftwareVersion { get; set; }
+        public string OpenTime { get; set; }
+        public string OffTime { get; set; }
         public string Branch {  get; set; }
         public string Designation {  get; set; }
         public DateTime ExpiryDate { get; set; }

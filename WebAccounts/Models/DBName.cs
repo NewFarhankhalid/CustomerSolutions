@@ -12,5 +12,6 @@ namespace Installments.Models
         public int PaymentTypeID { get; set; }
         public string PaymentType { get; set; }
         public decimal Payment {  get; set; }
+        public string Description { get; set; }
     }
 }

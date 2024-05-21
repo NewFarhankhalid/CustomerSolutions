@@ -6,9 +6,6 @@
 }
 
 
-@using (Html.BeginForm())
-{
-    @Html.AntiForgeryToken()
     <div class="row">
         @if (ViewBag.Error != null)
         {
@@ -23,24 +20,31 @@
                     <h3 class="box-title text-danger">Employee Information <small>(New)</small></h3>
                 </div>
                 <div class="box-body">
-                    
-                  <div class="row">
-                      <div class="col-md-6">
-                          @*<div class="col-md-6">
-                              @Html.LabelFor(model => model.BranchID, htmlAttributes: new { @class = "control-label " })
-                              @Html.DropDownListFor(model => model.BranchID, (SelectList)ViewBag.BranchList, "Select Branch", htmlAttributes: new { @class = "form-control Select2", id = "ddlbranchinfo" })
-                              @Html.ValidationMessageFor(model => model.BranchID, "", new { @class = "text-danger" })
-                          </div>*@
-                          <div class="col-md-6">
-                              @Html.LabelFor(model => model.DesignationID, htmlAttributes: new { @class = "control-label " })
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    @Html.HiddenFor(model => model.EmployeeID)
+                    <div class="row">
+                        <div class="col-md-6">
+                            @*<div class="col-md-6">
+                    @Html.LabelFor(model => model.BranchID, htmlAttributes: new { @class = "control-label " })
+                    @Html.DropDownListFor(model => model.BranchID, (SelectList)ViewBag.BranchList, "Select Branch", htmlAttributes: new { @class = "form-control Select2", id = "ddlbranchinfo" })
+                    @Html.ValidationMessageFor(model => model.BranchID, "", new { @class = "text-danger" })
+                </div>*@
+                            <div class="col-md-6">
+                                @Html.LabelFor(model => model.DepartmentID, htmlAttributes: new { @class = "control-label " })
 
-                              @Html.DropDownListFor(model => model.DesignationID, (SelectList)ViewBag.DesignationList, "Select Designation", htmlAttributes: new { @class = "form-control Select2" })
-                              @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
-                              </div>
-                          </div>
-                      </div>
-                   
-                  
+                                @Html.DropDownListFor(model => model.DepartmentID, (SelectList)ViewBag.DepartmentList, "Select Department", htmlAttributes: new { @class = "form-control Select2" })
+                                @Html.ValidationMessageFor(model => model.DepartmentID, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="col-md-6">
+                                @Html.LabelFor(model => model.DesignationID, htmlAttributes: new { @class = "control-label " })
+
+                                @Html.DropDownListFor(model => model.DesignationID, (SelectList)ViewBag.DesignationList, "Select Designation", htmlAttributes: new { @class = "form-control Select2" })
+                                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+
+
                 </div>
             </div>
         </div>
@@ -105,7 +109,7 @@
 
                                     @Html.LabelFor(model => model.Gender, htmlAttributes: new { @class = "control-label " })
 
-                                    @Html.DropDownListFor(model => model.Gender, (SelectList)ViewBag.GenderList, "Select Gender", htmlAttributes: new { @class = "form-control", id = "ddlbranchinfo" })
+                                    @Html.DropDownListFor(model => model.Gender, (SelectList)ViewBag.GenderList, "Select Gender", htmlAttributes: new { @class = "form-control" })
                                     @Html.ValidationMessageFor(model => model.Gender, "", new { @class = "text-danger" })
 
                                 </td>
@@ -229,131 +233,197 @@
 
                     <tr>
                         <td class="col-md-3">
-
                             @Html.LabelFor(model => model.HomeTel, htmlAttributes: new { @class = "control-label " })
-
                             @Html.EditorFor(model => model.HomeTel, new { htmlAttributes = new { @class = "form-control" } })
                             @Html.ValidationMessageFor(model => model.HomeTel, "", new { @class = "text-danger" })
-
                         </td>
                         <td class="col-md-3">
-
                             @Html.LabelFor(model => model.MobileTel, htmlAttributes: new { @class = "control-label " })
-
                             @Html.EditorFor(model => model.MobileTel, new { htmlAttributes = new { @class = "form-control" } })
                             @Html.ValidationMessageFor(model => model.MobileTel, "", new { @class = "text-danger" })
-
                         </td>
-                        </tr>
+                    </tr>
+                    <tr>
+                        <td class="col-md-3">
+                            @Html.Label("Open Time", htmlAttributes: new { @class = "control-label " })
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="fa fa-clock"></i></span>
+                                <select class="form-control" id="openTimeDropdown"></select>
+                            </div>
+                        </td>
+                        <td class="col-md-3">
+                            @Html.Label("Off Time", htmlAttributes: new { @class = "control-label " })
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="fa fa-clock"></i></span>
+                                <select class="form-control" id="offTimeDropdown"></select>
+                            </div>
+                        </td>
+                    </tr>
                 </table>
             </div>
         </div>
 
 
     </div>
-        <div class="col-md-5">
-            <div class="box box-warning">
-                <div class="box-header">
-                    <h3 class="box-title">Salary Details</h3>
-                </div>
-                <div class="box-body">
-                    <div class="form-horizontal">
-                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-
-                        <table style="width:100%">
-                            <tr>
-                                <td class="col-md-3">
-
-                                    @Html.LabelFor(model => model.Salary, htmlAttributes: new { @class = "control-label " })
-
-                                    @Html.EditorFor(model => model.Salary, new { htmlAttributes = new { @class = "form-control" } })
-                                    @Html.ValidationMessageFor(model => model.Salary, "", new { @class = "text-danger" })
-
-                                </td>
-                                <td class="col-md-3">
-
-                                    @Html.LabelFor(model => model.UtilityAllowance, htmlAttributes: new { @class = "control-label " })
-
-                                    @Html.EditorFor(model => model.UtilityAllowance, new { htmlAttributes = new { @class = "form-control" } })
-                                    @Html.ValidationMessageFor(model => model.UtilityAllowance, "", new { @class = "text-danger" })
-
-                                </td>
-                                <td class="col-md-3">
-
-                                    @Html.LabelFor(model => model.MedicalAllowance, htmlAttributes: new { @class = "control-label " })
-
-                                    @Html.EditorFor(model => model.MedicalAllowance, new { htmlAttributes = new { @class = "form-control" } })
-                                    @Html.ValidationMessageFor(model => model.MedicalAllowance, "", new { @class = "text-danger" })
-
-                                </td>
-                            </tr>
-                          
-                        </table>
-
-
-                    </div>
-
-                   
-                </div>
+    <div class="col-md-5">
+        <div class="box box-warning">
+            <div class="box-header">
+                <h3 class="box-title">Salary Details</h3>
             </div>
+            <div class="box-body">
+                <div class="form-horizontal">
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-            <div class="box box-success">
-                <div class="box-header">
-                    <h3 class="box-title">Bank Account Details</h3>
-                </div>
-                <div class="box-body">
                     <table style="width:100%">
                         <tr>
-                            <td class="col-md-8">
+                            <td class="col-md-3">
 
-                                @Html.LabelFor(model => model.BankAccount, htmlAttributes: new { @class = "control-label " })
+                                @Html.LabelFor(model => model.Salary, htmlAttributes: new { @class = "control-label " })
 
-                                @Html.EditorFor(model => model.BankAccount, new { htmlAttributes = new { @class = "form-control" } })
-                                @Html.ValidationMessageFor(model => model.BankAccount, "", new { @class = "text-danger" })
-
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="col-md-8">
-
-                                @Html.LabelFor(model => model.BankName, htmlAttributes: new { @class = "control-label " })
-
-                                @Html.EditorFor(model => model.BankName, new { htmlAttributes = new { @class = "form-control" } })
-                                @Html.ValidationMessageFor(model => model.BankName, "", new { @class = "text-danger" })
+                                @Html.EditorFor(model => model.Salary, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Salary, "", new { @class = "text-danger" })
 
                             </td>
-                        </tr>
-                        <tr>
-                            <td class="col-md-8">
+                            <td class="col-md-3">
 
-                                @Html.LabelFor(model => model.BankBranch, htmlAttributes: new { @class = "control-label" })
+                                @Html.LabelFor(model => model.UtilityAllowance, htmlAttributes: new { @class = "control-label " })
 
-                                @Html.EditorFor(model => model.BankBranch, new { htmlAttributes = new { @class = "form-control" } })
-                                @Html.ValidationMessageFor(model => model.BankBranch, "", new { @class = "text-danger" })
+                                @Html.EditorFor(model => model.UtilityAllowance, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.UtilityAllowance, "", new { @class = "text-danger" })
+
+                            </td>
+                            <td class="col-md-3">
+
+                                @Html.LabelFor(model => model.MedicalAllowance, htmlAttributes: new { @class = "control-label " })
+
+                                @Html.EditorFor(model => model.MedicalAllowance, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.MedicalAllowance, "", new { @class = "text-danger" })
 
                             </td>
                         </tr>
                     </table>
 
+
+                </div>
+
+
+            </div>
+        </div>
+
+        <div class="box box-success">
+            <div class="box-header">
+                <h3 class="box-title">Bank Account Details</h3>
+            </div>
+            <div class="box-body">
+                <table style="width:100%">
+                    <tr>
+                        <td class="col-md-8">
+
+                            @Html.LabelFor(model => model.BankAccount, htmlAttributes: new { @class = "control-label " })
+
+                            @Html.EditorFor(model => model.BankAccount, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.BankAccount, "", new { @class = "text-danger" })
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col-md-8">
+
+                            @Html.LabelFor(model => model.BankName, htmlAttributes: new { @class = "control-label " })
+
+                            @Html.EditorFor(model => model.BankName, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.BankName, "", new { @class = "text-danger" })
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col-md-8">
+
+                            @Html.LabelFor(model => model.BankBranch, htmlAttributes: new { @class = "control-label" })
+
+                            @Html.EditorFor(model => model.BankBranch, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.BankBranch, "", new { @class = "text-danger" })
+
+                        </td>
+                    </tr>
+                </table>
+
+            </div>
+        </div>
+        <div class="box box-success">
+            <div class="box-header">
+                <h3 class="box-title">Login Details</h3>
+            </div>
+            <div class="box-body">
+                <table style="width:100%">
+                    <tr>
+                        <td class="col-md-8">
+                            @Html.LabelFor(model => model.UserName, htmlAttributes: new { @class = "control-label " })
+
+                            @Html.EditorFor(model => model.UserName, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })
+                            <div id="formTitleSuggestions"></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col-md-8">
+
+                            @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label " })
+
+                            @Html.EditorFor(model => model.Password, new
+                            {
+                                htmlAttributes = new
+                                {
+                                    @class = "form-control",
+                                    @type =
+                           "Password"
+                                }
+                            })
+                            @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col-md-8">
+
+                            @Html.Label("Allow After 100 Meters", htmlAttributes: new { @class = "control-label" })
+
+                            @Html.CheckBoxFor(model => model.AllowHunderdMeters, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.AllowHunderdMeters, "", new { @class = "text-danger" })
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col-md-8">
+
+                            @Html.Label("Is Administrator", htmlAttributes: new { @class = "control-label" })
+
+                            @Html.CheckBoxFor(model => model.IsAdmin, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.IsAdmin, "", new { @class = "text-danger" })
+
+                        </td>
+                    </tr>
+                    
+                </table>
+
+            </div>
+        </div>
+        <div class="box box-solid">
+            <div class="box-header">
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <input type="button" value="Save" id="Savebtn" onclick="SaveRecord()" class="btn btn-primary pull-right" />
+                    </div>
+                </div>
+                <div>
+                    @Html.ActionLink("Back to List", "Index")
                 </div>
             </div>
-
-            <div class="box box-solid">
-                <div class="box-header">
-                    <div class="form-group">
-                        <div class="col-md-offset-2 col-md-10">
-                            <input type="submit" value="Save" class="btn btn-primary pull-right" />
-                        </div>
-                    </div>
-                    <div>
-                        @Html.ActionLink("Back to List", "Index")
-                    </div>
-                </div>
-                </div>
-
         </div>
+
     </div>
-    }
+    </div>
+    
     @section Scripts {
         @Scripts.Render("~/bundles/jqueryval")
     }
@@ -364,6 +434,78 @@
         }
     </style>
     <script>
+
+
+        $(document).ready(function () {
+            if(@Model.EmployeeID!=0)
+            {
+                $("#DesignationID").val(@Model.DesignationID);
+                $("#DepartmentID").val(@Model.DepartmentID);
+            }
+            $('#UserName').on('input', function () {
+                var inputValue = $(this).val().trim();
+                var EmployeeID = 0;
+                EmployeeID = @Model.EmployeeID;
+                // Check if inputValue is not empty
+                if (inputValue) {
+                    // Send AJAX request to the server to fetch existing FormTitles
+                    $.ajax({
+                    type: 'POST',
+                        url: '/EmployeeInfo/CheckUserName', // Endpoint to check for existing FormTitles
+                        data: JSON.stringify({ UserName: inputValue, EmployeeID }),
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        success: function (r) {
+                            var data = r.split(',');
+                            $('#formTitleSuggestions').html('');
+                            if (data[0] == "true") {
+                                $('#formTitleSuggestions').append('<div>This User Name Already Exists With Name ' + data[1] + '</div>');
+                                $("#Savebtn").prop('disabled', true);
+                            } else {
+                                $('#formTitleSuggestions').append('');
+                                $("#Savebtn").prop('disabled', false);
+                            }
+                        },
+                        error: function (x, e) {
+                            bootbox.alert("Error");
+                        },
+                    });
+                }
+                else {
+                    $('#formTitleSuggestions').html('');
+                }
+            });
+            // Populate open time dropdown
+            populate12HourDropdown("openTimeDropdown");
+
+            // Populate off time dropdown
+            populate12HourDropdown("offTimeDropdown");
+
+            function populate12HourDropdown(dropdownId) {
+                var dropdown = $("#" + dropdownId);
+
+                // Clear existing options
+                dropdown.empty();
+                dropdown.append($("<option>").val("").text("Select Time"));
+
+                // Populate options for 12 hours (AM)
+                for (var i = 1; i <= 12; i++) {
+                    var hour = (i < 10) ? "0" + i : i; // Add leading zero for single-digit hours
+                    var optionAM = $("<option>").val(hour + ":00 AM").text(hour + ":00 AM");
+                    dropdown.append(optionAM);
+                }
+
+                // Populate options for 12 hours (PM)
+                for (var i = 1; i <= 12; i++) {
+                    var hour = (i < 10) ? "0" + i : i; // Add leading zero for single-digit hours
+                    var optionPM = $("<option>").val(hour + ":00 PM").text(hour + ":00 PM");
+                    dropdown.append(optionPM);
+                }
+            }
+        });
+
+
+
         $(function () {
             $('#dtpdob').datepicker({
                 autoclose: true
@@ -380,4 +522,86 @@
             //$('#dtpconfirmationdate').datetimepicker({ format: 'DD/MM/YYYY' });
 
         });
+
+
+        function SaveRecord() {
+
+            var objemployee = {};
+            objemployee.EmployeeID = $("#EmployeeID").val();
+            objemployee.DesignationID = $("#DesignationID").val();
+            objemployee.DepartmentID = $("#DepartmentID").val();
+            objemployee.Name = $("#Name").val();
+            objemployee.FatherName = $("#FatherName").val();
+            objemployee.CNIC = $("#CNIC").val();
+            objemployee.Nationality = $("#Nationality").val();
+            objemployee.Gender = $("#Gender").val();
+            objemployee.DOB = $("#dtpdob").val();
+            objemployee.Domicile = $("#Domicile").val();
+            objemployee.BloodGroup = $("#BloodGroup").val();
+            objemployee.GPFundNo = $("#GPFundNo").val();
+            objemployee.KFFund = $("#KFFund").val();
+            objemployee.Other = $("#Other").val();
+            objemployee.Qualifications = $("#Qualifications").val();
+            objemployee.JoiningDate = $("#dtpjoiningdate").val();
+            objemployee.ConfirmationDate = $("#dtpconfirmationdate").val();
+            objemployee.Address = $("#Address").val();
+            objemployee.HomeTel = $("#HomeTel").val();
+            objemployee.MobileTel = $("#MobileTel").val();
+            objemployee.OpenTime = $("#openTimeDropdown").val();
+            objemployee.OffTime = $("#offTimeDropdown").val();
+            objemployee.Salary = $("#Salary").val();
+            objemployee.UtilityAllowance = $("#UtilityAllowance").val();
+            objemployee.MedicalAllowance = $("#MedicalAllowance").val();
+            objemployee.BankAccount = $("#BankAccount").val();
+            objemployee.BankName = $("#BankName").val();
+            objemployee.BankBranch = $("#BankBranch").val();
+            objemployee.UserName = $("#UserName").val();
+            objemployee.Password = $("#Password").val();
+
+            if ($('#AllowHunderdMeters').is(":checked")) {
+                objemployee.AllowHunderdMeters = 1;
+            }
+            else {
+                objemployee.AllowHunderdMeters = 0;
+            }
+            if ($('#IsAdmin').is(":checked")) {
+                objemployee.IsAdmin = 1;
+            }
+            else {
+                objemployee.IsAdmin = 0;
+            }
+
+
+            if (objemployee.Name == "" || objemployee.Name == 0 || objemployee.Name == null) {
+                bootbox.alert("Please Enter Employee Name");
+                return;
+            }
+            if (objemployee.FatherName == "" || objemployee.FatherName == 0 || objemployee.FatherName == null) {
+                bootbox.alert("Please Enter Father Name");
+                return;
+            }
+            if (objemployee.UserName == "" || objemployee.UserName == 0 || objemployee.UserName == null) {
+                bootbox.alert("Please Enter User Name");
+                return;
+            }
+            if (objemployee.Password == "" || objemployee.Password == 0 || objemployee.Password == null) {
+                bootbox.alert("Please Enter Password");
+                return;
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/EmployeeInfo/Create",
+                data: JSON.stringify({ objemployee }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (r) {
+                    window.location.href = "/EmployeeInfo/Index";
+                },
+                error: function (x, e) {
+                    bootbox.alert("Error");
+                },
+            });
+
+        }
     </script>

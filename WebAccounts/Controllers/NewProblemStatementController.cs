@@ -60,8 +60,8 @@ left join WorkCategory on NewProblemStatement.WorkCategory = WorkCategory.Id
                
                 if (objProblem.ProblemStatementID == 0)
                 {
-                    string Query = "Insert into NewProblemStatement (ComplaintNo,CustomerID,ProblemTitle,Description,PromiseDate,EntryDate,AssignTo,WorkPriority,ProblemImagePath,Solved,CreatedID,CreatedDate,CallTimeDuration,OperatorID,WorkCategory) ";
-                    Query = Query + "Values ('" + objProblem.ProblemStatmentNo + "'," + objProblem.CustomerID + ",'" + objProblem.ProblemTitle + "','" + objProblem.Description + "','" + objProblem.PromiseDate + "',GetDate()," + objProblem.AssignTo + ","+ objProblem.WorkPriority + ",'"+objProblem.ProblemImagePath + "',0,"+General.userID+ ",GetDate(),'" + objProblem.Calltime + "',"+objProblem.OperatorID+ ","+objProblem.WorkCategory+")";
+                    string Query = "Insert into NewProblemStatement (ComplaintNo,CustomerID,ProblemTitle,PromiseDate,EntryDate,AssignTo,WorkPriority,ProblemImagePath,Solved,CreatedID,CreatedDate,CallTimeDuration,OperatorID,WorkCategory) ";
+                    Query = Query + "Values ('" + objProblem.ProblemStatmentNo + "'," + objProblem.CustomerID + ",'" + objProblem.ProblemTitle + "','" + objProblem.PromiseDate + "',GetDate()," + objProblem.AssignTo + ","+ objProblem.WorkPriority + ",'"+objProblem.ProblemImagePath + "',0,"+General.userID+ ",GetDate(),'" + objProblem.Calltime + "',"+objProblem.OperatorID+ ","+objProblem.WorkCategory+")";
                     //General.ExecuteNonQuery(Query);
                     //Query = "";
                     Query = Query + " Select @@IDENTITY as ProblemStatementID";
@@ -93,7 +93,6 @@ left join WorkCategory on NewProblemStatement.WorkCategory = WorkCategory.Id
                     Query = Query + " SET    [ProblemTitle] ='" + objProblem.ProblemTitle + "' ";
                     Query = Query + " ,[CustomerID] =" + objProblem.CustomerID + " ";
                     Query = Query + " ,[ComplaintNo] =" + objProblem.ProblemStatmentNo + " ";
-                    Query = Query + " ,[Description] ='" + objProblem.Description + "' ";
                     Query = Query + ",[PromiseDate]='" + objProblem.PromiseDate + "'";
                     Query = Query + ",[ProblemImage]='" + objProblem.ProblemImage + "'";          
                     Query = Query + ",[AssignTo]=" + objProblem.AssignTo + "";
@@ -228,13 +227,14 @@ left join WorkCategory on NewProblemStatement.WorkCategory = WorkCategory.Id
         }
         public ActionResult ProblemSolved(int id)
         {
-            string ProblemTitle = General.FetchData("Select ProblemTitle Where NewProblemStatement Where ProblemStatementID=" + id).Rows[0]["ProblemTitle"].ToString();
+            string ProblemTitle = General.FetchData("Select * from NewProblemStatement Where ProblemStatementID=" + id).Rows[0]["ProblemTitle"].ToString();
             string Query = @" UPDATE [dbo].[NewProblemStatement] 
 Set Solved=1 
 Where ProblemStatementID=" + id;
             General.ExecuteNonQuery(Query);
             new GeneralAPIsController().InsertLog(GeneralAPIsController.LogTypes.Edit, GeneralAPIsController.LogSource.NewProblemStatement, id, " Problem Title " + ProblemTitle);
-            return Json("true");
+            //return Json("true", JsonRequestBehavior.AllowGet);
+            return RedirectToAction("Index");
         }
 
         public ActionResult Edit(int id)
@@ -261,6 +261,7 @@ left join WorkCategory on NewProblemStatement.WorkCategory = WorkCategory.Id
             ViewBag.WorkPriority = new DropDown().GetWorkPriority("", lstbranch[0].WorkPriority);
                 ViewBag.Designation = new DropDown().GetDesignation();
                 ViewBag.WorkCategory = new DropDown().GetWorkCategory();
+                ViewBag.OperatorName = new DropDown().GetEmptyList();
 
                 return View("Create", lstbranch[0]);
             }
@@ -369,6 +370,10 @@ left join WorkCategory on NewProblemStatement.WorkCategory = WorkCategory.Id
                 if (dr["Category"] != DBNull.Value)
                 {
                     bi.WorkCategory = (dr["Category"].ToString());
+                }
+                if (dr["EntryDate"] != DBNull.Value)
+                {
+                    bi.EntryDate = DateTime.Parse(dr["EntryDate"].ToString());
                 }
                 if (dr["ProblemImage"] != DBNull.Value)
                 {

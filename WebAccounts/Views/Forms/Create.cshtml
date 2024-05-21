@@ -73,7 +73,7 @@
                         <div class="form-group">
                             <div class="col-md-offset-2 col-md-10">
                                 <input type="button" value="Back" onclick="BackToList()" class="btn btn-success" />
-                                <input type="button" onclick="SaveRecord()" value="Save" class="btn btn-primary pull-right" />
+                                <input type="button" onclick="SaveRecord()" value="Save" id="Save" class="btn btn-primary pull-right" />
                             </div>
                         </div>
                     </div>
@@ -117,8 +117,10 @@
                         $('#formTitleSuggestions').html('');
                         if (data[0] == "true") {
                             $('#formTitleSuggestions').append('<div>' + data[1] + '</div>');
+                            $("#Save").prop('disabled', true);
                         } else {
                             $('#formTitleSuggestions').append('<div>No matching Form Titles found.</div>');
+                            $("#Save").prop('disabled', false);
                         }
                     },
                     error: function (x, e) {

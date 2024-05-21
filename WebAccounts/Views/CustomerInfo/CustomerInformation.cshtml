@@ -70,52 +70,100 @@
                         This Customer is Inactive, it will not be shown in any entry form.
                     </div>
                 }
-                <table class="table  ">
+            <table class="table  ">
 
 
-                    <tr>
+                <tr>
 
-                        <th class="col-md-2">Owner Name:</th>
-                        <td class="col-md-2">@Model.OwnerName</td>
-                        <th class="col-md-2">Owner No:</th>
-                        <td class="col-md-2">@Model.OwnerContactNo</td>
-                        <th class="col-md-2">Customer System ID:</th>
-                        <td class="col-md-2">@Model.SystemCustomerID</td>
+                    <th class="col-md-2">Owner Name:</th>
+                    <td class="col-md-2">@Model.OwnerName</td>
+                    <th class="col-md-2">Branch:</th>
+                    <td class="col-md-2">@Model.Branch</td>
+                </tr>
+                <tr>
 
-                    </tr>
-                    <tr>
+                    <th class="col-md-2">Software Version:</th>
+                    <td class="col-md-2">@Model.SoftwareVersion</td>
+                    <th class="col-md-2">Email:</th>
+                    <td class="col-md-2">@Model.Email</td>
 
-                        <th class="col-md-2">Person To Contact:</th>
-                        <td class="col-md-2">@Model.Persontocontact</td>
-                        <th class="col-md-2">Contact No:</th>
-                        <td class="col-md-2">@Model.contactno</td>
-                        <th class="col-md-2">Email:</th>
-                        <td class="col-md-2">@Model.Email</td>
-                        
 
-                    </tr>
+                </tr>
 
-                    <tr>
-                        <th class="col-md-2">City Name:</th>
-                        <td class="col-md-2">@Model.CityName</td>
-                        <th class="col-md-2">Address:</th>
-                        <td class="col-md-2" colspan="3">@Model.Address</td>
-                       
+                <tr>
+                    <th class="col-md-2">City Name:</th>
+                    <td class="col-md-2">@Model.CityName</td>
+                    <th class="col-md-2">Address:</th>
+                    <td class="col-md-2" colspan="3">@Model.Address</td>
 
-                    </tr>
-                    <tr>
-                        <th class="col-md-2">BusinessNature:</th>
-                        <td class="col-md-2">@Model.BusinessNature</td>
-                        <th class="col-md-2">Password:</th>
-                        <td class="col-md-2">@Model.Password</td>
-                    </tr>               
-                    <tr>
-                        <th class="col-md-2">Date of Joining:</th>
-                        <td class="col-md-2"><strong class=" text-orange">@(DateTime.Parse(Model.CreatedDate.ToString()).ToString("MM-dd-yyyy"))</strong></td>
-                        <th class="col-md-2">Expiry Date:</th>
-                        <td class="col-md-2"><strong class=" text-orange">@(DateTime.Parse(Model.ExpiryDate.ToString()).ToString("MM-dd-yyyy"))</strong></td>
-                    </tr>
-                </table>
+
+                </tr>
+                <tr>
+                    <th class="col-md-2">BusinessNature:</th>
+                    <td class="col-md-2">@Model.BusinessNature</td>
+                    <th class="col-md-2">Password:</th>
+                    <td class="col-md-2">@Model.Password</td>
+                </tr>
+                <tr>
+                    <th class="col-md-2">Date of Joining:</th>
+                    <td class="col-md-2"><strong class=" text-orange">@(DateTime.Parse(Model.CreatedDate.ToString()).ToString("MM-dd-yyyy"))</strong></td>
+                    <th class="col-md-2">Expiry Date:</th>
+                    <td class="col-md-2"><strong class=" text-orange">@(DateTime.Parse(Model.ExpiryDate.ToString()).ToString("MM-dd-yyyy"))</strong></td>
+                </tr>
+                <tr>
+                    <th class="col-md-2">Open Time:</th>
+                    <td class="col-md-2"><strong class="text-orange">@Model.OpenTime</strong></td>
+                    <th class="col-md-2">Off Time:</th>
+                    <td class="col-md-2"><strong class="text-orange">@Model.OffTime</strong></td>
+                </tr>
+                <tr>
+                    @if (@Model.OffDay == "1")
+                    {
+                        <th class="col-md-2">Off Day:</th>
+                        <td class="col-md-2"><strong class="text-orange">Friday</strong></td>
+
+                    }
+                    else if (@Model.OffDay == "2")
+                    {
+                        <th class="col-md-2">Off Day:</th>
+                        <td class="col-md-2"><strong class="text-orange">Saturday</strong></td>
+
+                    }
+                    else if (@Model.OffDay == "3")
+                    {
+                        <th class="col-md-2">Off Day:</th>
+                        <td class="col-md-2"><strong class="text-orange">Sunday</strong></td>
+
+                    }
+                    else if (@Model.OffDay == "4")
+                    {
+                        <th class="col-md-2">Off Day:</th>
+                        <td class="col-md-2"><strong class="text-orange">Monday</strong></td>
+
+                    }
+                    else if (@Model.OffDay == "5")
+                    {
+                        <th class="col-md-2">Off Day:</th>
+                        <td class="col-md-2"><strong class="text-orange">Tuesday</strong></td>
+
+                    }
+                    else if (@Model.OffDay == "6")
+                    {
+                        <th class="col-md-2">Off Day:</th>
+                        <td class="col-md-2"><strong class="text-orange">Wednesday</strong></td>
+
+                    }
+                    else if (@Model.OffDay == "7")
+                    {
+                        <th class="col-md-2">Off Day:</th>
+                        <td class="col-md-2"><strong class="text-orange">Thursday</strong></td>
+
+                    }
+
+
+
+                </tr>
+            </table>
             </div>
         </div>
     </div>
@@ -219,6 +267,10 @@
                                         <th class="col-md-3">Payment Type</th>
                                         <th class="col-md-3">Payment</th>
                                     </tr>
+
+                                </thead>
+                                <thead>
+                                  
                                 </thead>
                                 <tbody>
                                     @foreach (Installments.Models.DBName variant in Model.lstDBName)
@@ -228,7 +280,16 @@
                                             <td>@variant.PaymentType</td>
                                             <td>@variant.Payment</td>
                                         </tr>
+                                        <tr>
+                                            <td colspan="3"><strong>Description</strong></td>
+                                        </tr>
+
+
+                                        <tr>
+                                            <td colspan="3">@Html.Raw(variant.Description)</td>
+                                        </tr>
                                     }
+
                                 </tbody>
                             </table>
                         </div>
@@ -259,15 +320,6 @@
                                 }
                                 <th class="col-md-2">Active:</th>
                                 @if (Model.InActive == true)
-                                {
-                                    <td class="col-md-2"><strong class="text-success">Yes</strong></td>
-                                }
-                                else
-                                {
-                                    <td class="col-md-2"><strong class=" text-danger">No</strong></td>
-                                }
-                                <th class="col-md-2">Updated:</th>
-                                @if (Model.Updated == true)
                                 {
                                     <td class="col-md-2"><strong class="text-success">Yes</strong></td>
                                 }
@@ -315,19 +367,16 @@
 
                 <th class="col-md-2">Owner Name:</th>
                 <td class="col-md-2">@Model.OwnerName</td>
-                <th class="col-md-2">Owner No:</th>
-                <td class="col-md-2" colspan="3">@Model.OwnerContactNo</td>
+               
 
             </tr>
             <tr>
-
-                <th class="col-md-2">Person To Contact:</th>
-                <td class="col-md-2">@Model.Persontocontact</td>
-                <th class="col-md-2">Contact No:</th>
-                <td class="col-md-2">@Model.contactno</td>
+                <th class="col-md-2">Software Version:</th>
+                <td class="col-md-2">@Model.SoftwareVersion</td>
+                <th class="col-md-2">Branch:</th>
+                <td class="col-md-2">@Model.Branch</td>
                 <th class="col-md-2">Email:</th>
                 <td class="col-md-2">@Model.Email</td>
-
             </tr>
 
             <tr>
@@ -453,15 +502,7 @@
                                     {
                                         <td class="col-md-2"><strong class=" text-danger">No</strong></td>
                                     }
-                                    <th class="col-md-2">Updated:</th>
-                                    @if (Model.Updated == true)
-                                    {
-                                        <td class="col-md-2"><strong class="text-success">Yes</strong></td>
-                                    }
-                                    else
-                                    {
-                                        <td class="col-md-2"><strong class=" text-danger">No</strong></td>
-                                    }
+                              
                                     <th class="col-md-2">Payment Status:</th>
                                     @if (Model.PaymentStatus == true)
                                     {

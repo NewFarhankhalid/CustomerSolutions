@@ -106,11 +106,14 @@
                                 @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
                                 @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
                             </td>
+
                         </tr>
 
                     </table>
                 </div>
+                <div id="formDesignationSuggestions">
 
+                </div>
             </div>
         </div>
     </div>
@@ -162,7 +165,42 @@
 
 
 <script>
-   
+
+
+    $('#Name').on('input', function () {
+        var inputValue = $(this).val().trim();
+
+        // Check if inputValue is not empty
+        if (inputValue) {
+            // Send AJAX request to the server to fetch existing categories
+            $.ajax({
+                type: 'POST',
+                url: '/TasksType/CheckTasksType', // Endpoint to check for existing categories
+                data: JSON.stringify({ TasksType: inputValue }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (r) {
+                    var data = r.split(',');
+                    $('#formDesignationSuggestions').html('');
+                    if (data[0] == "true") {
+                        $('#formDesignationSuggestions').append('<div>' + data[1] + '</div>');
+                        $("#Save").prop('disabled', true);
+                    } else {
+                        $('#formDesignationSuggestions').append('<div>No matching Designation found.</div>');
+                        $("#Save").prop('disabled', false);
+                    }
+                },
+                error: function (x, e) {
+                    bootbox.alert("Error");
+                },
+            });
+        } else {
+            $('#formDesignationSuggestions').html('');
+        }
+    });
+
+
+
 
     function BackToList() {
         window.location.href = '/TasksType/Index';

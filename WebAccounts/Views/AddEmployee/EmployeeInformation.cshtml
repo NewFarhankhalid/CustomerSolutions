@@ -1,0 +1,115 @@
+﻿@model Installments.Models.AddEmployee
+
+@{
+    ViewBag.Title = "Add Employee";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-primary">
+            <div class="box-header">
+
+                <h3 class="box-title text-center text-green">
+                    Customer Information
+                </h3>
+                <button class="btn btn-success  pull-right" style="margin-left:10px;" onclick="myFunction('printable')">Print <i class="fa fa-print"></i></button>
+                <button class="btn btn-danger pull-right" onclick="DeleteButtonclicked()" style="margin-left:10px;">Delete <i class="fa fa-trash"></i></button>
+                <a href="/AddEmployee/Edit/@Model.EmployeeID" class="btn btn-success pull-right" style="margin-left:10px;">Edit <i class="fa fa-edit"></i></a>
+                <a href="/AddEmployee/Create" class="btn btn-primary pull-right" style="margin-left:10px;">New <i class="fa fa-plus"></i></a>
+                <a href="/AddEmployee/Index" class="btn btn-warning pull-right" style="margin-left:10px;"><i class="fa fa-arrow-left"></i> Back</a>
+            </div>
+            <div class="box-body">
+                @*<h2 class="text-danger"><i class="fa fa-tag"></i> @Model.CustomerID - @Model.CustomerCompanytitle</h2>*@
+
+
+              
+                <table class="table  ">
+
+
+                    <tr>
+
+                        <th class="col-md-2">Department</th>
+                        <td class="col-md-2">@Model.Department</td>
+                        <th class="col-md-2">Designation</th>
+                        <td class="col-md-2">@Model.Designation</td>
+                    </tr>
+                    <tr>
+
+                        <th class="col-md-2">Employee Name</th>
+                        <td class="col-md-2">@Model.EmployeeName</td>
+                        <th class="col-md-2">Employee Father Name</th>
+                        <td class="col-md-2">@Model.EmployeeFatherName</td>
+                    </tr>
+
+                    <tr>
+                        <th class="col-md-2">Addres</th>
+                        <td class="col-md-2">@Model.Address</td>
+                        <th class="col-md-2">City</th>
+                        <td class="col-md-2" colspan="3">@Model.City</td>
+
+
+                    </tr>
+                    <tr>
+                        <th class="col-md-2">Mobile No:</th>
+                        <td class="col-md-2">@Model.MobileNo</td>
+                        <th class="col-md-2">Phone No:</th>
+                        <td class="col-md-2">@Model.PhoneNo</td>
+                    </tr>
+                    <tr>
+                        <th class="col-md-2">Time-In:</th>
+                        <td class="col-md-2"><strong class="text-orange">@Model.TimeIn</strong></td>
+                        <th class="col-md-2">Time-Out:</th>
+                        <td class="col-md-2"><strong class="text-orange">@Model.TimeOut</strong></td>
+                    </tr>
+                    @*<tr>
+            <th class="col-md-2">Date of Joining:</th>
+            <td class="col-md-2"><strong class=" text-orange">@(DateTime.Parse(Model.CreatedDate.ToString()).ToString("MM-dd-yyyy"))</strong></td>
+            <th class="col-md-2">Expiry Date:</th>
+            <td class="col-md-2"><strong class=" text-orange">@(DateTime.Parse(Model.ExpiryDate.ToString()).ToString("MM-dd-yyyy"))</strong></td>
+        </tr>*@
+
+
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+     function DeleteButtonclicked(object) {
+
+
+     bootbox.confirm({
+         size: "small",
+         message: "Are you sure to delete the selected record?",
+         callback: function (result) {
+
+             if (result == true) {
+                 jQuery.ajax({
+                     url: '/AddEmployee/Delete',
+                     type: 'POST',
+                     dataType: 'json',
+                     data: { id: @Model.EmployeeID },
+                     success: function () {
+
+                         location.href = "/CustomerInfo/";
+                     },
+                     error: function () {
+                         alert('error');
+                     }
+                 })
+             }
+             else {
+             }
+         }
+     })
+ }
+ function myFunction(el) {
+     var getelement = document.getElementById(el).innerHTML;
+     document.body.innerHTML = getelement;
+     window.print();
+     window.location.reload();
+ }
+</script>

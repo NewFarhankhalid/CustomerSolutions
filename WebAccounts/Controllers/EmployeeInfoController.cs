@@ -29,8 +29,13 @@ namespace Installments.Controllers
         {
          //ViewBag.BranchList=new DropDown().GetBranchSelectList();
          ViewBag.DesignationList=new DropDown().GetDesignationList();
-         ViewBag.GenderList = new DropDown().GetGender();
-            return View();
+            ViewBag.DepartmentList = new DropDown().GetDeparmentList();
+            ViewBag.GenderList = new DropDown().GetGender();
+            EmployeeInfo obj = new EmployeeInfo();
+            obj.DOB = DateTime.Now;
+            obj.ConfirmationDate = DateTime.Now;
+            obj.JoiningDate = DateTime.Now;
+            return View(obj);
         }
 
         // POST: EmployeeInfo/Create
@@ -39,15 +44,134 @@ namespace Installments.Controllers
         {
             try
             {
-                string Query = "Insert into EmployeeInfo (Name,FatherName,CNIC,Address,Domicile,BloodGroup,Salary,Loan,GPFundNo,KFFund,Other,Qualifications,Gender,DOB,Nationality,BankAccount,BankName,BankBranch,HomeTel,MobileTel,DesignationID,JoiningDate,ConfirmationDate,BasicSalary,UtilityAllowance,MedicalAllowance) ";
-                Query = Query + "Values ('" + objemployee.Name + "','" + objemployee.FatherName + "','" + objemployee.CNIC + "','"+objemployee.Address+"','" + objemployee.Domicile + "','" + objemployee.BloodGroup + "','" + objemployee.Salary+ "','" + objemployee.Loan+ "','" + objemployee.GPFundNo + "','" + objemployee.KFFund + "','" + objemployee.Other + "','" + objemployee.Qualifications + "','" + objemployee.Gender + "','" + objemployee.DOB.ToString() + "','" + objemployee.Nationality + "','" + objemployee.BankAccount + "','" + objemployee.BankName + "','" + objemployee.BankBranch + "','" + objemployee.HomeTel + "','" + objemployee.MobileTel + "','" + objemployee.DesignationID + "','" + objemployee.JoiningDate.ToString() + "','" + objemployee.ConfirmationDate.ToString() + "','" + objemployee.BasicSalary + "','" + objemployee.UtilityAllowance + "','" + objemployee.MedicalAllowance+ "')";
-                General.ExecuteNonQuery(Query);
-                return RedirectToAction("Index");
+                if(objemployee.EmployeeID==0)
+                {
+                    string Query = @"Insert into EmployeeInfo (Department,Designation,Name,FatherName,CNIC,Nationality,Gender,DateOfBirth,BloodGroup,Salary,UtilityAllowance,MedicalAllowance,GPFundAccNo,KkFund,Other,Qualifications,DateOfJoining,DateOfConfirmation,BankAccountNo,BankName,BranchName,Address,Domicile,HomeTel,MobileNo,OpenTime,OffTime,UserName,Password,AllowHunderdMeters,IsAdmin) 
+Values (" + objemployee.DepartmentID + "," + objemployee.DesignationID + ",'" + objemployee.Name + "','" + objemployee.FatherName + "','" + objemployee.CNIC + "','" + objemployee.Nationality + "','" + objemployee.Gender + "','" + objemployee.DOB + "','" + objemployee.BloodGroup + "','" + objemployee.Salary + "','" + objemployee.UtilityAllowance + "','" + objemployee.MedicalAllowance + "','" + objemployee.GPFundNo + "','" + objemployee.KFFund + "','" + objemployee.Other + "','" + objemployee.Qualifications + "','" + objemployee.JoiningDate + "','" + objemployee.ConfirmationDate + "','" + objemployee.BankAccount + "','" + objemployee.BankName + "','" + objemployee.BankBranch + "','" + objemployee.Address + "','" + objemployee.Domicile + "','" + objemployee.HomeTel + "','" + objemployee.MobileTel + "','" + objemployee.OpenTime + "','" + objemployee.OffTime + "','" + objemployee.UserName + "','" + objemployee.Password + "'," + (objemployee.AllowHunderdMeters == true ? "1" : "0") + "," + (objemployee.IsAdmin == true ? "1" : "0") + ")";
+                    General.ExecuteNonQuery(Query);
+                    Query = "";
+                    return Json("true");
+                }
+                else
+                {
+//                    string Query = "";
+
+//                    Query = Query+$@" UPDATE [dbo].[EmployeeInfo]
+//   SET [Department] = {objemployee.DepartmentID}
+//      ,[Designation] = {objemployee.DesignationID}
+//      ,[Name] = '{objemployee.Name}'
+//      ,[FatherName] = '{objemployee.FatherName}'
+//      ,[CNIC] = '{objemployee.CNIC}'
+//      ,[Nationality] = '{objemployee.Nationality}'
+//      ,[Gender] = '{objemployee.Gender}'
+//      ,[DateOfBirth] = '{objemployee.DOB}'
+//      ,[BloodGroup] = <BloodGroup, nvarchar(50),>
+//      ,[Salary] = <Salary, nvarchar(50),>
+//      ,[UtilityAllowance] = <UtilityAllowance, int,>
+//      ,[MedicalAllowance] = <MedicalAllowance, int,>
+//      ,[GPFundAccNo] = <GPFundAccNo, int,>
+//      ,[KkFund] = <KkFund, int,>
+//      ,[Other] = <Other, nvarchar(50),>
+//      ,[Qualifications] = <Qualifications, nvarchar(50),>
+//      ,[DateOfJoining] = <DateOfJoining, datetime,>
+//      ,[DateOfConfirmation] = <DateOfConfirmation, datetime,>
+//      ,[BankAccountNo] = <BankAccountNo, nvarchar(50),>
+//      ,[BankName] = <BankName, nvarchar(50),>
+//      ,[BranchName] = <BranchName, nvarchar(50),>
+//      ,[Address] = <Address, nvarchar(max),>
+//      ,[Domicile] = <Domicile, nvarchar(50),>
+//      ,[HomeTel] = <HomeTel, nvarchar(50),>
+//      ,[MobileNo] = <MobileNo, nvarchar(50),>
+//      ,[OpenTime] = <OpenTime, datetime,>
+//      ,[OffTime] = <OffTime, datetime,>
+//      ,[FingerID] = <FingerID, nvarchar(max),>
+//      ,[Username] = <Username, nvarchar(50),>
+//      ,[Password] = <Password, nvarchar(50),>
+//      ,[AllowHunderdMeters] = <AllowHunderdMeters, bit,>
+//      ,[IsAdmin] = <IsAdmin, bit,>
+// WHERE <Search Conditions,,>
+//UPDATE [dbo].[EmployeeInfo]
+//   SET [Department] = <Department, int,>
+//      ,[Designation] = <Designation, int,>
+//      ,[Name] = <Name, nvarchar(50),>
+//      ,[FatherName] = <FatherName, nvarchar(50),>
+//      ,[CNIC] = <CNIC, nvarchar(50),>
+//      ,[Nationality] = <Nationality, nvarchar(50),>
+//      ,[Gender] = <Gender, nvarchar(50),>
+//      ,[DateOfBirth] = <DateOfBirth, nvarchar(50),>
+//      ,[BloodGroup] = <BloodGroup, nvarchar(50),>
+//      ,[Salary] = <Salary, nvarchar(50),>
+//      ,[UtilityAllowance] = <UtilityAllowance, int,>
+//      ,[MedicalAllowance] = <MedicalAllowance, int,>
+//      ,[GPFundAccNo] = <GPFundAccNo, int,>
+//      ,[KkFund] = <KkFund, int,>
+//      ,[Other] = <Other, nvarchar(50),>
+//      ,[Qualifications] = <Qualifications, nvarchar(50),>
+//      ,[DateOfJoining] = <DateOfJoining, datetime,>
+//      ,[DateOfConfirmation] = <DateOfConfirmation, datetime,>
+//      ,[BankAccountNo] = <BankAccountNo, nvarchar(50),>
+//      ,[BankName] = <BankName, nvarchar(50),>
+//      ,[BranchName] = <BranchName, nvarchar(50),>
+//      ,[Address] = <Address, nvarchar(max),>
+//      ,[Domicile] = <Domicile, nvarchar(50),>
+//      ,[HomeTel] = <HomeTel, nvarchar(50),>
+//      ,[MobileNo] = <MobileNo, nvarchar(50),>
+//      ,[OpenTime] = <OpenTime, datetime,>
+//      ,[OffTime] = <OffTime, datetime,>
+//      ,[FingerID] = <FingerID, nvarchar(max),>
+//      ,[Username] = <Username, nvarchar(50),>
+//      ,[Password] = <Password, nvarchar(50),>
+//      ,[AllowHunderdMeters] = <AllowHunderdMeters, bit,>
+//      ,[IsAdmin] = <IsAdmin, bit,>
+// WHERE <Search Conditions,,>
+//                    string Query = "";
+//                    Query = Query + "UPDATE [dbo].[EmployeeInfo] SET ";
+//                    Query = Query + "     [Name] = '" + objemployee.Name + "' ";
+//                    Query = Query + "    ,[FatherName] = '" + objemployee.FatherName + "' ";
+//                    Query = Query + "    ,[CNIC] = '" + objemployee.CNIC + "' ";
+//                    Query = Query + "    ,[Address] = '" + objemployee.Address + "' ";
+//                    Query = Query + "    ,[Domicile] = '" + objemployee.Domicile + "' ";
+//                    Query = Query + "    ,[BloodGroup] = '" + objemployee.BloodGroup + "' ";
+//                    Query = Query + "    ,[Salary] = '" + objemployee.Salary + "' ";
+//                    Query = Query + "    ,[Loan] = '" + objemployee.Loan + "' ";
+//                    Query = Query + "    ,[GPFundNo] = '" + objemployee.GPFundNo + "' ";
+//                    Query = Query + "    ,[KFFund] = '" + objemployee.KFFund + "' ";
+//                    Query = Query + "    ,[Other] = '" + objemployee.Other + "' ";
+//                    Query = Query + "    ,[Qualifications] = '" + objemployee.Qualifications + "' ";
+//                    Query = Query + "    ,[Gender] = '" + objemployee.Gender + "' ";
+//                    Query = Query + "    ,[DOB] = '" + objemployee.DOB + "' ";
+//                    Query = Query + "    ,[Nationality] = '" + objemployee.Nationality + "' ";
+//                    Query = Query + "    ,[BankAccount] = '" + objemployee.BankAccount + "' ";
+//                    Query = Query + "    ,[BankName] = '" + objemployee.BankName + "' ";
+//                    Query = Query + "    ,[BankBranch] = '" + objemployee.BankBranch + "' ";
+//                    Query = Query + "    ,[HomeTel] ='" + objemployee.HomeTel + "' ";
+//                    Query = Query + "    ,[MobileTel] ='" + objemployee.MobileTel + "' ";
+//                    Query = Query + "    ,[Designation] =" + objemployee.DesignationID + " ";
+//                    Query = Query + "    ,[Department] =" + objemployee.DepartmentID + " ";
+//                    Query = Query + "    ,[JoiningDate] ='" + objemployee.JoiningDate + "' ";
+//                    Query = Query + "    ,[ConfirmationDate] ='" + objemployee.ConfirmationDate + "' ";
+//                    Query = Query + "    ,[BasicSalary] ='" + objemployee.BasicSalary + "' ";
+//                    Query = Query + "    ,[UtilityAllowance] ='" + objemployee.UtilityAllowance + "' ";
+//                    Query = Query + "    ,[MedicalAllowance] ='" + objemployee.MedicalAllowance + "' ";
+//                    Query = Query + "    ,[OpenTime] ='" + objemployee.OpenTime + "' ";
+//                    Query = Query + "    ,[OffTime] ='" + objemployee.OffTime + "' ";
+//                    Query = Query + "    ,[UserName] ='" + objemployee.UserName + "' ";
+//                    Query = Query + "    ,[Password] ='" + objemployee.Password + "' ";
+//                    Query = Query + "    ,[AllowHunderdMeters] =" + (objemployee.AllowHunderdMeters == true ? "1" : "0") + "";
+//                    Query = Query + "    ,[IsAdmin] =" + (objemployee.IsAdmin == true ? "1" : "0") + "";
+//                    Query = Query + "WHERE EmployeeID=" + objemployee.EmployeeID;
+//                    ViewBag.DesignationList = new DropDown().GetDesignationList();
+//                    ViewBag.GenderList = new DropDown().GetGender();
+//                    General.ExecuteNonQuery(Query);
+                    return Json("true");
+                }
+
             }
             catch (Exception ex)
             {
                 //ViewBag.BranchList = new DropDown().GetBranchSelectList("", objemployee.BranchID);
                 ViewBag.DesignationList = new DropDown().GetDesignationList("",objemployee.DesignationID);
+                ViewBag.DepartmentList = new DropDown().GetDeparmentList("",objemployee.DepartmentID);
                 ViewBag.GenderList = new DropDown().GetGender((objemployee.Gender = true ? 1:0));
                 ViewBag.Error = "Error Inserting Employee Error: "+(ex.InnerException);
                 return View();
@@ -64,8 +188,9 @@ namespace Installments.Controllers
 
                 //ViewBag.BranchList = new DropDown().GetBranchSelectList("",obj[0].BranchID);
                 ViewBag.DesignationList = new DropDown().GetDesignationList("", obj[0].DesignationID);
+                ViewBag.DepartmentList = new DropDown().GetDeparmentList("", obj[0].DepartmentID);
                 ViewBag.GenderList = new DropDown().GetGender((obj[0].Gender = true ? 1:0));
-                return View(obj[0]);
+                return View("Create",obj[0]);
             }
             return RedirectToAction("index");
         }
@@ -77,38 +202,6 @@ namespace Installments.Controllers
         {
             try
             { 
-                string Query = "";
-                Query = Query + "UPDATE [dbo].[EmployeeInfo] SET ";
-                Query = Query + "     [Name] = '" + objemployee.Name + "' ";
-                Query = Query + "    ,[FatherName] = '" + objemployee.FatherName + "' ";
-                Query = Query + "    ,[CNIC] = '" + objemployee.CNIC + "' ";
-                Query = Query + "    ,[Address] = '" + objemployee.Address + "' ";
-                Query = Query + "    ,[Domicile] = '" + objemployee.Domicile + "' ";
-                Query = Query + "    ,[BloodGroup] = '" + objemployee.BloodGroup + "' ";
-                Query = Query + "    ,[Salary] = '" + objemployee.Salary + "' ";
-                Query = Query + "    ,[Loan] = '" + objemployee.Loan + "' ";
-                Query = Query + "    ,[GPFundNo] = '" + objemployee.GPFundNo + "' ";
-                Query = Query + "    ,[KFFund] = '" + objemployee.KFFund + "' ";
-                Query = Query + "    ,[Other] = '" + objemployee.Other + "' ";
-                Query = Query + "    ,[Qualifications] = '" + objemployee.Qualifications + "' ";
-                Query = Query + "    ,[Gender] = '" + objemployee.Gender + "' ";
-                Query = Query + "    ,[DOB] = '" + objemployee.DOB + "' ";
-                Query = Query + "    ,[Nationality] = '" + objemployee.Nationality + "' ";
-                Query = Query + "    ,[BankAccount] = '" + objemployee.BankAccount + "' ";
-                Query = Query + "    ,[BankName] = '" + objemployee.BankName + "' ";
-                Query = Query + "    ,[BankBranch] = '" + objemployee.BankBranch + "' ";
-                Query = Query + "    ,[HomeTel] ='" + objemployee.HomeTel + "' ";
-                Query = Query + "    ,[MobileTel] ='" + objemployee.MobileTel + "' ";
-                Query = Query + "    ,[DesignationID] ='" + objemployee.DesignationID + "' ";
-                Query = Query + "    ,[JoiningDate] ='" + objemployee.JoiningDate + "' ";
-                Query = Query + "    ,[ConfirmationDate] ='" + objemployee.ConfirmationDate + "' ";
-                Query = Query + "    ,[BasicSalary] ='" + objemployee.BasicSalary + "' ";
-                Query = Query + "    ,[UtilityAllowance] ='" + objemployee.UtilityAllowance + "' ";
-                Query = Query + "    ,[MedicalAllowance] ='" + objemployee.MedicalAllowance + "' ";
-                Query = Query + "WHERE EmployeeID=" + objemployee.EmployeeID;
-                ViewBag.DesignationList = new DropDown().GetDesignationList();
-                ViewBag.GenderList = new DropDown().GetGender();
-                General.ExecuteNonQuery(Query);
                 return RedirectToAction("Index");
             }
             catch
@@ -126,7 +219,19 @@ namespace Installments.Controllers
             return Json("true");
         }
 
-        
+        public ActionResult CheckUserName(string UserName,int EmployeeID)
+        {
+            string sql = $@"Select * from EmployeeInfo where UserName like '%{UserName}%' and EmployeeID!={EmployeeID}";
+            DataTable dt = General.FetchData(sql);
+            if (dt.Rows.Count > 0)
+            {
+                return Json("true," + dt.Rows[0]["UserName"].ToString());
+            }
+            else
+            {
+                return Json("false,");
+            }
+        }
         List<EmployeeInfo> DataTableToObject(DataTable dt)
         {
             List<EmployeeInfo> lstemployee = new List<EmployeeInfo>();
@@ -137,10 +242,6 @@ namespace Installments.Controllers
                 if (dr["EmployeeID"] != DBNull.Value)
                 {
                     bi.EmployeeID = int.Parse(dr["EmployeeID"].ToString());
-                }
-                if (dr["BranchId"] != DBNull.Value)
-                {
-                    bi.BranchID = int.Parse(dr["BranchId"].ToString());
                 }
                 if (dr["Name"] != DBNull.Value)
                 {
@@ -170,17 +271,13 @@ namespace Installments.Controllers
                 {
                     bi.Salary = decimal.Parse(dr["Salary"].ToString());
                 }
-                if (dr["Loan"] != DBNull.Value)
+                if (dr["GPFundAccNo"] != DBNull.Value)
                 {
-                    bi.Loan = decimal.Parse(dr["Loan"].ToString());
+                    bi.GPFundNo = (dr["GPFundAccNo"].ToString());
                 }
-                if (dr["GPFundNo"] != DBNull.Value)
+                if (dr["KkFund"] != DBNull.Value)
                 {
-                    bi.GPFundNo = (dr["GPFundNo"].ToString());
-                }
-                if (dr["KFFund"] != DBNull.Value)
-                {
-                    bi.KFFund = (dr["KFFund"].ToString());
+                    bi.KFFund = (dr["KkFund"].ToString());
                 }
                 if (dr["Other"] != DBNull.Value)
                 {
@@ -194,49 +291,61 @@ namespace Installments.Controllers
                 {
                     bi.Gender = int.Parse(dr["Gender"].ToString());
                 }
-                if (dr["DOB"] != DBNull.Value)
+                if (dr["DateOfBirth"] != DBNull.Value)
                 {
-                    bi.DOB = DateTime.Parse(dr["DOB"].ToString());
+                    bi.DOB = DateTime.Parse(dr["DateOfBirth"].ToString());
                 }
                 if (dr["Nationality"] != DBNull.Value)
                 {
                     bi.Nationality = (dr["Nationality"].ToString());
                 }
-                if (dr["BankAccount"] != DBNull.Value)
+                if (dr["BankAccountNo"] != DBNull.Value)
                 {
-                    bi.BankAccount = (dr["BankAccount"].ToString());
+                    bi.BankAccount = (dr["BankAccountNo"].ToString());
+                }
+                if (dr["OpenTime"] != DBNull.Value)
+                {
+                    bi.OpenTime = (dr["OpenTime"].ToString());
+                }
+                if (dr["OffTime"] != DBNull.Value)
+                {
+                    bi.OffTime = (dr["OffTime"].ToString());
                 }
                 if (dr["BankName"] != DBNull.Value)
                 {
                     bi.BankName = (dr["BankName"].ToString());
                 }
-                if (dr["BankBranch"] != DBNull.Value)
+                if (dr["BranchName"] != DBNull.Value)
                 {
-                    bi.BankBranch = (dr["BankBranch"].ToString());
+                    bi.BankBranch = (dr["BranchName"].ToString());
                 }
                 if (dr["HomeTel"] != DBNull.Value)
                 {
                     bi.HomeTel = (dr["HomeTel"].ToString());
                 }
-                if (dr["MobileTel"] != DBNull.Value)
+                if (dr["MobileNo"] != DBNull.Value)
                 {
-                    bi.MobileTel = (dr["MobileTel"].ToString());
+                    bi.MobileTel = (dr["MobileNo"].ToString());
                 }
-                if (dr["DesignationID"] != DBNull.Value)
+                if (dr["Department"] != DBNull.Value)
                 {
-                    bi.DesignationID = int.Parse(dr["DesignationID"].ToString());
+                    bi.DepartmentID = int.Parse(dr["Department"].ToString());
                 }
-                if (dr["JoiningDate"] != DBNull.Value)
+                if (dr["Designation"] != DBNull.Value)
                 {
-                    bi.JoiningDate = DateTime.Parse(dr["JoiningDate"].ToString());
+                    bi.DesignationID = int.Parse(dr["Designation"].ToString());
                 }
-                if (dr["ConfirmationDate"] != DBNull.Value)
+                if (dr["DateOfJoining"] != DBNull.Value)
                 {
-                    bi.ConfirmationDate = DateTime.Parse(dr["ConfirmationDate"].ToString());
+                    bi.JoiningDate = DateTime.Parse(dr["DateOfJoining"].ToString());
                 }
-                if (dr["BasicSalary"] != DBNull.Value)
+                if (dr["DateOfConfirmation"] != DBNull.Value)
                 {
-                    bi.BasicSalary = decimal.Parse(dr["BasicSalary"].ToString());
+                    bi.ConfirmationDate = DateTime.Parse(dr["DateOfConfirmation"].ToString());
+                }
+                if (dr["Salary"] != DBNull.Value)
+                {
+                    bi.BasicSalary = decimal.Parse(dr["Salary"].ToString());
                 }
                
                 if (dr["UtilityAllowance"] != DBNull.Value)
@@ -247,9 +356,23 @@ namespace Installments.Controllers
                 {
                     bi.MedicalAllowance = decimal.Parse(dr["MedicalAllowance"].ToString());
                 }
+                if (dr["UserName"] != DBNull.Value)
+                {
+                    bi.UserName = dr["UserName"].ToString();
+                }
+                if (dr["Password"] != DBNull.Value)
+                {
+                    bi.Password = dr["Password"].ToString();
+                }
+                if (dr["AllowHunderdMeters"] != DBNull.Value)
+                {
+                    bi.AllowHunderdMeters = bool.Parse(dr["AllowHunderdMeters"].ToString());
+                }
+                if (dr["IsAdmin"] != DBNull.Value)
+                {
+                    bi.IsAdmin = bool.Parse(dr["IsAdmin"].ToString());
+                }
                 lstemployee.Add(bi);
-
-
             }
             return lstemployee;
 

@@ -24,21 +24,21 @@ LEFT OUTER JOIN PakCity ON PakCity.CityID = CustomerInfo.CityID ");
             return View(lstCustomer);
         }
         
-        public JsonResult GetCustomerExpiry(string SystemCustomerID)
-        {
-            DateTime ExpiryDate = DateTime.Now;
-            if(SystemCustomerID== "Null")
-            {
-                return Json("Please Specify System Customer ID");
-            }
-            else
-            {
-                ExpiryDate = DateTime.Parse(General.FetchData($@"Select CustomerExpiryDate.ExpiryDate from CustomerExpiryDate inner join
-CustomerInfo on CustomerExpiryDate.CustomerID = CustomerInfo.CustomerID 
-Where SystemCustomerID = '{SystemCustomerID}'").Rows[0]["ExpiryDate"].ToString());
-            }
-            return Json(new { ExpiryDate = ExpiryDate.ToString("MM/dd/yyyy") }, JsonRequestBehavior.AllowGet);
-        }
+//        public JsonResult GetCustomerExpiry(string SystemCustomerID)
+//        {
+//            DateTime ExpiryDate = DateTime.Now;
+//            if(SystemCustomerID== "Null")
+//            {
+//                return Json("Please Specify System Customer ID");
+//            }
+//            else
+//            {
+//                ExpiryDate = DateTime.Parse(General.FetchData($@"Select CustomerExpiryDate.ExpiryDate from CustomerExpiryDate inner join
+//CustomerInfo on CustomerExpiryDate.CustomerID = CustomerInfo.CustomerID 
+//Where SystemCustomerID = '{SystemCustomerID}'").Rows[0]["ExpiryDate"].ToString());
+//            }
+//            return Json(new { ExpiryDate = ExpiryDate.ToString("MM/dd/yyyy") }, JsonRequestBehavior.AllowGet);
+//        }
         // GET: CustomerInfo/Details/5
         public ActionResult Details(int id)
         {
@@ -59,6 +59,7 @@ Where SystemCustomerID = '{SystemCustomerID}'").Rows[0]["ExpiryDate"].ToString()
             ViewBag.PaymentType = new DropDown().GetPaymentType();
             ViewBag.Type = new DropDown().GetSysType();
             ViewBag.Designation = new DropDown().GetDesignation();
+            ViewBag.WeaklyDays = new DropDown().GetWeaklyDays();
             return View(objCustomer);
         }
 
@@ -70,8 +71,8 @@ Where SystemCustomerID = '{SystemCustomerID}'").Rows[0]["ExpiryDate"].ToString()
             {
                 if (objCustomer.CustomerID == 0)
                 {
-                    string Query = "Insert into CustomerInfo (OwnerName,OwnerContactNo,CustomerCompanytitle,Branch,InActive,Description,JoiningDate,CityID,Persontocontact,contactno,Address,BusinessNature,Email,Password,ExpiryDate,LegalUser,Updated,PaymentStatus,SystemCustomerID)";
-                    Query = Query + "Values ('" + objCustomer.OwnerName + "','" + objCustomer.OwnerContactNo+ "','" + objCustomer.Branch+"','" + objCustomer.CustomerCompanytitle.Trim() + "'," + (objCustomer.InActive == true ? "1" : "0") + ",'" + objCustomer.Description + "','"+objCustomer.CreatedDate+"',"+objCustomer.CityID+",'"+objCustomer.Persontocontact+"','" + objCustomer.contactno + "','" + objCustomer.Address + "','" + objCustomer.BusinessNature + "','" + objCustomer.Email + "','" + objCustomer.Password + "','" + objCustomer.ExpiryDate + "'," + (objCustomer.LegalUser == true ? "1" : "0") + "," + (objCustomer.Updated == true ? "1" : "0") + "," + (objCustomer.PaymentStatus == true ? "1" : "0") + ",'"+objCustomer.SystemCustomerID+"')";
+                    string Query = "Insert into CustomerInfo (OwnerName,CustomerCompanytitle,Branch,InActive,Description,JoiningDate,CityID,Address,BusinessNature,Email,Password,ExpiryDate,LegalUser,PaymentStatus,SoftwareVersion,OpenTime,OffTime,OffDay)";
+                    Query = Query + "Values ('" + objCustomer.OwnerName + "','" + objCustomer.CustomerCompanytitle.Trim() + "','" + objCustomer.Branch+"'," + (objCustomer.InActive == true ? "1" : "0") + ",'" + objCustomer.Description + "','"+objCustomer.CreatedDate+"',"+objCustomer.CityID+",'" + objCustomer.Address + "','" + objCustomer.BusinessNature + "','" + objCustomer.Email + "','" + objCustomer.Password + "','" + objCustomer.ExpiryDate + "'," + (objCustomer.LegalUser == true ? "1" : "0") + "," + (objCustomer.PaymentStatus == true ? "1" : "0") + ",'"+objCustomer.SoftwareVersion+ "','"+objCustomer.OpenTime+ "','"+objCustomer.OffTime+ "','"+objCustomer.OffDay+"')";
                     Query = Query + @" Select @@IDENTITY as CustomerID";
                     DataTable dt = General.FetchData(Query);
                     objCustomer.CustomerID = int.Parse(dt.Rows[0]["CustomerID"].ToString());
@@ -87,7 +88,7 @@ Where SystemCustomerID = '{SystemCustomerID}'").Rows[0]["ExpiryDate"].ToString()
                     Query = "";
                     foreach (DBName ass in lstDBName)
                     {
-                        Query = Query + " Insert into DBName(CustomerID,DBName,PaymentTypeID,Payment) Values(" + objCustomer.CustomerID + ",'" + ass.DbName + "','"+ass.PaymentTypeID+"',"+ass.Payment+")";
+                        Query = Query + " Insert into DBName(CustomerID,DBName,PaymentTypeID,Payment,Description) Values(" + objCustomer.CustomerID + ",'" + ass.DbName + "','"+ass.PaymentTypeID+"',"+ass.Payment+ ",'"+ass.Description+"')";
                     }
                     if (Query != "")
                     {
@@ -113,21 +114,20 @@ Where SystemCustomerID = '{SystemCustomerID}'").Rows[0]["ExpiryDate"].ToString()
                     Query = Query + "    ,[InActive] = " + (objCustomer.InActive == true ? "1" : "0") + "";
                     Query = Query + "    ,[LegalUser] = " + (objCustomer.LegalUser == true ? "1" : "0") + "";
                     Query = Query + "    ,[OwnerName] ='" + objCustomer.OwnerName + "' ";
-                    Query = Query + "    ,[OwnerContactNo] ='" + objCustomer.OwnerContactNo + "' ";
                     Query = Query + "    ,[Branch] ='" + objCustomer.Branch + "' ";
                     Query = Query + "    ,[Description] ='" + objCustomer.Description + "' ";
                     Query = Query + "    ,[JoiningDate] ='" + objCustomer.CreatedDate + "' ";
-                    Query = Query + "    ,[CityID] =" + objCustomer.CityID + " ";
-                    Query = Query + "    ,[Persontocontact] ='" + objCustomer.Persontocontact + "' ";
-                    Query = Query + "    ,[contactno] =" + objCustomer.contactno + " ";
+                    Query = Query + "    ,[CityID] =" + objCustomer.CityID + " ";            
                     Query = Query + "    ,[Address] ='" + objCustomer.Address + "' ";
                     Query = Query + "    ,[BusinessNature] ='" + objCustomer.BusinessNature + "' ";
                     Query = Query + "    ,[Email] ='" + objCustomer.Email + "' ";
                     Query = Query + "    ,[Password] ='" + objCustomer.Password + "' ";
-                    Query = Query + "    ,[ExpiryDate] ='" + objCustomer.ExpiryDate + "' ";
-                    Query = Query + "    ,[Updated] = " + (objCustomer.Updated == true ? "1" : "0") + "";
+                    Query = Query + "    ,[ExpiryDate] ='" + objCustomer.ExpiryDate + "' ";     
                     Query = Query + "    ,[PaymentStatus] = " + (objCustomer.PaymentStatus == true ? "1" : "0") + "";
-                    Query = Query + "    ,[SystemCustomerID] = '" + objCustomer.SystemCustomerID+ "'";
+                    Query = Query + "    ,[SoftwareVersion] = '" + objCustomer.SoftwareVersion+ "'";
+                    Query = Query + "    ,[OpenTime] = '" + objCustomer.OpenTime + "'";
+                    Query = Query + "    ,[OffTime] = '" + objCustomer.OffTime + "'";
+                    Query = Query + "    ,[OffDay] = '" + objCustomer.OffDay + "'";
                     Query = Query + " WHERE CustomerID=" + objCustomer.CustomerID;
                     General.ExecuteNonQuery(Query);
                     Query = "";
@@ -144,7 +144,7 @@ Where SystemCustomerID = '{SystemCustomerID}'").Rows[0]["ExpiryDate"].ToString()
                     Query = " Delete from DBName  where CustomerID=" + objCustomer.CustomerID;
                     foreach (DBName ass in lstDBName)
                     {
-                        Query = Query + " Insert into DBName(CustomerID,DBName,PaymentTypeID,Payment) Values(" + objCustomer.CustomerID + ",'" + ass.DbName + "','" + ass.PaymentTypeID + "'," + ass.Payment + ")";
+                        Query = Query + " Insert into DBName(CustomerID,DBName,PaymentTypeID,Payment,Description) Values(" + objCustomer.CustomerID + ",'" + ass.DbName + "','" + ass.PaymentTypeID + "'," + ass.Payment + ",'" + ass.Description + "')";
                     }
                     if (Query != "")
                     {
@@ -182,6 +182,7 @@ Where SystemCustomerID = '{SystemCustomerID}'").Rows[0]["ExpiryDate"].ToString()
             int operatorID = int.Parse(General.FetchData(sql).Rows[0]["OperatorID"].ToString());
             return Json("true,"+operatorID);
         }
+
         [HttpPost]
         public ActionResult ExternalCreate(string Customer, string Contact,int City,string Address,DateTime? CreatedDate,DateTime? ExpiryDate)
         {
@@ -216,6 +217,7 @@ Where SystemCustomerID = '{SystemCustomerID}'").Rows[0]["ExpiryDate"].ToString()
                 ViewBag.PaymentType = new DropDown().GetPaymentType();
                 ViewBag.Type = new DropDown().GetSysType();
                 ViewBag.Designation = new DropDown().GetDesignation();
+                ViewBag.WeaklyDays = new DropDown().GetWeaklyDays();
                 return View("Create",lstCustomer[0]);
             }
             return RedirectToAction("index");
@@ -335,10 +337,7 @@ Where SystemCustomerID = '{SystemCustomerID}'").Rows[0]["ExpiryDate"].ToString()
                 {
                     bi.CityName = dr["CityName"].ToString();
                 }
-                if (dr["OwnerContactNo"] != DBNull.Value)
-                {
-                    bi.OwnerContactNo = (dr["OwnerContactNo"].ToString());
-                }
+             
                 if (dr["CustomerCompanytitle"] != DBNull.Value)
                 {
                     bi.CustomerCompanytitle = (dr["CustomerCompanytitle"].ToString());
@@ -346,11 +345,7 @@ Where SystemCustomerID = '{SystemCustomerID}'").Rows[0]["ExpiryDate"].ToString()
                 if (dr["InActive"] != DBNull.Value)
                 {
                     bi.InActive = bool.Parse(dr["InActive"].ToString());
-                }
-                if (dr["Updated"] != DBNull.Value)
-                {
-                    bi.Updated = bool.Parse(dr["Updated"].ToString());
-                }
+                }              
                 if (dr["PaymentStatus"] != DBNull.Value)
                 {
                     bi.PaymentStatus = bool.Parse(dr["PaymentStatus"].ToString());
@@ -370,15 +365,7 @@ Where SystemCustomerID = '{SystemCustomerID}'").Rows[0]["ExpiryDate"].ToString()
                 if (dr["CityID"] != DBNull.Value)
                 {
                     bi.CityID = int.Parse(dr["CityID"].ToString());
-                }
-                if (dr["Persontocontact"] != DBNull.Value)
-                {
-                    bi.Persontocontact = (dr["Persontocontact"].ToString());
-                }
-                if (dr["contactno"] != DBNull.Value)
-                {
-                    bi.contactno = (dr["contactno"].ToString());
-                }
+                }                          
                 if (dr["Address"] != DBNull.Value)
                 {
                     bi.Address = (dr["Address"].ToString());
@@ -395,9 +382,25 @@ Where SystemCustomerID = '{SystemCustomerID}'").Rows[0]["ExpiryDate"].ToString()
                 {
                     bi.Password = (dr["Password"].ToString());
                 }
-                if (dr["SystemCustomerID"] != DBNull.Value)
+                if (dr["SoftwareVersion"] != DBNull.Value)
                 {
-                    bi.SystemCustomerID = (dr["SystemCustomerID"].ToString());
+                    bi.SoftwareVersion = (dr["SoftwareVersion"].ToString());
+                }
+                if (dr["Branch"] != DBNull.Value)
+                {
+                    bi.Branch = (dr["Branch"].ToString());
+                }
+                if (dr["OpenTime"] != DBNull.Value)
+                {
+                    bi.OpenTime = (dr["OpenTime"].ToString());
+                }
+                if (dr["OffTime"] != DBNull.Value)
+                {
+                    bi.OffTime = (dr["OffTime"].ToString());
+                }
+                if (dr["OffDay"] != DBNull.Value)
+                {
+                    bi.OffDay = (dr["OffDay"].ToString());
                 }
                 if (dr["ExpiryDate"] != DBNull.Value)
                 {
@@ -475,6 +478,11 @@ left outer join PaymentType on DbName.PaymentTypeID = PaymentType.ID
                 {
                     pva.Payment = int.Parse(dr["Amount"].ToString());
                 }
+                if (dr["Description"] != DBNull.Value)
+                {
+                    pva.Description = dr["Description"].ToString();
+                }
+
                 lsDBDetailAssociation.Add(pva);
             }
             return lsDBDetailAssociation;

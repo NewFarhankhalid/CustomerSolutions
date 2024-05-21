@@ -27,9 +27,7 @@
         <table class="table" id="Customerinfo">
             <thead>
                 <tr>
-                    <th>
-                        @Html.DisplayNameFor(model => model.SystemCustomerID)
-                    </th>
+                 
                     <th>
                         @Html.DisplayNameFor(model => model.OwnerName)
                     </th>
@@ -41,11 +39,9 @@
                     </th>
 
                     <th>
-                        @Html.DisplayNameFor(model => model.Persontocontact)
+                        @Html.DisplayNameFor(model => model.Branch)
                     </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.contactno)
-                    </th>
+               
                     <th>
                         @Html.DisplayNameFor(model => model.LegalUser)
                     </th>
@@ -58,9 +54,7 @@
             </thead>
             <tfoot>
                 <tr>
-                    <th>
-                        @Html.DisplayNameFor(model => model.SystemCustomerID)
-                    </th>
+                   
                     <th>
                         @Html.DisplayNameFor(model => model.OwnerName)
                     </th>
@@ -71,11 +65,9 @@
                         @Html.DisplayNameFor(model => model.CityName)
                     </th>
                     <th>
-                        @Html.DisplayNameFor(model => model.Persontocontact)
+                        @Html.DisplayNameFor(model => model.Branch)
                     </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.contactno)
-                    </th>
+                 
                     <th>
                         @Html.DisplayNameFor(model => model.LegalUser)
                     </th>
@@ -91,9 +83,7 @@
                 @foreach (var item in Model)
                 {
                     <tr id="@item.CustomerID">
-                        <td>
-                            @Html.DisplayFor(modelItem => item.SystemCustomerID)
-                        </td>
+
                         <td>
                             @Html.DisplayFor(modelItem => item.OwnerName)
                         </td>
@@ -104,11 +94,10 @@
                             @Html.DisplayFor(modelItem => item.CityName)
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => item.Persontocontact)
+                            @Html.DisplayFor(modelItem => item.Branch)
                         </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.contactno)
-                        </td>
+
+
                         <td>
                             @if (item.LegalUser == false)
                             {

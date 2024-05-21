@@ -178,6 +178,7 @@ namespace Installments
             SelectList sl = new SelectList(objsli, "Value", "Text", selectedvalue);
             return sl;
         }
+
         public SelectList GetCustomer(string whereclause = "", int selectedvalue = 0)
         {
             DataTable dtEmployeeType = General.FetchData(" Select CustomerID,CustomerCompanytitle from CustomerInfo Where Inactive = 0 " + whereclause);
@@ -329,11 +330,26 @@ namespace Installments
              SelectList sl = new SelectList(objsli, "Value", "Text", selectedvalue.ToString());
             return sl;
         }
+
         public SelectList GetSolved(int selectedvalue = 0)
         {
             List<SelectListItem> objsli = new List<SelectListItem>();
-            objsli.Add(new SelectListItem() { Text = "Not Solved", Value = 1.ToString() });
-            objsli.Add(new SelectListItem() { Text = "Solved", Value = 2.ToString() });
+            objsli.Add(new SelectListItem() { Text = "Not Solved", Value = "1" });
+            objsli.Add(new SelectListItem() { Text = "Solved", Value = "2" });
+            SelectList sl = new SelectList(objsli, "Value", "Text", selectedvalue.ToString());
+            return sl;
+        }
+
+        public SelectList GetWeaklyDays(int selectedvalue = 0)
+        {
+            List<SelectListItem> objsli = new List<SelectListItem>();          
+            objsli.Add(new SelectListItem() { Text = "Friday", Value = 1.ToString() });
+            objsli.Add(new SelectListItem() { Text = "Saturday", Value = 2.ToString() });
+            objsli.Add(new SelectListItem() { Text = "Sunday", Value = 3.ToString() });
+            objsli.Add(new SelectListItem() { Text = "Monday", Value = 4.ToString() });
+            objsli.Add(new SelectListItem() { Text = "Tuesday", Value = 5.ToString() });
+            objsli.Add(new SelectListItem() { Text = "Wednesday", Value = 6.ToString() });
+            objsli.Add(new SelectListItem() { Text = "Thursday", Value = 7.ToString() });
             SelectList sl = new SelectList(objsli, "Value", "Text", selectedvalue.ToString());
             return sl;
         }
@@ -632,6 +648,24 @@ namespace Installments
 
                 si.Text = dr["DesignationTitle"].ToString();
                 si.Value = dr["DesignationID"].ToString();
+                objsli.Add(si);
+            }
+            SelectList sl = new SelectList(objsli, "Value", "Text", selectedvalue);
+            return sl;
+
+        }
+
+        public SelectList GetDeparmentList(string whereclause = "", int selectedvalue = 0)
+        {
+            DataTable dtEmployee = General.FetchData("Select * from DeparmentInfo " + whereclause);
+            List<SelectListItem> objsli = new List<SelectListItem>();
+            SelectListItem si = new SelectListItem();
+            foreach (DataRow dr in dtEmployee.Rows)
+            {
+                si = new SelectListItem();
+
+                si.Text = dr["DeparmentTitle"].ToString();
+                si.Value = dr["DeparmentID"].ToString();
                 objsli.Add(si);
             }
             SelectList sl = new SelectList(objsli, "Value", "Text", selectedvalue);

@@ -292,7 +292,6 @@
             </div>
         </div>
     </div>
-
 </div>
 
 <div class="col-md-12">
@@ -413,6 +412,12 @@
 
 
 <script>
+    $(document).ready(function () {
+        if (@Model.CustomerID!= 0)
+        {
+            GetOperatorDetail();
+        }
+    });
 
     $("#newOperatorPhone").on("input", function () {
         var maxLength = 11;
@@ -491,56 +496,65 @@
         });
     }
     $('#CustomerID').change(function () {
-        var CustomerID = $("#CustomerID").val();
-        $.ajax({
-            type: "POST",
-            url: "/GeneralAPIs/GetCustomerOperatorNumber",
-            data: JSON.stringify({ CustomerID }),
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function (data) {
-                $('#OperatorID').children().remove();
-                $('#OperatorID').children().remove();
-                $("#OperatorID").append("<option value=0 selected>Select Operator</option>");
-                var dtFileNo = eval(data);
-                if (dtFileNo.length > 0) {
-                    for (x = 0; x < dtFileNo.length; x++) {
-                        /* selectize.addOptions([{ text: 'Hello', value: 'Hello' }, { text: 'World', value: 'World' }])*/
-                        var markup = " <option value=" + dtFileNo[x].OperatorID + ">" + dtFileNo[x].OperatorName + "</option>";
-                        $("#OperatorID").append(markup);
-                    }
-                }
-                $("#OperatorID").val(@Model.OperatorID);
-                // Function to generate table rows from the data
-                //function generateTableRows(data) {
-                //    var rows = "";
-                //    $.each(data, function (index, item) {
-                //        rows += "<tr>";
-                //        rows += "<td style='display:none'>" + item.CustomerID + "</td>";
-                //        rows += "<td><input type='checkbox' class='employeeCheckbox' /></td>";
-                //        rows += "<td>" + item.EmployeeName + "</td>";
-                //        rows += "<td>" + item.EmployeePhone + "</td>";
-                //        rows += "</tr>";
-                //    });
-                //    return rows;
-                //}
 
-                //// Function to render the table
-                //function renderTable(data) {
-                //    var tableRows = generateTableRows(data);
-                //    $("#tblOperatorInfo").html(tableRows);
-                //}
+        GetOperatorDetail();
 
-                //// Call the renderTable function with the data received from the server
-                //renderTable(data);
-            },
-            error: function (xhr, status, error) {
-                // Handle errors
-                console.error(xhr.responseText);
-            }
-        });
     });
+    function GetOperatorDetail() {
+        var CustomerID = $("#CustomerID").val();
+        if (CustomerID == 0 || CustomerID == null || CustomerID == "") {
+            return;
+        }
+        else {
+        $.ajax({
+    type: "POST",
+    url: "/GeneralAPIs/GetCustomerOperatorNumber",
+    data: JSON.stringify({ CustomerID }),
+    contentType: "application/json; charset=utf-8",
+    dataType: "json",
+    success: function (data) {
+        $('#OperatorID').children().remove();
+        $('#OperatorID').children().remove();
+        $("#OperatorID").append("<option value=0 selected>Select Operator</option>");
+        var dtFileNo = eval(data);
+        if (dtFileNo.length > 0) {
+            for (x = 0; x < dtFileNo.length; x++) {
+                /* selectize.addOptions([{ text: 'Hello', value: 'Hello' }, { text: 'World', value: 'World' }])*/
+                var markup = " <option value=" + dtFileNo[x].OperatorID + ">" + dtFileNo[x].OperatorName + "</option>";
+                $("#OperatorID").append(markup);
+            }
+        }
+        $("#OperatorID").val(@Model.OperatorID);
+        // Function to generate table rows from the data
+        //function generateTableRows(data) {
+        //    var rows = "";
+        //    $.each(data, function (index, item) {
+        //        rows += "<tr>";
+        //        rows += "<td style='display:none'>" + item.CustomerID + "</td>";
+        //        rows += "<td><input type='checkbox' class='employeeCheckbox' /></td>";
+        //        rows += "<td>" + item.EmployeeName + "</td>";
+        //        rows += "<td>" + item.EmployeePhone + "</td>";
+        //        rows += "</tr>";
+        //    });
+        //    return rows;
+        //}
 
+        //// Function to render the table
+        //function renderTable(data) {
+        //    var tableRows = generateTableRows(data);
+        //    $("#tblOperatorInfo").html(tableRows);
+        //}
+
+        //// Call the renderTable function with the data received from the server
+        //renderTable(data);
+    },
+    error: function (xhr, status, error) {
+        // Handle errors
+        console.error(xhr.responseText);
+    }
+});
+        }
+    }
 
     if (@Model.ProblemStatementID != 0)
     {
@@ -648,7 +662,6 @@
         objProblem.ProblemStatmentNo = '@Model.ProblemStatmentNo';
 /*            objProblem.ProblemStatmentNo = $("#problemstatementnumber").val();*/
         objProblem.ProblemTitle = $("#ProblemTitle").val();
-        objProblem.Description = $("#Description").val();
         objProblem.ProblemImage = $("#imagefile").val();
         objProblem.CustomerID = $("#CustomerID").val();
         objProblem.EntryDate = $("#dtpEntryDate").val();

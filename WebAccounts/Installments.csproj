@@ -143,11 +143,13 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\AddEmployeeController.cs" />
     <Compile Include="Controllers\CategoryInfoController.cs" />
     <Compile Include="Controllers\CollectionCenterController.cs" />
     <Compile Include="Controllers\ColourInfoController.cs" />
     <Compile Include="Controllers\CompanyInformationController.cs" />
     <Compile Include="Controllers\CustomerInfoController.cs" />
+    <Compile Include="Controllers\DeparmentInfoController.cs" />
     <Compile Include="Controllers\DesignationController.cs" />
     <Compile Include="Controllers\EmployeeInfoController.cs" />
     <Compile Include="Controllers\FormsController.cs" />
@@ -172,6 +174,7 @@
     <Compile Include="Controllers\TermsandConditionInfoController.cs" />
     <Compile Include="Controllers\ThemeController.cs" />
     <Compile Include="Controllers\UploadUpdatesController.cs" />
+    <Compile Include="Controllers\UserDetailController.cs" />
     <Compile Include="Controllers\UserInfoController.cs" />
     <Compile Include="Controllers\VariantInfoController.cs" />
     <Compile Include="Controllers\WorkCategoryController.cs" />
@@ -181,6 +184,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\AddEmployee.cs" />
     <Compile Include="Models\CartInfo.cs" />
     <Compile Include="Models\CategoryInfo.cs" />
     <Compile Include="Models\ChangeExpiryDetail.cs" />
@@ -191,6 +195,7 @@
     <Compile Include="Models\CustomerInfo.cs" />
     <Compile Include="Models\DataPoints.cs" />
     <Compile Include="Models\DBName.cs" />
+    <Compile Include="Models\DeparmentInfo.cs" />
     <Compile Include="Models\DesignationInfo.cs" />
     <Compile Include="Models\EmployeeInfo.cs" />
     <Compile Include="Models\OperatorDesignation.cs" />
@@ -6082,11 +6087,18 @@
     <Content Include="Views\OperatorDesignation\Index.cshtml" />
     <Content Include="Views\OperatorDesignation\Create.cshtml" />
     <Content Include="Views\Report\Index.cshtml" />
+    <Content Include="Views\AddEmployee\Create.cshtml" />
+    <Content Include="Views\AddEmployee\Index.cshtml" />
+    <Content Include="Views\AddEmployee\EmployeeInformation.cshtml" />
+    <Content Include="Views\DeparmentInfo\Index.cshtml" />
+    <Content Include="Views\DeparmentInfo\Create.cshtml" />
+    <Content Include="Views\DeparmentInfo\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="ProductImages\" />
     <Folder Include="Views\GeneralAPIs\" />
+    <Folder Include="Views\UserDetail\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />

@@ -152,8 +152,10 @@
                         $('#formCategorySuggestions').html('');
                         if (data[0] == "true") {
                             $('#formCategorySuggestions').append('<div>' + data[1] + '</div>');
+                            $("#Save").prop('disabled', true);
                         } else {
                             $('#formCategorySuggestions').append('<div>No matching category found.</div>');
+                            $("#Save").prop('disabled', false);
                         }
                     },
                     error: function (x, e) {
@@ -181,7 +183,7 @@
 <div class="col-md-6">
 
     <input type="button" value="Back" onclick="BackToList()" class="btn btn-success" />
-    <input type="button" value="Save" onclick="Save(); return false;" class="btn btn-primary pull-right" />
+    <input type="button" value="Save" id="Save" onclick="Save(); return false;" class="btn btn-primary pull-right" />
 </div>
 
 @*<div>

@@ -62,6 +62,11 @@ namespace Installments.Models
         public int DesignationID { get; set; }
         [Required]
 
+        [Display(Name = "Department")]
+        [Range(1, int.MaxValue, ErrorMessage = "Please Select Department")]
+        public int DepartmentID { get; set; }
+        [Required]
+
         [Display(Name = "Date of Joining")]
         public DateTime JoiningDate { get; set; }
         [Required]
@@ -78,5 +83,13 @@ namespace Installments.Models
 
         [Display(Name = "Medical Allowance")]
         public decimal MedicalAllowance { get; set; }
+        public string EmployeeNo { get; set; }
+        public string FingerID { get; set; }
+        public string OpenTime { get; set; }
+        public string OffTime { get; set; }
+        public string UserName { get; set; }
+        public string Password { get; set; } 
+        public bool AllowHunderdMeters { get; set; }
+        public bool IsAdmin { get; set; }
     }
 }
