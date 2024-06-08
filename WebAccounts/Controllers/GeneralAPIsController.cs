@@ -7,14 +7,100 @@ using System.Data;
 using Installments.Models;
 namespace Installments.Controllers
 {
-    public class GeneralAPIsController : Controller
+    public class GeneralAPIsController : UserDetailController
     {
         // GET: GeneralAPIs
         public ActionResult Index()
         {
             return View();
         }
-     
+        [HttpGet]
+        public JsonResult GetEmployeesMonthlyDetails()
+        {
+            string sql1 = $@"
+WITH MatchedAttendance AS (
+    SELECT 
+        ei.Name,
+        ea_in.EmployeeID,
+        ea_in.TimeIn,
+        ea_out.TimeOut,
+        DATEDIFF(MINUTE, ea_in.TimeIn, ea_out.TimeOut) AS WorkingMinutes
+    FROM 
+        [dbo].[EmployeeAttendance] ea_in
+    INNER JOIN 
+        [dbo].[EmployeeAttendance] ea_out ON ea_in.EmployeeID = ea_out.EmployeeID
+            AND ea_in.TimeIn <= ea_out.TimeOut
+            AND DATEDIFF(DAY, ea_in.TimeIn, ea_out.TimeOut) = 0
+            AND ea_in.AttendanceType = 1
+            AND ea_out.AttendanceType = 2
+    INNER JOIN 
+        [dbo].[EmployeeInfo] ei ON ei.EmployeeID = ea_in.EmployeeID
+    WHERE 
+        ea_in.TimeIn BETWEEN DATEADD(month, DATEDIFF(month, 0, GETDATE()), 0) AND EOMONTH(GETDATE())
+        AND DATEPART(WEEKDAY, ea_in.TimeIn) <> 1  -- Exclude Sundays
+)
+, MonthlyDays AS (
+    SELECT 
+        COUNT(*) AS TotalWorkingDaysInMonth
+    FROM 
+        (SELECT DISTINCT CAST(ea.TimeIn AS DATE) AS WorkingDate
+         FROM [dbo].[EmployeeAttendance] ea
+         WHERE 
+             ea.TimeIn BETWEEN DATEADD(month, DATEDIFF(month, 0, GETDATE()), 0) AND EOMONTH(GETDATE())
+             AND DATEPART(WEEKDAY, ea.TimeIn) <> 1) AS DistinctDates
+)
+, TotalMonthDays AS (
+    SELECT 
+        DAY(EOMONTH(GETDATE())) AS TotalMonthDays
+)
+, WorkingHours AS (
+    SELECT 
+        Name,
+        EmployeeID,
+        SUM(WorkingMinutes) AS TotalMinutes,
+        COUNT(DISTINCT CAST(TimeIn AS DATE)) AS TotalWorkingDays
+    FROM 
+        MatchedAttendance
+    GROUP BY 
+        Name, EmployeeID
+)
+
+SELECT 
+    wh.Name,
+    wh.TotalWorkingDays,
+    wh.TotalMinutes / 60 AS TotalHours,
+    wh.TotalMinutes % 60 AS TotalMinutes,
+    CAST((wh.TotalWorkingDays * 1.0 / tm.TotalMonthDays) * 100 AS DECIMAL(5, 2)) AS WorkingDaysPercentage
+FROM 
+    WorkingHours wh
+CROSS JOIN 
+    TotalMonthDays tm;
+";
+            // Assuming General.FetchData() method retrieves data from the database
+            DataTable dtproductinfo = General.FetchData(sql1);
+            List<Dictionary<string, object>> dbrows = GetProductRows(dtproductinfo);
+            Dictionary<string, object> JSResponse = new Dictionary<string, object>();
+            if (dbrows == null)
+            {
+                JSResponse.Add("Status", false);
+            }
+            else
+            {
+                JSResponse.Add("Status", true);
+            }
+            JSResponse.Add("Message", "Employee Monthly Detail");
+            JSResponse.Add("Data", dbrows);
+
+            JsonResult jr = new JsonResult()
+            {
+                Data = JSResponse,
+                ContentType = "application/json",
+                ContentEncoding = System.Text.Encoding.UTF8,
+                JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                MaxJsonLength = Int32.MaxValue
+            };
+            return jr;
+        }
         public ActionResult GetEmployeesSelectList(string whereclause = "")
         {
 

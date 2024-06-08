@@ -194,6 +194,12 @@ Values (" + objemployee.DepartmentID + "," + objemployee.DesignationID + ",'" + 
                 ViewBag.DesignationList = new DropDown().GetDesignationList("", obj[0].DesignationID);
                 ViewBag.DepartmentList = new DropDown().GetDeparmentList("", obj[0].DepartmentID);
                 ViewBag.GenderList = new DropDown().GetGender((obj[0].Gender = true ? 1:0));
+                string formattedOpenTime = obj[0].OpenTime.ToString("hh:mm tt");
+                string formattedOffTime = obj[0].OffTime.ToString("hh:mm tt");
+
+                // Pass the formatted time strings to the view
+                ViewBag.FormattedOpenTime = formattedOpenTime;
+                ViewBag.FormattedOffTime = formattedOffTime;
                 return View("Create",obj[0]);
             }
             return RedirectToAction("index");

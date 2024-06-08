@@ -3,54 +3,56 @@
 @{
     ViewBag.Title = "Employee Information";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    //string formattedOpenTime = ViewBag.FormattedOpenTime as string;
+    //string formattedOffTime = ViewBag.FormattedOffTime as string;
 }
 
 
-    <div class="row">
-        @if (ViewBag.Error != null)
-        {
+<div class="row">
+    @if (ViewBag.Error != null)
+    {
         <div class="alert alert-danger">@ViewBag.Error</div>
-       
-        }
-        </div>
-    <div class="row">
-        <div class="col-md-12">
-            <div class="box box-solid">
-                <div class="box-header">
-                    <h3 class="box-title text-danger">Employee Information <small>(New)</small></h3>
-                </div>
-                <div class="box-body">
-                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-                    @Html.HiddenFor(model => model.EmployeeID)
-                    <div class="row">
+
+    }
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-solid">
+            <div class="box-header">
+                <h3 class="box-title text-danger">Employee Information <small>(New)</small></h3>
+            </div>
+            <div class="box-body">
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                @Html.HiddenFor(model => model.EmployeeID)
+                <div class="row">
+                    <div class="col-md-6">
+                        @*<div class="col-md-6">
+                                @Html.LabelFor(model => model.BranchID, htmlAttributes: new { @class = "control-label " })
+                                @Html.DropDownListFor(model => model.BranchID, (SelectList)ViewBag.BranchList, "Select Branch", htmlAttributes: new { @class = "form-control Select2", id = "ddlbranchinfo" })
+                                @Html.ValidationMessageFor(model => model.BranchID, "", new { @class = "text-danger" })
+                            </div>*@
                         <div class="col-md-6">
-                            @*<div class="col-md-6">
-                    @Html.LabelFor(model => model.BranchID, htmlAttributes: new { @class = "control-label " })
-                    @Html.DropDownListFor(model => model.BranchID, (SelectList)ViewBag.BranchList, "Select Branch", htmlAttributes: new { @class = "form-control Select2", id = "ddlbranchinfo" })
-                    @Html.ValidationMessageFor(model => model.BranchID, "", new { @class = "text-danger" })
-                </div>*@
-                            <div class="col-md-6">
-                                @Html.LabelFor(model => model.DepartmentID, htmlAttributes: new { @class = "control-label " })
+                            @Html.LabelFor(model => model.DepartmentID, htmlAttributes: new { @class = "control-label " })
 
-                                @Html.DropDownListFor(model => model.DepartmentID, (SelectList)ViewBag.DepartmentList, "Select Department", htmlAttributes: new { @class = "form-control Select2" })
-                                @Html.ValidationMessageFor(model => model.DepartmentID, "", new { @class = "text-danger" })
-                            </div>
-                            <div class="col-md-6">
-                                @Html.LabelFor(model => model.DesignationID, htmlAttributes: new { @class = "control-label " })
+                            @Html.DropDownListFor(model => model.DepartmentID, (SelectList)ViewBag.DepartmentList, "Select Department", htmlAttributes: new { @class = "form-control Select2" })
+                            @Html.ValidationMessageFor(model => model.DepartmentID, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="col-md-6">
+                            @Html.LabelFor(model => model.DesignationID, htmlAttributes: new { @class = "control-label " })
 
-                                @Html.DropDownListFor(model => model.DesignationID, (SelectList)ViewBag.DesignationList, "Select Designation", htmlAttributes: new { @class = "form-control Select2" })
-                                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
-                            </div>
+                            @Html.DropDownListFor(model => model.DesignationID, (SelectList)ViewBag.DesignationList, "Select Designation", htmlAttributes: new { @class = "form-control Select2" })
+                            @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
                         </div>
                     </div>
-
-
                 </div>
+
+
             </div>
         </div>
-        </div>
+    </div>
+</div>
 <div class="row">
-  
+
     <div class="col-md-7">
         <div class="box box-primary">
             <div class="box-header">
@@ -64,7 +66,7 @@
                     <table style="width:100%">
 
                         <tbody>
-                       
+
                             <tr>
                                 <td class="col-md-6">
 
@@ -133,7 +135,7 @@
 
                                 </td>
 
-                              </tr>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -147,31 +149,31 @@
             <div class="box-body">
                 <table style="width:100%">
                     <tr>
-                    <td class="col-md-3">
+                        <td class="col-md-3">
 
-                        @Html.LabelFor(model => model.GPFundNo, htmlAttributes: new { @class = "control-label " })
+                            @Html.LabelFor(model => model.GPFundNo, htmlAttributes: new { @class = "control-label " })
 
-                        @Html.EditorFor(model => model.GPFundNo, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.GPFundNo, "", new { @class = "text-danger" })
+                            @Html.EditorFor(model => model.GPFundNo, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.GPFundNo, "", new { @class = "text-danger" })
 
-                    </td>
-                    <td class="col-md-3">
+                        </td>
+                        <td class="col-md-3">
 
-                        @Html.LabelFor(model => model.KFFund, htmlAttributes: new { @class = "control-label " })
+                            @Html.LabelFor(model => model.KFFund, htmlAttributes: new { @class = "control-label " })
 
-                        @Html.EditorFor(model => model.KFFund, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.KFFund, "", new { @class = "text-danger" })
+                            @Html.EditorFor(model => model.KFFund, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.KFFund, "", new { @class = "text-danger" })
 
-                    </td>
-                    <td class="col-md-3">
+                        </td>
+                        <td class="col-md-3">
 
-                        @Html.LabelFor(model => model.Other, htmlAttributes: new { @class = "control-label " })
+                            @Html.LabelFor(model => model.Other, htmlAttributes: new { @class = "control-label " })
 
-                        @Html.EditorFor(model => model.Other, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.Other, "", new { @class = "text-danger" })
+                            @Html.EditorFor(model => model.Other, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.Other, "", new { @class = "text-danger" })
 
-                    </td>
-                  
+                        </td>
+
                     </tr>
                     <tr>
                         <td class="col-md-3">
@@ -232,25 +234,41 @@
                     </tr>
 
                     <tr>
-                        <td class="col-md-3">
-                            @Html.LabelFor(model => model.HomeTel, htmlAttributes: new { @class = "control-label " })
-                            @Html.EditorFor(model => model.HomeTel, new { htmlAttributes = new { @class = "form-control" } })
-                            @Html.ValidationMessageFor(model => model.HomeTel, "", new { @class = "text-danger" })
-                        </td>
-                        <td class="col-md-3">
-                            @Html.LabelFor(model => model.MobileTel, htmlAttributes: new { @class = "control-label " })
-                            @Html.EditorFor(model => model.MobileTel, new { htmlAttributes = new { @class = "form-control" } })
-                            @Html.ValidationMessageFor(model => model.MobileTel, "", new { @class = "text-danger" })
-                        </td>
-                    </tr>
-                    <tr>
+                        @*<td class="col-md-3">
+                                    @Html.LabelFor(model => model.HomeTel, htmlAttributes: new { @class = "control-label " })
+                                    @Html.EditorFor(model => model.HomeTel, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.HomeTel, "", new { @class = "text-danger" })
+                                </td>
+                                <td class="col-md-3">
+                                    @Html.LabelFor(model => model.MobileTel, htmlAttributes: new { @class = "control-label " })
+                                    @Html.EditorFor(model => model.MobileTel, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.MobileTel, "", new { @class = "text-danger" })
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="col-md-3">
+                                    @Html.Label("Open Time", htmlAttributes: new { @class = "control-label " })
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-clock"></i></span>
+                                        @Html.EditorFor(model => model.OpenTime, new { @class = "form-control",@type="time" })
+                                    </div>
+                                </td>
+                                <td class="col-md-3">
+                                    @Html.Label("Off Time", htmlAttributes: new { @class = "control-label " })
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-clock"></i></span>
+                                        @Html.TextBoxFor(model => model.OffTime,  new { @class = "form-control timepicker" })
+                                    </div>
+                                </td>*@
+
                         <td class="col-md-3">
                             @Html.Label("Open Time", htmlAttributes: new { @class = "control-label " })
                             <div class="input-group">
                                 <span class="input-group-addon"><i class="fa fa-clock"></i></span>
                                 @Html.EditorFor(model => model.OpenTime, new { htmlAttributes = new { @class = "form-control", @type = "time" } })
-                                @*<span class="input-group-addon"><i class="fa fa-clock"></i></span>
-                                <select class="form-control" id="openTimeDropdown"></select>*@
+
+                                <span class="input-group-addon"><i class="fa fa-clock"></i></span>
+                                @*<select class="form-control" id="openTimeDropdown"></select>*@
                             </div>
                         </td>
                         <td class="col-md-3">
@@ -258,7 +276,7 @@
                             <div class="input-group">
                                 <span class="input-group-addon"><i class="fa fa-clock"></i></span>
                                 @Html.EditorFor(model => model.OffTime, new { htmlAttributes = new { @class = "form-control", @type = "time" } })
-                                </div>
+                            </div>
                         </td>
                     </tr>
                 </table>
@@ -405,7 +423,7 @@
 
                         </td>
                     </tr>
-                    
+
                 </table>
 
             </div>
@@ -424,19 +442,120 @@
         </div>
 
     </div>
-    </div>
-    
-    @section Scripts {
-        @Scripts.Render("~/bundles/jqueryval")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+<style>
+    .col-md-2 {
+        max-width: 100%;
     }
+</style>
+<script>
 
-    <style>
-        .col-md-2 {
-            max-width: 100%;
+
+        $(document).ready(function () {
+
+            // Initialize timepicker for all elements with the 'timepicker' class
+            $('.timepicker').timepicker({
+                // Add additional options here if needed
+            });
+
+            function formatAMPM(date) {
+                var hours = date.getHours();
+                var minutes = date.getMinutes();
+                var ampm = hours >= 12 ? 'PM' : 'AM';
+                hours = hours % 12;
+                hours = hours ? hours : 12; // Handle midnight
+                minutes = minutes < 10 ? '0' + minutes : minutes;
+                var strTime = hours + ':' + minutes + ' ' + ampm;
+                return strTime;
+            }
+
+            // Get the current time
+            var currentTime = new Date();
+
+            // Format current time
+            var formattedCurrentTime = formatAMPM(currentTime);
+
+            // Debug: Check if the current time is formatted correctly
+            console.log("Current time: " + formattedCurrentTime);
+
+            // Set the default value of Open Time input
+            $("#OpenTime").val(formattedCurrentTime);
+
+            // Set the default value of Off Time input
+            $("#OffTime").val(formattedCurrentTime);
+        });
+
+
+
+
+
+          $(document).ready(function () {
+            // Check if the EmployeeID is not equal to 0 (indicating edit mode)
+            {
+                // Use Razor to inject the formatted time values into the script
+                var openTime = "@ViewBag.FormattedOpenTime";
+                var offTime = "@ViewBag.FormattedOffTime";
+
+                // Format the time values into HH:mm tt format (e.g., 09:00 AM)
+                var formattedOpenTime = formatTime(openTime);
+                var formattedOffTime = formatTime(offTime);
+
+                // Set the values of the time inputs
+                $("#OpenTime").val(formattedOpenTime);
+                $("#OffTime").val(formattedOffTime);
+            }
+        });
+
+        // Function to format time into HH:mm tt format
+        function formatTime(time) {
+            var timeParts = time.split(":"); // Split the time string into hours and minutes
+            var hours = parseInt(timeParts[0]); // Extract the hours part
+            var minutes = parseInt(timeParts[1]); // Extract the minutes part
+
+            // Determine AM/PM
+            var period = (hours >= 12) ? "PM" : "AM";
+
+            // Adjust hours for 12-hour format
+            if (hours > 12) {
+                hours -= 12;
+            } else if (hours === 0) {
+                hours = 12;
+            }
+
+            // Format the time string
+            var formattedTime = hours + ":" + (minutes < 10 ? '0' : '') + minutes + " " + period;
+
+            return formattedTime;
         }
-    </style>
-    <script>
 
+
+        //$(document).ready(function () {
+        //    // Initialize any plugins or handle time format if necessary
+
+        //    // Example: Using a timepicker plugin to handle AM/PM
+        //    $('#OpenTime').timepicker({
+        //        timeFormat: 'hh:mm tt',
+        //        interval: 15,
+        //        defaultTime: 'now',
+        //        dynamic: false,
+        //        dropdown: true,
+        //        scrollbar: true
+        //    });
+
+        //    $('#OffTime').timepicker({
+        //        timeFormat: 'hh:mm tt',
+        //        interval: 15,
+        //        defaultTime: 'now',
+        //        dynamic: false,
+        //        dropdown: true,
+        //        scrollbar: true
+        //    });
+        //});
 
         $(document).ready(function () {
             if(@Model.EmployeeID!=0)
@@ -462,7 +581,7 @@
                             $('#formTitleSuggestions').html('');
                             if (data[0] == "true") {
                                 $('#formTitleSuggestions').append('<div>This User Name Already Exists With Name ' + data[1] + '</div>');
-                                $("#Savebtn").prop('disabled', true);
+                               /* $("#Savebtn").prop('disabled', true);*/
                             } else {
                                 $('#formTitleSuggestions').append('');
                                 $("#Savebtn").prop('disabled', false);
@@ -609,4 +728,4 @@
             });
 
         }
-    </script>
+</script>

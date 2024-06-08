@@ -125,6 +125,16 @@
                                 @Html.ValidationMessageFor(model => model.ProblemTitle, "", new { @class = "text-danger" })
                             </td>
                         </tr>
+                        <tr>
+                            <td>
+                                @Html.LabelFor(model => model.EntryDate, htmlAttributes: new { @class = "control-label" })
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                    @Html.EditorFor(model => model.EntryDate, new { htmlAttributes = new { @class = "form-control", id = "dtpEntryDate" } })
+                                </div>
+
+                            </td>
+                        </tr>
                         <tr id="PDate">
                             <td>
                                 @Html.LabelFor(model => model.PromiseDate, htmlAttributes: new { @class = "control-label" })
@@ -274,144 +284,169 @@
                         @Html.EditorFor(model => model.ProblemImagePath, new { htmlAttributes = new { @class = "form-control" } })
                         @Html.ValidationMessageFor(model => model.ProblemImagePath, "", new { @class = "text-danger" })
                     </div>
-                    <br />
-
-                    <script>
-                        var loadFile = function (event) {
-                            var output = document.getElementById('output');
-                            output.src = URL.createObjectURL(event.target.files[0]);
-                            output.onload = function () {
-                                URL.revokeObjectURL(output.src) // free memory
-                            }
-                        };
-                    </script>
                 </div>
-                @*<div>
-                        @Html.ActionLink("Back to List", "Index")
-                    </div>*@
+            </div>
+        </div>
+
+        <div class="col-md-12">
+            <div class="box box-warning">
+                <div class="box-header">
+                    <h3 class="box-title">Voice</h3>
+                </div>
+                <div class="box-body">
+
+                    <input type="file" name="VoiceFile" accept="audio/*" id="voiceFile">
+
+                    <br>
+                    <audio controls id="audioPlayer" style="width: 100%;">
+                        <!-- The audio source will be set dynamically using JavaScript -->
+                        Your browser does not support the audio element.
+                    </audio>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<div class="col-md-12">
-    <div class="box box-primary">
-        <div class="box-header">
-            <h3 class="box-title">Forms</h3>
-        </div>
-        <div class="box-body">
-            <div class="row">
-                <div class="col-md-5">
-                    @Html.Label("Form Name", htmlAttributes: new { @class = "control-label " })
-                    <div class="input-group">
-                        <span class="input-group-addon"><i class="fa fa-tags"></i></span>
-                        @Html.DropDownList("FormID", (SelectList)ViewBag.FormID, "Select Form", htmlAttributes: new { @class = "form-control Select2" })
-                    </div>
-                </div>
-                <div class="col-md-5">
-                    @Html.Label("Form Description", htmlAttributes: new { @class = "control-label " })
-                    @Html.TextArea("FormDescription", new { @class = "textarea", @cols = 10, @rows = 14, id = "Description", name = "Description" })
-                    @Html.ValidationMessage("FormDescription", "", new { @class = "text-danger" })
-                </div>
-                <div class="col-md-2" style="padding-left:2px;">
-                    <label style="color:white">Button</label>
-                    <div class="input-group">
-                        <button onclick="AddVariant()" class="btn btn-primary btn-flat">Add Form</button>
-                    </div>
-                </div>
+
+    <div class="col-md-12">
+        <div class="box box-primary">
+            <div class="box-header">
+                <h3 class="box-title">Forms</h3>
             </div>
-            <table class="table table-bordered" id="tblFormName">
-                <thead>
-                    <tr>
-                        <th style="display:none">Form ID</th>
-                        <th class="col-md-3">Form Title</th>
-                        <th class="col-md-4">Description</th>
-                        <th class="col-md-1">Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (Installments.Models.FormName variant in Model.lstFormName)
-                    {
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-md-5">
+                        @Html.Label("Form Name", htmlAttributes: new { @class = "control-label " })
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-tags"></i></span>
+                            @Html.DropDownList("FormID", (SelectList)ViewBag.FormID, "Select Form", htmlAttributes: new { @class = "form-control Select2" })
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        @Html.Label("Form Description", htmlAttributes: new { @class = "control-label " })
+                        @Html.TextArea("FormDescription", new { @class = "textarea", @cols = 10, @rows = 14, id = "Description", name = "Description" })
+                        @Html.ValidationMessage("FormDescription", "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-2" style="padding-left:2px;">
+                        <label style="color:white">Button</label>
+                        <div class="input-group">
+                            <button onclick="AddVariant()" class="btn btn-primary btn-flat">Add Form</button>
+                        </div>
+                    </div>
+                </div>
+                <table class="table table-bordered" id="tblFormName">
+                    <thead>
                         <tr>
-                            <td style="display:none">@variant.FormID</td>
-                            <td>@variant.FormTitle</td>
-                            <td>@Html.Raw(variant.FormDescription)</td>
-                            <td><i class='fa fa-remove text-danger' onclick='removerow(this)'></i></td>
+                            <th style="display:none">Form ID</th>
+                            <th class="col-md-3">Form Title</th>
+                            <th class="col-md-4">Description</th>
+                            <th class="col-md-1">Action</th>
                         </tr>
-                    }
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @foreach (Installments.Models.FormName variant in Model.lstFormName)
+                        {
+                            <tr>
+                                <td style="display:none">@variant.FormID</td>
+                                <td>@variant.FormTitle</td>
+                                <td>@Html.Raw(variant.FormDescription)</td>
+                                <td><i class='fa fa-remove text-danger' onclick='removerow(this)'></i></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-</div>
 
 
-<div class="col-md-12">
-    <br />
-    <input type="button" value="Back" onclick="BackToList()" class="btn btn-success" />
-    <input type="button" value="Save" onclick="SaveRecord(); return false;" class="btn btn-primary pull-right" />
-</div>
-@*<div id="myModal" class="modal">
-    <span class="close">&times;</span>
-    <img class="modal-content" id="img01">
-    <div id="caption"></div>
-</div>*@
 
-<div class="modal fade" id="myOperator" role="dialog">
-    <div class="modal-dialog">
+    <div class="col-md-12">
+        <br />
+        <input type="button" value="Back" onclick="BackToList()" class="btn btn-success" />
+        <input type="button" value="Save" onclick="SaveRecord(); return false;" class="btn btn-primary pull-right" />
+    </div>
+    @*<div id="myModal" class="modal">
+            <span class="close">&times;</span>
+            <img class="modal-content" id="img01">
+            <div id="caption"></div>
+        </div>*@
 
-        <!-- Modal content-->
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Add Operator</h4>
-            </div>
+    <div class="modal fade" id="myOperator" role="dialog">
+        <div class="modal-dialog">
 
-            <div class="modal-body">
-                <label>Operator Name</label>
-                <input type="text" class="form-control" id="newOperatorName" />
-                <span class="text-danger" style="display:none" id="newbrandwarning">Please enter Operator Name</span>
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Add Operator</h4>
+                </div>
+
+                <div class="modal-body">
+                    <label>Operator Name</label>
+                    <input type="text" class="form-control" id="newOperatorName" />
+                    <span class="text-danger" style="display:none" id="newbrandwarning">Please enter Operator Name</span>
 
 
-                <label>Operator Phone</label>
-                <input type="number" class="form-control" id="newOperatorPhone" />
-                <span class="text-danger" style="display:none" id="newbrandPhonewarning">Please enter Operator Phone</span>
+                    <label>Operator Phone</label>
+                    <input type="number" class="form-control" id="newOperatorPhone" />
+                    <span class="text-danger" style="display:none" id="newbrandPhonewarning">Please enter Operator Phone</span>
 
-                <label>Designation</label>
-                @Html.DropDownList("newDesignation", (SelectList)ViewBag.Designation, "Select Designation", new { @class = "form-control" })
-                <span class="text-danger" style="display:none" id="newDesignationWarning">Please select a Designation</span>
+                    <label>Designation</label>
+                    @Html.DropDownList("newDesignation", (SelectList)ViewBag.Designation, "Select Designation", new { @class = "form-control" })
+                    <span class="text-danger" style="display:none" id="newDesignationWarning">Please select a Designation</span>
 
-                <label for="isContactPerson">Is Contact Person</label>
-                <input type="checkbox" id="isContactPerson" name="isContactPerson">
-            </div>
+                    <label for="isContactPerson">Is Contact Person</label>
+                    <input type="checkbox" id="isContactPerson" name="isContactPerson">
+                </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" onclick="AddBrand()">Add Operator</button>
                     <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-               
+
+                </div>
             </div>
         </div>
     </div>
-    </div>
 
 
 
 
-@section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
-}
-
-<style>
-    .col-md-2 {
-        max-width: 100%;
+    @section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
     }
-</style>
+
+    <style>
+        .col-md-2 {
+            max-width: 100%;
+        }
+    </style>
 
 
-<link href="~/bower_components/summernote/summernote-bs4.css" rel="stylesheet" />
-<script src="~/bower_components/summernote/summernote-bs4.js"></script>
+    <link href="~/bower_components/summernote/summernote-bs4.css" rel="stylesheet" />
+    <script src="~/bower_components/summernote/summernote-bs4.js"></script>
 
 
-<script>
+    <script>
+
+            $(document).ready(function () {
+                // Define the loadVoice function
+                var loadVoice = function (event) {
+                    var audioPlayer = document.getElementById('audioPlayer');
+                    var file = event.target.files[0];
+
+                    // Set audio source
+                    audioPlayer.src = URL.createObjectURL(file);
+                    audioPlayer.load();
+                };
+
+                // Call loadVoice function when the file input changes
+                $('#voiceFile').on('change', loadVoice);
+            });
+
+
+
+
+
     $(document).ready(function () {
         if (@Model.CustomerID!= 0)
         {
@@ -636,132 +671,62 @@
         var row = $(objectre).closest("TR");
         var table = $("#tblFormName")[0];
         table.deleteRow(row[0].rowIndex);
-    }
-
-    function SaveRecord() {
-
-        var lstFormName = new Array();
-        $("#tblFormName TBODY TR").each(function () {
-            var product = {};
-            product.ProductID = 0;
-            product.FormID = $(this).children("TD").eq(0).html();
-            product.FormDescription = $(this).children("TD").eq(2).html();
-            lstFormName.push(product);
-        });
-        //var lstOperatorDetail = new Array();
-        //$("#tblOperatorInfo TBODY TR").each(function () {
-        //    var product = {};
-        //    product.OperatorName = $(this).children("TD").eq(0).html();
-        //    product.OperatorPhone = $(this).children("TD").eq(1).html();
-        //    product.IsContactPerson = $(this).children("TD").eq(2).html();
-        //    lstOperatorDetail.push(product);
-        //});
-        var objProblem = {};
-
-        objProblem.ProblemStatementID = $("#ProblemStatementID").val();
-        objProblem.ProblemStatmentNo = '@Model.ProblemStatmentNo';
-/*            objProblem.ProblemStatmentNo = $("#problemstatementnumber").val();*/
-        objProblem.ProblemTitle = $("#ProblemTitle").val();
-        objProblem.ProblemImage = $("#imagefile").val();
-        objProblem.CustomerID = $("#CustomerID").val();
-        objProblem.EntryDate = $("#dtpEntryDate").val();
-        objProblem.PromiseDate = $("#dtpPromiseDate").val();
-        objProblem.WorkCategory = $("#WorkCategory").val();
-        objProblem.AssignTo = $("#AssignTo").val();
-        objProblem.WorkPriority = $("#WorkPriority").val();
-        objProblem.ProblemImagePath = $("#ProblemImagePath").val();
-        objProblem.OperatorID = $("#OperatorID").val();
-/*        objProblem.ProblemStatmentNo = $("#ProblemStatmentNo").val();*/
-        objProblem.Calltime = $("#Calltime").val();
-
-        if (objProblem.CustomerID == "" || objProblem.CustomerID == 0) {
-            bootbox.alert("Please Select Customer");
-            $("#Calltime").val();
-            return;
-        }
-        if (objProblem.Calltime == "" || objProblem.Calltime == 0) {
-            bootbox.alert("Please Enter Call Time");
-            $("#CustomerID").val();
-            return;
-        }
-        if (objProblem.ProblemTitle == "" || objProblem.ProblemTitle == 0 || objProblem.ProblemTitle == null) {
-            bootbox.alert("Please Enter Proper Problem Title");
-            $("#ProblemTitle").val();
-            return;
-        }
-        var flagImageExist = 0;
-        if (document.getElementById("imagefile").files[0] == null) {
-            if (Problem = output) {
-                objProblem.ProblemImage = Problem;
             }
-        }
-        else {
-            objProblem.ProblemImage = objProblem.ProblemImage;
-        }
-        if (document.getElementById("imagefile").files.length == 0) {
-            if (Problem != undefined) {
-                if (Problem.length == 0 || output.length == 0) {
-                    flagImageExist = 0;
-                }
-                else {
-                    if (objProblem.ProblemImage == Problem) {
-                        flagImageExist = 0;
+
+            function SaveRecord() {
+                var lstFormName = [];
+                $("#tblFormName TBODY TR").each(function () {
+                    var formName = {
+                        FormID: $(this).children("TD").eq(0).html(),
+                        FormDescription: $(this).children("TD").eq(2).html()
+                    };
+                    lstFormName.push(formName);
+                });
+
+                var objProblem = {
+                    ProblemStatementID: $("#ProblemStatementID").val(),
+                    ProblemTitle: $("#ProblemTitle").val(),
+                    CustomerID: $("#CustomerID").val(),
+                    EntryDate: $("#dtpEntryDate").val(),
+                    PromiseDate: $("#dtpPromiseDate").val(),
+                    WorkCategory: $("#WorkCategory").val(),
+                    AssignTo: $("#AssignTo").val(),
+                    WorkPriority: $("#WorkPriority").val(),
+                    ProblemImagePath: $("#ProblemImagePath").val(),
+                    OperatorID: $("#OperatorID").val(),
+                    Calltime: $("#Calltime").val()
+                };
+
+
+                var voiceFile = $('#voiceFile')[0].files[0];
+
+                console.log(voiceFile); // Log the file object to the console
+                alert("Selected file: " + voiceFile.name);
+                $.ajax({
+                    type: "POST",
+                    url: "/NewProblemStatement/Create",
+                    data: JSON.stringify({ objProblem: objProblem, lstFormName: lstFormName }),
+                    contentType: "application/json",
+                    processData: false,
+                    beforeSend: function (xhr) {
+                        if (voiceFile) {
+                            xhr.setRequestHeader("X-File-Name", voiceFile.name); // Set custom header for the file name
+                        }
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            alert("Problem statement created successfully! ID: " + response.problemId);
+                        } else {
+                            alert("Error creating problem statement: " + response.message);
+                        }
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        console.log("Response Text: " + jqXHR.responseText);
+                        alert("Error creating problem statement: " + errorThrown);
                     }
-                    else {
-                        flagImageExist = 1;
-                    }
-                }
+                });
             }
-        }
-        else {
-            flagImageExist = 1;
-        }
 
-        $.ajax({
-            type: "POST",
-            url: "/NewProblemStatement/Create",
-            data: JSON.stringify({ objProblem, lstFormName }),
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            async: false,
-            success: function (r) {
-                var data = r.split(",");
-                if (data[0] == 'true') {
-                    objProblem.ProblemStatementID = data[1];
-                    if (flagImageExist == 0) {
-                        window.location.href = "/NewProblemStatement/Index";
-                    }
-                }
-            },
-            error: function (x, e) {
-                bootbox.alert("Error");
-                return;
-            },
-        });
-        if (flagImageExist == 1) {
-            var formData = new FormData();
-            formData.append("txtfile", document.getElementById("imagefile").files[0], (objProblem.ProblemStatementID + ",1"));
-            var ProblemStatementID = objProblem.ProblemStatementID
-            var reqUrl = "/NewProblemStatement/SaveOrUpdateImage";
-            $.ajax({
-                type: "POST",
-                url: reqUrl,
-                async: false,
-                contentType: false,//"application/json; charset=utf-8",
-                processData: false,
-                data: formData,
-                success: function (data) {
-                    window.location.href = "/NewProblemStatement/Index";
-                },
-                error: function (data) {
-                    bootbox.alert("Error image uploading");
-                }
-            });
-        }
-        else {
-            window.location.href = "/NewProblemStatement/Index";
-        }
 
-    }
-</script>
+    </script>
 

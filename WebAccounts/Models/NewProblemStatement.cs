@@ -53,6 +53,7 @@ namespace Installments.Models
         public int DesignationID { get; set; }
         public string WorkCategory { get; set; }
         public bool IsContactPerson { get; set; }
+        public string Voice { get; set; }
         public List<FormName> lstFormName = new List<FormName>();
 
         public List<ProblemRemarks> lstProblemRemarks = new List<ProblemRemarks>();

@@ -6,6 +6,12 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Services.Description;
+using FirebaseAdmin;
+using FirebaseAdmin.Messaging;
+using Google.Apis.Auth.OAuth2;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
+using System.Xml.Linq;
 
 namespace Installments.Controllers
 {
@@ -227,24 +233,24 @@ inner join EmployeeInfo on EmployeeAttendance.EmployeeID = EmployeeInfo.Employee
             return jr;
         }
         [HttpPost]
-        public ActionResult AddAttendance(int EmployeeID,string Location,string IPAddress,string MacAddress,string DeviceName,double Longtitude,double Latitude,int AttendanceType)
+        public async Task<ActionResult> AddAttendance(int EmployeeID, string Location, string IPAddress, string MacAddress, string DeviceName, double Longtitude, double Latitude, int AttendanceType)
         {
-            try
-            {
-                string query = $@"Select EmployeeID,'Duplicate Entry' as Name from EmployeeAttendance Where EmployeeID = {EmployeeID} and AttendanceType ={AttendanceType} and Cast(TimeIn as date)= Cast(GetDate() as date) and Cast(TimeOut as date)= Cast(GetDate() as date) ";
-                Dictionary<string, object> JSResponse = new Dictionary<string, object>();
-                DataTable Value = General.FetchData(query);
-                List<Dictionary<string, object>> dbrows = GetProductRows(Value);
-                if(Value.Rows.Count>0)
+                try
                 {
-                    JSResponse.Add("Status", false);
-                }
-                else
-                {
-                    DataTable dt = General.FetchData($@"Select EmployeeID,Name,''as value from EmployeeInfo Where EmployeeID='{EmployeeID}'");
-                    if (dt.Rows.Count > 0)
+                    string query = $@"Select EmployeeID,'Duplicate Entry' as Name from EmployeeAttendance Where EmployeeID = {EmployeeID} and AttendanceType ={AttendanceType} and Cast(TimeIn as date)= Cast(GetDate() as date) and Cast(TimeOut as date)= Cast(GetDate() as date) ";
+                    Dictionary<string, object> JSResponse = new Dictionary<string, object>();
+                    DataTable Value = General.FetchData(query);
+                    List<Dictionary<string, object>> dbrows = GetProductRows(Value);
+                    if (Value.Rows.Count > 0)
                     {
-                        string sql = $@"
+                        JSResponse.Add("Status", false);
+                    }
+                    else
+                    {
+                        DataTable dt = General.FetchData($@"Select EmployeeID,Name,''as value from EmployeeInfo Where EmployeeID='{EmployeeID}'");
+                        if (dt.Rows.Count > 0)
+                        {
+                            string sql = $@"
 INSERT INTO [dbo].[EmployeeAttendance]
            ([EmployeeID]
            ,[TimeIn]
@@ -267,71 +273,122 @@ INSERT INTO [dbo].[EmployeeAttendance]
            ,'{Longtitude}'
            ,'{Latitude}'
            ,{AttendanceType})";
-                        General.ExecuteNonQuery(sql);
+                            General.ExecuteNonQuery(sql);
+                        }
+                        dbrows = GetProductRows(dt);
+                        string EmployeeName = dt.Rows[0]["Name"].ToString();
+                        DataTable dt2 = General.FetchData($@"Select * from AdminMobileKey ");
+                        foreach (DataRow dr in dt2.Rows)
+                        {
+                            await SendMessageAsync(dr["MobileKey"].ToString(), EmployeeName, AttendanceType == 1 ? "Check In" : " Check Out", DateTime.Now, Location);
+                        }
+                        if (dbrows.Count <= 0)
+                        {
+                            JSResponse.Add("Status", false);
+                        }
+                        else
+                        {
+                            JSResponse.Add("Status", true);
+                        }
                     }
-                    dbrows = GetProductRows(dt);
-                    if (dbrows.Count <= 0)
+                    //Dictionary<string, object> JSResponse = new Dictionary<string, object>();
+                    JSResponse.Add("Message", "Employee Data");
+                    JSResponse.Add("Data", dbrows);
+                    JsonResult jr = new JsonResult()
+                    {
+                        Data = JSResponse,
+                        ContentType = "application/json",
+                        ContentEncoding = System.Text.Encoding.UTF8,
+                        JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                        MaxJsonLength = Int32.MaxValue
+                    };
+                    return jr;
+                }
+                catch
+                {
+                    return View("false", JsonRequestBehavior.AllowGet);
+                }
+            }
+        [HttpPost]
+        public ActionResult UpdatePassword(int EmployeeID,string OldPassword,string NewPassword)
+            {
+                try
+                {
+                    string query = $@"Select EmployeeID,Name from EmployeeInfo Where EmployeeID = {EmployeeID} and Password COLLATE Latin1_General_CS_AS = '{OldPassword}'";
+                    Dictionary<string, object> JSResponse = new Dictionary<string, object>();
+                    DataTable Value = General.FetchData(query);
+                    List<Dictionary<string, object>> dbrows = GetProductRows(Value);
+                    if (Value.Rows.Count <= 0)
                     {
                         JSResponse.Add("Status", false);
                     }
                     else
                     {
+                        General.ExecuteNonQuery($@"Update EmployeeInfo set Password = '{NewPassword}' Where EmployeeID = {EmployeeID}");
                         JSResponse.Add("Status", true);
                     }
+                    //Dictionary<string, object> JSResponse = new Dictionary<string, object>();
+                    JSResponse.Add("Message", "Employee Data");
+                    JSResponse.Add("Data", dbrows);
+                    JsonResult jr = new JsonResult()
+                    {
+                        Data = JSResponse,
+                        ContentType = "application/json",
+                        ContentEncoding = System.Text.Encoding.UTF8,
+                        JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                        MaxJsonLength = Int32.MaxValue
+                    };
+                    return jr;
                 }
-                //Dictionary<string, object> JSResponse = new Dictionary<string, object>();
-                JSResponse.Add("Message", "Employee Data");
-                JSResponse.Add("Data", dbrows);
-                JsonResult jr = new JsonResult()
+                catch
                 {
-                    Data = JSResponse,
-                    ContentType = "application/json",
-                    ContentEncoding = System.Text.Encoding.UTF8,
-                    JsonRequestBehavior = JsonRequestBehavior.AllowGet,
-                    MaxJsonLength = Int32.MaxValue
-                };
-                return jr;
+                    return View("false", JsonRequestBehavior.AllowGet);
+                }
             }
-            catch
+            public async Task SendMessageAsync(string MobileKey, string EmployeeName, string AttendanceType, DateTime dateTime, string Location)
             {
-                return View("false", JsonRequestBehavior.AllowGet);
+                string jsonFilePath = "H:\\Sajjad\\Customer Solution WebApp\\Customer Solution WebApp\\WebAccounts\\softinn-solutions-firebase-adminsdk-7mtt3-b0024ccb7d.json";
+                string jsonData = System.IO.File.ReadAllText(jsonFilePath);
+
+                // Deserialize JSON data into FirebaseCredentialModel object
+                FirebaseCredentialModel firebaseCredential = JsonConvert.DeserializeObject<FirebaseCredentialModel>(jsonData);
+
+                // Set up credentials
+                //string json = File.("H:\\Sajjad\\Customer Solution WebApp\\Customer Solution WebApp\\WebAccounts\\softinn-solutions-firebase-adminsdk-7mtt3-b0024ccb7d.json");
+                //GoogleCredential credential = GoogleCredential.FromFile("H:\\Sajjad\\Customer Solution WebApp\\Customer Solution WebApp\\WebAccounts\\softinn-solutions-firebase-adminsdk-7mtt3-b0024ccb7d.json");
+
+                GoogleCredential credential = GoogleCredential.FromJson(JsonConvert.SerializeObject(firebaseCredential));
+                //FirebaseApp firebaseApp = FirebaseApp.Create(new AppOptions
+                //{
+                //    Credential = credential
+                //});
+
+                FirebaseApp firebaseApp = FirebaseApp.DefaultInstance;
+                if (firebaseApp == null)
+                {
+                    // FirebaseApp doesn't exist, create a new one
+                    firebaseApp = FirebaseApp.Create(new AppOptions
+                    {
+                        Credential = credential
+                    });
+                }
+
+                // Get the messaging instance
+                var messaging = FirebaseMessaging.GetMessaging(firebaseApp);
+
+                // Construct your message
+                var message = new FirebaseAdmin.Messaging.Message
+                {
+                    Notification = new Notification
+                    {
+                        Title = EmployeeName,
+                        Body = AttendanceType + " On " + dateTime + " From " + Location
+                    },
+                    Token = MobileKey //"dfRx5O0XR6KsaI_urvP-Ik:APA91bEW1-4KD-XUTXfwZhv4c6o9W9-9XK0b9urc-aIIngIfGuv46U8i8McL0xmMAwgbrLZHsolCjOCBHymE3ZKawGAZJzN9hJ5EbkAZ-tszP0VcIxxM0_InpRQY92jX69ARE_ToGJTt"
+                };
+
+                // Send the message
+                string response = await messaging.SendAsync(message);
             }
         }
-        [HttpPost]
-        public ActionResult UpdatePassword(int EmployeeID,string OldPassword,string NewPassword)
-        {
-            try
-            {
-                string query = $@"Select EmployeeID,Name from EmployeeInfo Where EmployeeID = {EmployeeID} and Password COLLATE Latin1_General_CS_AS = '{OldPassword}'";
-                Dictionary<string, object> JSResponse = new Dictionary<string, object>();
-                DataTable Value = General.FetchData(query);
-                List<Dictionary<string, object>> dbrows = GetProductRows(Value);
-                if (Value.Rows.Count <= 0)
-                {
-                    JSResponse.Add("Status", false);
-                }
-                else
-                {
-                    General.ExecuteNonQuery($@"Update EmployeeInfo set Password = '{NewPassword}' Where EmployeeID = {EmployeeID}");
-                    JSResponse.Add("Status", true);
-                }
-                //Dictionary<string, object> JSResponse = new Dictionary<string, object>();
-                JSResponse.Add("Message", "Employee Data");
-                JSResponse.Add("Data", dbrows);
-                JsonResult jr = new JsonResult()
-                {
-                    Data = JSResponse,
-                    ContentType = "application/json",
-                    ContentEncoding = System.Text.Encoding.UTF8,
-                    JsonRequestBehavior = JsonRequestBehavior.AllowGet,
-                    MaxJsonLength = Int32.MaxValue
-                };
-                return jr;
-            }
-            catch
-            {
-                return View("false", JsonRequestBehavior.AllowGet);
-            }
-        }
-    }
 }

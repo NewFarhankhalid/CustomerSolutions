@@ -22,7 +22,7 @@ namespace Installments.Controllers
 inner join CustomerInfo on NewProblemStatement.CustomerID = CustomerInfo.CustomerID
 left join UserInfo on NewProblemStatement.AssignTo = UserInfo.UserID
 left join TasksType on NewProblemStatement.WorkPriority = TasksType.Id
-left join WorkCategory on NewProblemStatement.WorkCategory = WorkCategory.Id
+left join WorkCategory on NewProblemStatement.WorkCategory = WorkCategory.Id  order by ProblemStatementID desc
 ");
             List<NewProblemStatement> lstProblem = DataTableToObject(dtProblem);
             return View(lstProblem);
@@ -49,7 +49,7 @@ left join WorkCategory on NewProblemStatement.WorkCategory = WorkCategory.Id
             return View(objProblemInfo);
         }
         [HttpPost]
-        public ActionResult Create(NewProblemStatement objProblem, List<FormName> lstFormName)
+        public ActionResult Create(NewProblemStatement objProblem, List<FormName> lstFormName, HttpPostedFileBase VoiceFile)
         {
             try
             {
@@ -57,24 +57,42 @@ left join WorkCategory on NewProblemStatement.WorkCategory = WorkCategory.Id
                 {
                     lstFormName = new List<FormName>();
                 }
-               
+
+                // Save voice file
+                if (VoiceFile != null && VoiceFile.ContentLength > 0)
+                {
+                    string fileName = Path.GetFileName(VoiceFile.FileName);
+                    string directoryPath = Server.MapPath("~/VoiceUploads/");
+                    if (!Directory.Exists(directoryPath))
+                    {
+                        Directory.CreateDirectory(directoryPath);
+                    }
+                    string filePath = Path.Combine(directoryPath, fileName);
+                    VoiceFile.SaveAs(filePath);
+                    objProblem.Voice = filePath;
+                }
+
                 if (objProblem.ProblemStatementID == 0)
                 {
-                    string Query = "Insert into NewProblemStatement (ComplaintNo,CustomerID,ProblemTitle,PromiseDate,EntryDate,AssignTo,WorkPriority,ProblemImagePath,Solved,CreatedID,CreatedDate,CallTimeDuration,OperatorID,WorkCategory) ";
-                    Query = Query + "Values ('" + objProblem.ProblemStatmentNo + "'," + objProblem.CustomerID + ",'" + objProblem.ProblemTitle + "','" + objProblem.PromiseDate + "',GetDate()," + objProblem.AssignTo + ","+ objProblem.WorkPriority + ",'"+objProblem.ProblemImagePath + "',0,"+General.userID+ ",GetDate(),'" + objProblem.Calltime + "',"+objProblem.OperatorID+ ","+objProblem.WorkCategory+")";
-                    //General.ExecuteNonQuery(Query);
-                    //Query = "";
-                    Query = Query + " Select @@IDENTITY as ProblemStatementID";
-                    DataTable dt = General.FetchData(Query);
+                    // Insert new problem statement
+                    string query = "INSERT INTO NewProblemStatement (ComplaintNo, CustomerID, ProblemTitle, PromiseDate, EntryDate, AssignTo, WorkPriority, ProblemImagePath, Voice, Solved, CreatedID, CreatedDate, CallTimeDuration, OperatorID, WorkCategory) ";
+                    query += "VALUES ('" + objProblem.ProblemStatmentNo + "', " + objProblem.CustomerID + ", '" + objProblem.ProblemTitle + "', '" + objProblem.PromiseDate + "', '" + objProblem.EntryDate + "', " + objProblem.AssignTo + ", " + objProblem.WorkPriority + ", '" + objProblem.ProblemImagePath + "', '" + objProblem.Voice + "', 0, " + General.userID + ", GETDATE(), '" + objProblem.Calltime + "', " + objProblem.OperatorID + ", '" + objProblem.WorkCategory + "')";
+                    query += @" Select @@IDENTITY as ProblemStatementID";
+                    // Execute query to insert new problem statement
+                    DataTable dt = General.FetchData(query);
+
                     objProblem.ProblemStatementID = int.Parse(dt.Rows[0]["ProblemStatementID"].ToString());
-                    Query = "";
+
+
+                    // Insert related form names
+                    query = "";
                     foreach (FormName ass in lstFormName)
                     {
-                        Query = Query + " Insert into FormName(ProblemStatementID,FormID,Description) Values(" + objProblem.ProblemStatementID + "," + ass.FormID + ",'"+ass.FormDescription + "')";
+                        query += " INSERT INTO FormName(ProblemStatementID, FormID, Description) VALUES(" + objProblem.ProblemStatementID + ", " + ass.FormID + ", '" + ass.FormDescription + "')";
                     }
-                    if (Query != "")
+                    if (!string.IsNullOrEmpty(query))
                     {
-                        General.ExecuteNonQuery(Query);
+                        General.ExecuteNonQuery(query);
                     }
                     //foreach(OperatorDetail ass in lstOperatorDetail)
                     //{
@@ -88,31 +106,34 @@ left join WorkCategory on NewProblemStatement.WorkCategory = WorkCategory.Id
                 }
                 else
                 {
-                    string Query = "";
-                    Query = Query + "UPDATE [dbo].[NewProblemStatement] ";
-                    Query = Query + " SET    [ProblemTitle] ='" + objProblem.ProblemTitle + "' ";
-                    Query = Query + " ,[CustomerID] =" + objProblem.CustomerID + " ";
-                    Query = Query + " ,[ComplaintNo] =" + objProblem.ProblemStatmentNo + " ";
-                    Query = Query + ",[PromiseDate]='" + objProblem.PromiseDate + "'";
-                    Query = Query + ",[ProblemImage]='" + objProblem.ProblemImage + "'";          
-                    Query = Query + ",[AssignTo]=" + objProblem.AssignTo + "";
-                    Query = Query + ",[WorkPriority]=" + objProblem.WorkPriority + "";
-                    Query = Query + ",[ProblemImagePath]='" + objProblem.ProblemImagePath + "'";
-                    Query = Query + ",[CallTimeDuration]='" + objProblem.Calltime + "'";
-                    Query = Query + ",[OperatorID]=" + objProblem.OperatorID + "";
-                    Query = Query + ",[WorkCategory]=" + objProblem.WorkCategory + "";
-                    Query = Query + " WHERE ProblemStatementID=" + objProblem.ProblemStatementID;
-                    General.FetchData(Query);
-                    Query = "";
-                    Query = " Delete from FormName  where ProblemStatementID=" + objProblem.ProblemStatementID;
+                    string query = "UPDATE [dbo].[NewProblemStatement] ";
+                    query += "SET [ProblemTitle] = '" + objProblem.ProblemTitle + "', ";
+                    query += "[CustomerID] = " + objProblem.CustomerID + ", ";
+                    query += "[ComplaintNo] = '" + objProblem.ProblemStatmentNo + "', "; // Wrapped in single quotes
+                    query += "[PromiseDate] = '" + objProblem.PromiseDate + "', "; // Wrapped in single quotes
+                    query += "[EntryDate] = '" + objProblem.EntryDate + "', "; // Wrapped in single quotes
+                    query += "[ProblemImage] = '" + objProblem.ProblemImage + "', "; // Wrapped in single quotes
+                    query += "[AssignTo] = " + objProblem.AssignTo + ", ";
+                    query += "[WorkPriority] = " + objProblem.WorkPriority + ", ";
+                    query += "[ProblemImagePath] = '" + objProblem.ProblemImagePath + "', "; // Wrapped in single quotes
+                    query += "[Voice] = '" + objProblem.Voice + "', "; // Wrapped in single quotes
+                    query += "[CallTimeDuration] = '" + objProblem.Calltime + "', "; // Wrapped in single quotes
+                    query += "[OperatorID] = " + objProblem.OperatorID + ", ";
+                    query += "[WorkCategory] = '" + objProblem.WorkCategory + "' ";
+                    query += "WHERE ProblemStatementID = " + objProblem.ProblemStatementID;
 
+                    General.FetchData(query);
+
+
+                    // Delete old form names and insert new ones
+                    query = "DELETE FROM FormName WHERE ProblemStatementID = " + objProblem.ProblemStatementID;
                     foreach (FormName ass in lstFormName)
                     {
-                        Query = Query + " Insert into FormName(ProblemStatementID,FormID,Description) Values(" + objProblem.ProblemStatementID + "," + ass.FormID + ",'"+ass.FormDescription + "')";
+                        query += " INSERT INTO FormName(ProblemStatementID, FormID, Description) VALUES(" + objProblem.ProblemStatementID + ", " + ass.FormID + ", '" + ass.FormDescription + "')";
                     }
-                    if (Query != "")
+                    if (!string.IsNullOrEmpty(query))
                     {
-                        General.ExecuteNonQuery(Query);
+                        General.ExecuteNonQuery(query);
                     }
                     //foreach (OperatorDetail ass in lstOperatorDetail)
                     //{
@@ -124,11 +145,14 @@ left join WorkCategory on NewProblemStatement.WorkCategory = WorkCategory.Id
                     //}
                     new GeneralAPIsController().InsertLog(GeneralAPIsController.LogTypes.Edit, GeneralAPIsController.LogSource.NewProblemStatement, objProblem.ProblemStatementID, " Problem Title " + objProblem.ProblemTitle);
                 }
-                return Json("true," + objProblem.ProblemStatementID);
+                return Json(new { success = true, problemId = objProblem.ProblemStatementID });
             }
-            catch
+            catch (Exception ex)
             {
-                return Json("error");
+                // Log the exception
+                // You can log the exception details here using a logging framework like log4net or write to a log file
+                // Example: log.Error("Error in Create method", ex);
+                return Json(new { success = false, message = ex.Message });
             }
         }
         [HttpPost]
@@ -225,6 +249,32 @@ left join WorkCategory on NewProblemStatement.WorkCategory = WorkCategory.Id
             List<NewProblemStatement> lstparty = DataTableToObject(dtparty);
             return View(lstparty[0]);
         }
+        [HttpPost]
+        public ActionResult UploadVoice(HttpPostedFileBase voiceFile)
+        {
+            try
+            {
+                if (voiceFile != null && voiceFile.ContentLength > 0)
+                {
+                    // Save the voice file to the server or perform any necessary operations
+                    var fileName = Path.GetFileName(voiceFile.FileName);
+                    var path = Path.Combine(Server.MapPath("~/VoiceUploads/"), fileName);
+                    voiceFile.SaveAs(path);
+
+                    // Optionally, you can return some data to the client-side to indicate success
+                    return Json(new { success = true, message = "Voice file uploaded successfully" });
+                }
+                else
+                {
+                    return Json(new { success = false, message = "No voice file received" });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Error uploading voice file: " + ex.Message });
+            }
+        }
+
         public ActionResult ProblemSolved(int id)
         {
             string ProblemTitle = General.FetchData("Select * from NewProblemStatement Where ProblemStatementID=" + id).Rows[0]["ProblemTitle"].ToString();
@@ -262,7 +312,7 @@ left join WorkCategory on NewProblemStatement.WorkCategory = WorkCategory.Id
                 ViewBag.Designation = new DropDown().GetDesignation();
                 ViewBag.WorkCategory = new DropDown().GetWorkCategory();
                 ViewBag.OperatorName = new DropDown().GetEmptyList();
-
+                ViewBag.Voice = lstbranch[0].Voice;
                 return View("Create", lstbranch[0]);
             }
             return RedirectToAction("index");
@@ -371,6 +421,10 @@ left join WorkCategory on NewProblemStatement.WorkCategory = WorkCategory.Id
                 {
                     bi.WorkCategory = (dr["Category"].ToString());
                 }
+                if (dr["Voice"] != DBNull.Value)
+                {
+                    bi.Voice = (dr["Voice"].ToString());
+                }
                 if (dr["EntryDate"] != DBNull.Value)
                 {
                     bi.EntryDate = DateTime.Parse(dr["EntryDate"].ToString());
@@ -464,7 +518,7 @@ Where Solved="+AllSolved+ " and CAST(EntryDate  AS Date) between CAST('" + Date 
             foreach (UpdateSolvedDetail sa in lstChangePrice)
             {
                 SQLQuery = SQLQuery + "     Update NewProblemStatement Set Solved=" + (sa.Solved == true ? "1" : "0") + ",SolvedDate='" + SolvedDate + "' Where ProblemStatementID=" + sa.NewProblemStatementID + "";
-                string ProblemTitle = General.FetchData("Select ProblemTitle Where NewProblemStatement Where ProblemStatementID=" + sa.NewProblemStatementID).Rows[0]["ProblemTitle"].ToString();
+                string ProblemTitle = General.FetchData("Select ProblemTitle from NewProblemStatement Where ProblemStatementID=" + sa.NewProblemStatementID).Rows[0]["ProblemTitle"].ToString();
                 new GeneralAPIsController().InsertLog(GeneralAPIsController.LogTypes.Edit, GeneralAPIsController.LogSource.NewProblemStatement, sa.NewProblemStatementID, " Problem Title " + ProblemTitle);
             }
             if (!string.IsNullOrEmpty(SQLQuery))
