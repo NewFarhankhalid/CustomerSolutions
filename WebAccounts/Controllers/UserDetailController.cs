@@ -6,13 +6,6 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Services.Description;
-using FirebaseAdmin;
-using FirebaseAdmin.Messaging;
-using Google.Apis.Auth.OAuth2;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
-using System.Xml.Linq;
-
 
 namespace Installments.Controllers
 {
@@ -49,14 +42,13 @@ and Password COLLATE Latin1_General_CS_AS ='{Password}' and Inactive = 0 and IsS
             return jr;
         }
         [HttpGet]
-        public ActionResult GetEmployeeLogin(string UserName, string Password)
+        public JsonResult GetEmployeeLogin(string UserName, string Password)
         {
             string sql1 = $@"Select EmployeeID,isnull(AllowHunderdMeters,0)AllowHunderdMeters,Name,isnull(IsAdmin,0)IsAdmin from EmployeeInfo Where UserName COLLATE Latin1_General_CS_AS ='{UserName}' 
 and Password COLLATE Latin1_General_CS_AS ='{Password}' ";
             DataTable dtproductinfo = General.FetchData(sql1);
             List<Dictionary<string, object>> dbrows = GetProductRows(dtproductinfo);
             Dictionary<string, object> JSResponse = new Dictionary<string, object>();
-            
             if (dbrows.Count <= 0)
             {
                 JSResponse.Add("Status", false);
@@ -234,9 +226,8 @@ inner join EmployeeInfo on EmployeeAttendance.EmployeeID = EmployeeInfo.Employee
             };
             return jr;
         }
-     
-            [HttpPost]
-        public async Task<ActionResult> AddAttendance(int EmployeeID,string Location,string IPAddress,string MacAddress,string DeviceName,double Longtitude,double Latitude,int AttendanceType)
+        [HttpPost]
+        public ActionResult AddAttendance(int EmployeeID,string Location,string IPAddress,string MacAddress,string DeviceName,double Longtitude,double Latitude,int AttendanceType)
         {
             try
             {
@@ -277,12 +268,6 @@ INSERT INTO [dbo].[EmployeeAttendance]
            ,'{Latitude}'
            ,{AttendanceType})";
                         General.ExecuteNonQuery(sql);
-                        string EmployeeName = dt.Rows[0]["Name"].ToString();
-                        DataTable dt2 = General.FetchData($@"Select * from AdminMobileKey ");
-                        foreach (DataRow dr in dt2.Rows)
-                        {
-                            await SendMessageAsync(dr["MobileKey"].ToString(), EmployeeName, AttendanceType == 1 ? "Check In" : " Check Out", DateTime.Now, Location);
-                        }
                     }
                     dbrows = GetProductRows(dt);
                     if (dbrows.Count <= 0)
@@ -347,51 +332,6 @@ INSERT INTO [dbo].[EmployeeAttendance]
             {
                 return View("false", JsonRequestBehavior.AllowGet);
             }
-        }
-        public async Task SendMessageAsync(string MobileKey,string EmployeeName, string AttendanceType,DateTime dateTime,string Location)
-        {
-            string jsonFilePath = "H:\\Sajjad\\Customer Solution WebApp\\Customer Solution WebApp\\WebAccounts\\softinn-solutions-firebase-adminsdk-7mtt3-b0024ccb7d.json";
-            string jsonData = System.IO.File.ReadAllText(jsonFilePath);
-
-            // Deserialize JSON data into FirebaseCredentialModel object
-            FirebaseCredentialModel firebaseCredential = JsonConvert.DeserializeObject<FirebaseCredentialModel>(jsonData);
-
-            // Set up credentials
-            //string json = File.("H:\\Sajjad\\Customer Solution WebApp\\Customer Solution WebApp\\WebAccounts\\softinn-solutions-firebase-adminsdk-7mtt3-b0024ccb7d.json");
-            //GoogleCredential credential = GoogleCredential.FromFile("H:\\Sajjad\\Customer Solution WebApp\\Customer Solution WebApp\\WebAccounts\\softinn-solutions-firebase-adminsdk-7mtt3-b0024ccb7d.json");
-
-            GoogleCredential credential = GoogleCredential.FromJson(JsonConvert.SerializeObject(firebaseCredential));
-            //FirebaseApp firebaseApp = FirebaseApp.Create(new AppOptions
-            //{
-            //    Credential = credential
-            //});
-
-            FirebaseApp firebaseApp = FirebaseApp.DefaultInstance;
-            if (firebaseApp == null)
-            {
-                // FirebaseApp doesn't exist, create a new one
-                firebaseApp = FirebaseApp.Create(new AppOptions
-                {
-                    Credential = credential
-                });
-            }
-
-            // Get the messaging instance
-            var messaging = FirebaseMessaging.GetMessaging(firebaseApp);
-
-            // Construct your message
-            var message = new FirebaseAdmin.Messaging.Message
-            {
-                Notification = new Notification
-                {
-                    Title = EmployeeName,
-                    Body = AttendanceType +" On "+ dateTime +" From "+ Location
-                },
-                Token = MobileKey //"dfRx5O0XR6KsaI_urvP-Ik:APA91bEW1-4KD-XUTXfwZhv4c6o9W9-9XK0b9urc-aIIngIfGuv46U8i8McL0xmMAwgbrLZHsolCjOCBHymE3ZKawGAZJzN9hJ5EbkAZ-tszP0VcIxxM0_InpRQY92jX69ARE_ToGJTt"
-            };
-
-            // Send the message
-            string response = await messaging.SendAsync(message);
         }
     }
 }
