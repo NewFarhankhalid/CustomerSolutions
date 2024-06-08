@@ -25,6 +25,7 @@ namespace Installments.Models
         public string ProblemImage { get; set; }
         public HttpPostedFileBase Imagefile { get; set; }
         public string ProblemImagePath { get; set; }
+         public string Voice {  get; set; }
         public string Description { get; set; }
         [Display(Name = "Promise Date")]
         public DateTime PromiseDate { get; set; }

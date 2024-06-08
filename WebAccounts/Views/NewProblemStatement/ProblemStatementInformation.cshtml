@@ -172,6 +172,10 @@
                                     }
                                 }
                             </div>
+                            <audio controls id="audioPlayer" style="width: 100%;">
+                                <!-- The audio source will be set dynamically using JavaScript -->
+                                Your browser does not support the audio element.
+                            </audio>
                             <div id="myModal" class="modal">
                                 <span class="close">&times;</span>
                                 <img class="modal-content" id="img01">
@@ -375,6 +379,24 @@
 
 
 <script>
+
+     var loadVoice = function () {
+    var audioPlayer = document.getElementById('audioPlayer');
+    var voicePath = '@(Model.Voice != null ? Url.Content(Model.Voice) : "")'; // Check if Model.Voice is not null
+    if (voicePath !== "") {
+        audioPlayer.src = voicePath;
+        audioPlayer.load();
+    } else {
+        // Handle the case where Model.Voice is null or empty
+        console.error("Voice file path is null or empty.");
+    }
+};
+
+
+    // Call loadVoice function when the page is loaded
+    window.onload = loadVoice;
+
+
     $(document).keyup(function (e) {
         if (e.which === 27) {
             var modal = document.getElementById("myModal");

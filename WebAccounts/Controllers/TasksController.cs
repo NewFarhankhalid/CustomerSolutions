@@ -86,7 +86,7 @@ left join WorkCategory on NewProblemStatement.WorkCategory = WorkCategory.Id
                 obj.AssignToName = dt.Rows[0]["AssignTo"].ToString();
                 obj.ProblemImage = dt.Rows[0]["ProblemImage"].ToString();
                 obj.AssignToName = dt.Rows[0]["UserName"].ToString();
-                obj.WorkCategory = dt.Rows[0]["Category"].ToString();
+                obj.WorkCategory = (dt.Rows[0]["Category"].ToString());
 
 
 

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1013119883650",
+    "project_id": "softinn-solutions",
+    "storage_bucket": "softinn-solutions.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1013119883650:android:a1b8675d95628f0b91579b",
+        "android_client_info": {
+          "package_name": "com.softinsolutions"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA_AQl8fHhvlq0Zi6N2QAJfZSkS4Q1XkP8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
