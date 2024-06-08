@@ -22,7 +22,7 @@ namespace Installments.Controllers
 inner join CustomerInfo on NewProblemStatement.CustomerID = CustomerInfo.CustomerID
 left join UserInfo on NewProblemStatement.AssignTo = UserInfo.UserID
 left join TasksType on NewProblemStatement.WorkPriority = TasksType.Id
-left join WorkCategory on NewProblemStatement.WorkCategory = WorkCategory.Id order by ProblemStatementID desc
+left join WorkCategory on NewProblemStatement.WorkCategory = WorkCategory.Id
 ");
             List<NewProblemStatement> lstProblem = DataTableToObject(dtProblem);
             return View(lstProblem);
@@ -49,7 +49,7 @@ left join WorkCategory on NewProblemStatement.WorkCategory = WorkCategory.Id ord
             return View(objProblemInfo);
         }
         [HttpPost]
-        public ActionResult Create(NewProblemStatement objProblem, List<FormName> lstFormName, HttpPostedFileBase VoiceFile)
+        public ActionResult Create(NewProblemStatement objProblem, List<FormName> lstFormName)
         {
             try
             {
@@ -57,166 +57,149 @@ left join WorkCategory on NewProblemStatement.WorkCategory = WorkCategory.Id ord
                 {
                     lstFormName = new List<FormName>();
                 }
-
-                // Save voice file
-                if (VoiceFile != null && VoiceFile.ContentLength > 0)
-                {
-                    string fileName = Path.GetFileName(VoiceFile.FileName);
-                    string directoryPath = Server.MapPath("~/VoiceUploads/");
-                    if (!Directory.Exists(directoryPath))
-                    {
-                        Directory.CreateDirectory(directoryPath);
-                    }
-                    string filePath = Path.Combine(directoryPath, fileName);
-                    VoiceFile.SaveAs(filePath);
-                    objProblem.Voice = filePath;
-                }
-
+               
                 if (objProblem.ProblemStatementID == 0)
                 {
-                    // Insert new problem statement
-                    string query = "INSERT INTO NewProblemStatement (ComplaintNo, CustomerID, ProblemTitle, PromiseDate, EntryDate, AssignTo, WorkPriority, ProblemImagePath, Voice, Solved, CreatedID, CreatedDate, CallTimeDuration, OperatorID, WorkCategory) ";
-                    query += "VALUES ('" + objProblem.ProblemStatmentNo + "', " + objProblem.CustomerID + ", '" + objProblem.ProblemTitle + "', '" + objProblem.PromiseDate + "', '" + objProblem.EntryDate + "', " + objProblem.AssignTo + ", " + objProblem.WorkPriority + ", '" + objProblem.ProblemImagePath + "', '" + objProblem.Voice + "', 0, " + General.userID + ", GETDATE(), '" + objProblem.Calltime + "', " + objProblem.OperatorID + ", '" + objProblem.WorkCategory + "')";
-                    query += @" Select @@IDENTITY as ProblemStatementID";
-                    // Execute query to insert new problem statement
-                    DataTable dt = General.FetchData(query);
-
+                    string Query = "Insert into NewProblemStatement (ComplaintNo,CustomerID,ProblemTitle,PromiseDate,EntryDate,AssignTo,WorkPriority,ProblemImagePath,Solved,CreatedID,CreatedDate,CallTimeDuration,OperatorID,WorkCategory) ";
+                    Query = Query + "Values ('" + objProblem.ProblemStatmentNo + "'," + objProblem.CustomerID + ",'" + objProblem.ProblemTitle + "','" + objProblem.PromiseDate + "',GetDate()," + objProblem.AssignTo + ","+ objProblem.WorkPriority + ",'"+objProblem.ProblemImagePath + "',0,"+General.userID+ ",GetDate(),'" + objProblem.Calltime + "',"+objProblem.OperatorID+ ","+objProblem.WorkCategory+")";
+                    //General.ExecuteNonQuery(Query);
+                    //Query = "";
+                    Query = Query + " Select @@IDENTITY as ProblemStatementID";
+                    DataTable dt = General.FetchData(Query);
                     objProblem.ProblemStatementID = int.Parse(dt.Rows[0]["ProblemStatementID"].ToString());
-
-
-                    // Insert related form names
-                    query = "";
+                    Query = "";
                     foreach (FormName ass in lstFormName)
                     {
-                        query += " INSERT INTO FormName(ProblemStatementID, FormID, Description) VALUES(" + objProblem.ProblemStatementID + ", " + ass.FormID + ", '" + ass.FormDescription + "')";
+                        Query = Query + " Insert into FormName(ProblemStatementID,FormID,Description) Values(" + objProblem.ProblemStatementID + "," + ass.FormID + ",'"+ass.FormDescription + "')";
                     }
-                    if (!string.IsNullOrEmpty(query))
+                    if (Query != "")
                     {
-                        General.ExecuteNonQuery(query);
+                        General.ExecuteNonQuery(Query);
                     }
-
-                    // Log insertion
-                    new GeneralAPIsController().InsertLog(GeneralAPIsController.LogTypes.New, GeneralAPIsController.LogSource.NewProblemStatement, objProblem.ProblemStatementID, " Problem Title " + objProblem.ProblemTitle);
+                    //foreach(OperatorDetail ass in lstOperatorDetail)
+                    //{
+                    //    Query = Query + "Insert Into OperatorInfoNPS(ProblemStatementID,OperatorName,OperatorPhone,IsContactPerson) Values(" + objProblem.ProblemStatementID + ",'" + ass.OperatorName + "','" + ass.OperatorPhone + "'," + (ass.IsContactPerson == true ? "1" : "0") + ")";
+                    //}
+                    //if (Query != "")
+                    //{
+                    //    General.ExecuteNonQuery(Query);
+                    //}
+                    new GeneralAPIsController().InsertLog(GeneralAPIsController.LogTypes.New, GeneralAPIsController.LogSource.NewProblemStatement, objProblem.ProblemStatementID, " Problem Title " + objProblem.ProblemTitle );
                 }
                 else
                 {
-                    // Update existing problem statement
-                    string query = "UPDATE [dbo].[NewProblemStatement] ";
-                    query += "SET [ProblemTitle] = '" + objProblem.ProblemTitle + "', ";
-                    query += "[CustomerID] = " + objProblem.CustomerID + ", ";
-                    query += "[ComplaintNo] = '" + objProblem.ProblemStatmentNo + "', "; // Wrapped in single quotes
-                    query += "[PromiseDate] = '" + objProblem.PromiseDate + "', "; // Wrapped in single quotes
-                    query += "[EntryDate] = '" + objProblem.EntryDate + "', "; // Wrapped in single quotes
-                    query += "[ProblemImage] = '" + objProblem.ProblemImage + "', "; // Wrapped in single quotes
-                    query += "[AssignTo] = " + objProblem.AssignTo + ", ";
-                    query += "[WorkPriority] = " + objProblem.WorkPriority + ", ";
-                    query += "[ProblemImagePath] = '" + objProblem.ProblemImagePath + "', "; // Wrapped in single quotes
-                    query += "[Voice] = '" + objProblem.Voice + "', "; // Wrapped in single quotes
-                    query += "[CallTimeDuration] = '" + objProblem.Calltime + "', "; // Wrapped in single quotes
-                    query += "[OperatorID] = " + objProblem.OperatorID + ", ";
-                    query += "[WorkCategory] = '" + objProblem.WorkCategory + "' ";
-                    query += "WHERE ProblemStatementID = " + objProblem.ProblemStatementID;
+                    string Query = "";
+                    Query = Query + "UPDATE [dbo].[NewProblemStatement] ";
+                    Query = Query + " SET    [ProblemTitle] ='" + objProblem.ProblemTitle + "' ";
+                    Query = Query + " ,[CustomerID] =" + objProblem.CustomerID + " ";
+                    Query = Query + " ,[ComplaintNo] =" + objProblem.ProblemStatmentNo + " ";
+                    Query = Query + ",[PromiseDate]='" + objProblem.PromiseDate + "'";
+                    Query = Query + ",[ProblemImage]='" + objProblem.ProblemImage + "'";          
+                    Query = Query + ",[AssignTo]=" + objProblem.AssignTo + "";
+                    Query = Query + ",[WorkPriority]=" + objProblem.WorkPriority + "";
+                    Query = Query + ",[ProblemImagePath]='" + objProblem.ProblemImagePath + "'";
+                    Query = Query + ",[CallTimeDuration]='" + objProblem.Calltime + "'";
+                    Query = Query + ",[OperatorID]=" + objProblem.OperatorID + "";
+                    Query = Query + ",[WorkCategory]=" + objProblem.WorkCategory + "";
+                    Query = Query + " WHERE ProblemStatementID=" + objProblem.ProblemStatementID;
+                    General.FetchData(Query);
+                    Query = "";
+                    Query = " Delete from FormName  where ProblemStatementID=" + objProblem.ProblemStatementID;
 
-                    General.FetchData(query);
-
-
-                    // Delete old form names and insert new ones
-                    query = "DELETE FROM FormName WHERE ProblemStatementID = " + objProblem.ProblemStatementID;
                     foreach (FormName ass in lstFormName)
                     {
-                        query += " INSERT INTO FormName(ProblemStatementID, FormID, Description) VALUES(" + objProblem.ProblemStatementID + ", " + ass.FormID + ", '" + ass.FormDescription + "')";
+                        Query = Query + " Insert into FormName(ProblemStatementID,FormID,Description) Values(" + objProblem.ProblemStatementID + "," + ass.FormID + ",'"+ass.FormDescription + "')";
                     }
-                    if (!string.IsNullOrEmpty(query))
+                    if (Query != "")
                     {
-                        General.ExecuteNonQuery(query);
+                        General.ExecuteNonQuery(Query);
                     }
-
-                    // Log edit
+                    //foreach (OperatorDetail ass in lstOperatorDetail)
+                    //{
+                    //    Query = Query + "Insert Into OperatorInfoNPS(ProblemStatementID,OperatorName,OperatorPhone,IsContactPerson) Values(" + objProblem.ProblemStatementID + ",'" + ass.OperatorName + "','" + ass.OperatorPhone + "'," + (ass.IsContactPerson == true ? "1" : "0") + ")";
+                    //}
+                    //if (Query != "")
+                    //{
+                    //    General.ExecuteNonQuery(Query);
+                    //}
                     new GeneralAPIsController().InsertLog(GeneralAPIsController.LogTypes.Edit, GeneralAPIsController.LogSource.NewProblemStatement, objProblem.ProblemStatementID, " Problem Title " + objProblem.ProblemTitle);
                 }
-
-                return Json(new { success = true, problemId = objProblem.ProblemStatementID });
+                return Json("true," + objProblem.ProblemStatementID);
             }
-            catch (Exception ex)
+            catch
             {
-                // Log the exception
-                // You can log the exception details here using a logging framework like log4net or write to a log file
-                // Example: log.Error("Error in Create method", ex);
-                return Json(new { success = false, message = ex.Message });
+                return Json("error");
             }
         }
+        [HttpPost]
+        [ValidateInput(false)]
+        public JsonResult SaveOrUpdateImage(HttpPostedFileBase txtfile)
+        {
 
+            if (txtfile != null && txtfile.ContentLength > 0)
+            {
+                string[] filecontent = txtfile.FileName.ToString().Split(',');
+                string filename = filecontent[0] + "-" + filecontent[1] + ".jpeg";
+                int ProblemID = int.Parse(filecontent[0]);
+                string fileext = Path.GetExtension(filename);
+                if (fileext == ".jpg" || fileext == ".png" || fileext == ".jpeg")
+                {
+                    bool exists = Directory.Exists(Server.MapPath("/NewProblemStatementImage/"));
+                    if (!exists)
+                    {
+                        var createfolder = Path.Combine(Server.MapPath("/NewProblemStatementImage/").ToString());
+                        System.IO.Directory.CreateDirectory(createfolder);
+                        exists = true;
+                    }
+                    string filepath = ("/NewProblemStatementImage/") + filename;
+                    //string filepath = Server.MapPath("~/ProductImages/")+ filename;
+                    string sql = @"update NewProblemStatement set ProblemImage ='" + filepath + "'  where ProblemStatementID=" + ProblemID + "";
+                    General.ExecuteNonQuery(sql);
+                    txtfile.SaveAs(Server.MapPath(filepath));
+                }
+            }
+            return Json("true");
+        }
+        [HttpPost]
+        public ActionResult UploadImage(HttpPostedFileBase imagefile)
+        {
+            string _FileName = Path.GetFileName(imagefile.FileName);
 
+            if (Request.Files.Count > 0)
+            {
+                HttpFileCollectionBase files = Request.Files;
+                for (int i = 0; i < files.Count; i++)
+                {
+                    string path = AppDomain.CurrentDomain.BaseDirectory + "/NewProblemStatementImage";
+                    string filename = Path.GetFileName(Request.Files[i].FileName);
 
-        //[HttpPost]
-        //[ValidateInput(false)]
-        //public JsonResult SaveOrUpdateImage(HttpPostedFileBase txtfile)
-        //{
+                    HttpPostedFileBase filex = files[i];
+                    string fname;
 
-        //    if (txtfile != null && txtfile.ContentLength > 0)
-        //    {
-        //        string[] filecontent = txtfile.FileName.ToString().Split(',');
-        //        string filename = filecontent[0] + "-" + filecontent[1] + ".jpeg";
-        //        int ProblemID = int.Parse(filecontent[0]);
-        //        string fileext = Path.GetExtension(filename);
-        //        if (fileext == ".jpg" || fileext == ".png" || fileext == ".jpeg")
-        //        {
-        //            bool exists = Directory.Exists(Server.MapPath("/NewProblemStatementImage/"));
-        //            if (!exists)
-        //            {
-        //                var createfolder = Path.Combine(Server.MapPath("/NewProblemStatementImage/").ToString());
-        //                System.IO.Directory.CreateDirectory(createfolder);
-        //                exists = true;
-        //            }
-        //            string filepath = ("/NewProblemStatementImage/") + filename;
-        //            //string filepath = Server.MapPath("~/ProductImages/")+ filename;
-        //            string sql = @"update NewProblemStatement set ProblemImage ='" + filepath + "'  where ProblemStatementID=" + ProblemID + "";
-        //            General.ExecuteNonQuery(sql);
-        //            txtfile.SaveAs(Server.MapPath(filepath));
-        //        }
-        //    }
-        //    return Json("true");
-        //}
-        //[HttpPost]
-        //public ActionResult UploadImage(HttpPostedFileBase imagefile)
-        //{
-        //    string _FileName = Path.GetFileName(imagefile.FileName);
+                    // Checking for Internet Explorer  
+                    if (Request.Browser.Browser.ToUpper() == "IE" || Request.Browser.Browser.ToUpper() == "INTERNETEXPLORER")
+                    {
+                        string[] testfiles = filex.FileName.Split(new char[] { '\\' });
+                        fname = testfiles[testfiles.Length - 1];
+                    }
+                    else
+                    {
+                        fname = filex.FileName;
+                        var roothpath = Server.MapPath("/NewProblemStatementImage/");
+                        var filesavepath = System.IO.Path.Combine(roothpath, fname);
+                        imagefile.SaveAs(filesavepath);
+                        //string sql = "insert into productInfo(ProductImage) values ('" + filesavepath + "')";
+                        return View("Index");
+                    }
 
-        //    if (Request.Files.Count > 0)
-        //    {
-        //        HttpFileCollectionBase files = Request.Files;
-        //        for (int i = 0; i < files.Count; i++)
-        //        {
-        //            string path = AppDomain.CurrentDomain.BaseDirectory + "/NewProblemStatementImage";
-        //            string filename = Path.GetFileName(Request.Files[i].FileName);
+                    // Get the complete folder path and store the file inside it.
+                    //string _path = Path.Combine(Server.MapPath("~/ProductImages/"), fname);
+                    //txtfile.SaveAs(_path);
 
-        //            HttpPostedFileBase filex = files[i];
-        //            string fname;
-
-        //            // Checking for Internet Explorer  
-        //            if (Request.Browser.Browser.ToUpper() == "IE" || Request.Browser.Browser.ToUpper() == "INTERNETEXPLORER")
-        //            {
-        //                string[] testfiles = filex.FileName.Split(new char[] { '\\' });
-        //                fname = testfiles[testfiles.Length - 1];
-        //            }
-        //            else
-        //            {
-        //                fname = filex.FileName;
-        //                var roothpath = Server.MapPath("/NewProblemStatementImage/");
-        //                var filesavepath = System.IO.Path.Combine(roothpath, fname);
-        //                imagefile.SaveAs(filesavepath);
-        //                //string sql = "insert into productInfo(ProductImage) values ('" + filesavepath + "')";
-        //                return View("Index");
-        //            }
-
-        //            // Get the complete folder path and store the file inside it.
-        //            //string _path = Path.Combine(Server.MapPath("~/ProductImages/"), fname);
-        //            //txtfile.SaveAs(_path);
-
-        //        }
-        //    }
-        //    return Json("Image Uploaded");
-        //}
+                }
+            }
+            return Json("Image Uploaded");
+        }
 
         public ActionResult ProblemStatementInformation(int id)
         {
@@ -242,34 +225,6 @@ left join WorkCategory on NewProblemStatement.WorkCategory = WorkCategory.Id
             List<NewProblemStatement> lstparty = DataTableToObject(dtparty);
             return View(lstparty[0]);
         }
-
-        [HttpPost]
-        public ActionResult UploadVoice(HttpPostedFileBase voiceFile)
-        {
-            try
-            {
-                if (voiceFile != null && voiceFile.ContentLength > 0)
-                {
-                    // Save the voice file to the server or perform any necessary operations
-                    var fileName = Path.GetFileName(voiceFile.FileName);
-                    var path = Path.Combine(Server.MapPath("~/VoiceUploads/"), fileName);
-                    voiceFile.SaveAs(path);
-
-                    // Optionally, you can return some data to the client-side to indicate success
-                    return Json(new { success = true, message = "Voice file uploaded successfully" });
-                }
-                else
-                {
-                    return Json(new { success = false, message = "No voice file received" });
-                }
-            }
-            catch (Exception ex)
-            {
-                return Json(new { success = false, message = "Error uploading voice file: " + ex.Message });
-            }
-        }
-
-
         public ActionResult ProblemSolved(int id)
         {
             string ProblemTitle = General.FetchData("Select * from NewProblemStatement Where ProblemStatementID=" + id).Rows[0]["ProblemTitle"].ToString();
@@ -307,8 +262,6 @@ left join WorkCategory on NewProblemStatement.WorkCategory = WorkCategory.Id
                 ViewBag.Designation = new DropDown().GetDesignation();
                 ViewBag.WorkCategory = new DropDown().GetWorkCategory();
                 ViewBag.OperatorName = new DropDown().GetEmptyList();
-
-                ViewBag.Voice = lstbranch[0].Voice;
 
                 return View("Create", lstbranch[0]);
             }
@@ -418,10 +371,6 @@ left join WorkCategory on NewProblemStatement.WorkCategory = WorkCategory.Id
                 {
                     bi.WorkCategory = (dr["Category"].ToString());
                 }
-                if (dr["Voice"] != DBNull.Value)
-                {
-                    bi.Voice = (dr["Voice"].ToString());
-                }
                 if (dr["EntryDate"] != DBNull.Value)
                 {
                     bi.EntryDate = DateTime.Parse(dr["EntryDate"].ToString());
@@ -515,7 +464,7 @@ Where Solved="+AllSolved+ " and CAST(EntryDate  AS Date) between CAST('" + Date 
             foreach (UpdateSolvedDetail sa in lstChangePrice)
             {
                 SQLQuery = SQLQuery + "     Update NewProblemStatement Set Solved=" + (sa.Solved == true ? "1" : "0") + ",SolvedDate='" + SolvedDate + "' Where ProblemStatementID=" + sa.NewProblemStatementID + "";
-                string ProblemTitle = General.FetchData("Select ProblemTitle from NewProblemStatement Where ProblemStatementID=" + sa.NewProblemStatementID).Rows[0]["ProblemTitle"].ToString();
+                string ProblemTitle = General.FetchData("Select ProblemTitle Where NewProblemStatement Where ProblemStatementID=" + sa.NewProblemStatementID).Rows[0]["ProblemTitle"].ToString();
                 new GeneralAPIsController().InsertLog(GeneralAPIsController.LogTypes.Edit, GeneralAPIsController.LogSource.NewProblemStatement, sa.NewProblemStatementID, " Problem Title " + ProblemTitle);
             }
             if (!string.IsNullOrEmpty(SQLQuery))
